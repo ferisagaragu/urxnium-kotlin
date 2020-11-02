@@ -1,6 +1,5 @@
 package org.pechblenda.security
 
-
 import org.slf4j.LoggerFactory
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -16,7 +15,6 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 
 class JwtAuthTokenFilter(
 	val jwtProvider: JwtProvider,
