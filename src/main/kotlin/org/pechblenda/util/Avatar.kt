@@ -1,16 +1,19 @@
 package org.pechblenda.util
 
 import com.fasterxml.jackson.databind.ObjectMapper
+
 import java.awt.Color
 import java.awt.Font
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
+
 import java.io.BufferedReader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
+
 import javax.imageio.ImageIO
 
 class Avatar {

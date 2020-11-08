@@ -99,6 +99,36 @@ class FirebaseStorage(
 	fun put(
 		directory: String,
 		contentType: String,
+		name: String,
+		extension: String,
+		file: ByteArray
+	): String {
+		val fileName = name + extension
+		val blobId = BlobId.of(
+			bucket,
+			directory.replace(slash, "/")
+			+ "/" +
+			fileName
+		)
+
+		val blobInfo = BlobInfo.newBuilder(blobId)
+			.setContentType(contentType)
+			.build()
+
+		val blob = storage.create(
+			blobInfo,
+			file
+		)
+
+		return blob.signUrl(
+			100000L,
+			TimeUnit.DAYS
+		).toString()
+}
+
+	fun put(
+		directory: String,
+		contentType: String,
 		extension: String,
 		file: ByteArray
 	): String {
