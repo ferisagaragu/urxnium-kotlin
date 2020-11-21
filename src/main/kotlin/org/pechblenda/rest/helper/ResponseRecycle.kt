@@ -188,10 +188,6 @@ class ResponseRecycle {
 				return (value as UUID).toString()
 			}
 
-			if (value::class == Date::class) {
-				return (value as Date).toString()
-			}
-
 			return value
 		}
 
