@@ -20,7 +20,6 @@ import kotlin.collections.ArrayList
 
 import kotlin.collections.LinkedHashMap
 
-
 class ResponseRecycle {
 
 	companion object {
@@ -181,6 +180,19 @@ class ResponseRecycle {
 			}
 
 			return isValidTypeNotNative(clazz)
+		}
+
+		@JvmStatic
+		fun convertValue(value: Any): Any {
+			if (value::class == UUID::class)	{
+				return (value as UUID).toString()
+			}
+
+			if (value::class == Date::class) {
+				return (value as Date).toString()
+			}
+
+			return value
 		}
 
 		@JvmStatic
