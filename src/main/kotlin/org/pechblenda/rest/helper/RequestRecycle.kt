@@ -34,7 +34,7 @@ class RequestRecycle {
 			key: String,
 			fieldUse: String,
 			map: MutableMap<String, Any?>
-		): Long {
+		): Any {
 			if (fieldUse.isNotEmpty()) {
 				if (map[key] !is Map<*,*>) {
 					throw BadRequestException(
@@ -57,6 +57,10 @@ class RequestRecycle {
 				}
 
 				return nestedId[fieldUse].toString().toLong()
+			}
+
+			if (map[key] is UUID) {
+				return UUID.fromString(map[key].toString())
 			}
 
 			if (map[key] !is Int) {
@@ -126,7 +130,7 @@ class RequestRecycle {
 		@JvmStatic
 		fun callDao(
 			requestConvert: RequestConvert,
-			findId: Long
+			findId: Any
 		): ResponseMap {
 			val function = requestConvert.dao::class
 				.java.declaredMethods.filter {
