@@ -1,0 +1,54 @@
+{
+  "name": "to<T>",
+  "access": "public",
+  "bookmark": "letter-e-circle",
+  "description": "Este método convierte los datos proporcionados de un objeto JSON a una entidad del sistema para su mejor uso. Nos ayuda a convertir los ID o UUID a entidades del sistema por medio de su DAO a su vez nos ayuda a que algunos datos del JSON cumplan con las características que necesitamos para persistir la información.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Convierte un JSON en entidad",
+      "description": "En el siguiente código se manda a la petición un JSON. El método to nos ayudara a convertirlo en la entidad que nosotros queramos, la única condición es que las key del JSON se llamen igual que los campos de la entidad. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
+      "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(Hero::class)\n  return heroDAO.save(heroSave)\n}",
+      "language": "kotlin"
+    },{
+      "title": "Convierte JSON keys en entidades",
+      "description": "En el siguiente código se manda a la petición un JSON en el que la key ‘villain’ viene como un UUID, pero en el sistema es una entidad. El método to nos puede ayudar a hacer una conversión de esta entidad tan solo con decirle que campo, proporcionarle el DAO y decirle que tipo de ID es si ID convencional o UUID.",
+      "code": "{\n  \"name\": \"Spider-Man\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villainId\",\n      \"villain\"\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+      "language": "kotlin"
+    },{
+      "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+      "description": "En el siguiente código se manda a la petición un JSON. El método to nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+      "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroSave = hero.to<Hero>(\n    Hero::class,\n    Validations(\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+      "language": "kotlin"
+    },{
+      "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas, si no regrese el mensaje de acuerdo a la tecnología que usas",
+      "description": "En el siguiente código se manda a la petición un JSON. También podemos decirle al método to con que tecnología estamos trabajando como lo es GraphQL. De esta manera el las validaciones serán envidas como mensajes válidos para esta tecnología.",
+      "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroSave = hero.to<Hero>(\n    Hero::class,\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+      "language": "kotlin"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "kClass",
+      "type": "KClass",
+      "description": "Esta es la entidad en la que se va a convertir el JSON de la petición.",
+      "default": "not null"
+    },
+    {
+      "name": "validations",
+      "type": "Validations",
+      "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+      "default": "null"
+    },
+    {
+      "name": "entityParse",
+      "type": "vararg<EntityParse>",
+      "description": "Los elementos de tipo EntityParse nos ayudaran a buscar y deserializar los ID o UUID provenientes del JSON de la petición",
+      "default": "[]"
+    }
+  ]
+}

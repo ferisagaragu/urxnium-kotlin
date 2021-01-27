@@ -1,0 +1,13 @@
+{
+  "name": "Request Esp",
+  "elements": [
+    ".urxdoc/request/to.functional.json",
+    ".urxdoc/request/entityparse.functional.json",
+    ".urxdoc/request/validations.functional.json",
+    ".urxdoc/request/validation.functional.json",
+    ".urxdoc/request/validation-type.functional.json",
+    ".urxdoc/request/service-type.functional.json",
+    ".urxdoc/request/id-type.functional.json",
+    ".urxdoc/request/merge.functional.json"
+  ]
+}

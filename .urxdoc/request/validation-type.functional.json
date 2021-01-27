@@ -1,0 +1,71 @@
+{
+  "name": "ValidationType",
+  "access": "entity",
+  "bookmark": "",
+  "description": "Esta entidad nos ayuda a saber que validaciones aplicaremos en nuestra JSON key dándonos una lista variada de diferentes aspectos que se piensa son los mas comunes al momento de pedir datos para una petición. Lamentablemente puede haber alguna validación que no este en este listado y tendremos que hacerla por nuestra propia cuenta.",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "NOT_NULL",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key no sea nula.",
+      "default": "'NOT_NULL'"
+    },{
+      "name": "NOT_BLANK",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key no sea vacía.",
+      "default": "'NOT_BLANK'"
+    },{
+      "name": "EXIST",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key exista.",
+      "default": "'EXIST'"
+    },{
+      "name": "TEXT",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key sea texto.",
+      "default": "'TEXT'"
+    },{
+      "name": "NUMBER",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key sea numérica.",
+      "default": "'NUMBER'"
+    },{
+      "name": "BOOLEAN",
+      "type": "static String",
+      "description": "Indicador para validar que la JSON key sea booleana.",
+      "default": "'BOOLEAN'"
+    },{
+      "name": "min(Double)",
+      "type": "method return String",
+      "description": "Método para validar que la JSON key no sea menor de cierto número, solo para datos numéricos.",
+      "default": "''"
+    },{
+      "name": "max(Double)",
+      "type": "method return String",
+      "description": "Método para validar que la JSON key no sea mayor de cierto número, solo para datos numéricos.",
+      "default": "''"
+    },{
+      "name": "minLength(Int)",
+      "type": "method return String",
+      "description": "Método para validar que el texto de la JSON key no sea menor a cierto número.",
+      "default": "''"
+    },{
+      "name": "maxLength(Int)",
+      "type": "method return String",
+      "description": "Método para validar que el texto de la JSON key no sea mayor a cierto número.",
+      "default": "''"
+    },{
+      "name": "pattern(String)",
+      "type": "method return String",
+      "description": "Método para validar que el texto de la JSON key coincide con las reglas regex que queramos.",
+      "default": "''"
+    },{
+      "name": "includes(vararg String)",
+      "type": "method return String",
+      "description": "Método para validar que el texto de la JSON key coincida solo con las palabras que queramos.",
+      "default": "''"
+    }
+  ]
+}

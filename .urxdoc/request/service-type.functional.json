@@ -1,0 +1,21 @@
+{
+  "name": "ServiceType",
+  "access": "enum",
+  "bookmark": "",
+  "description": "Este enumerado nos ayuda a distinguir como moldear los errores que se puedan causar al validar los datos del JSON entrante, ya sea con el tipo de servicio REST o GraphQL.",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "REST",
+      "type": "REST",
+      "description": "Indicador para que la entidad Validations sepa que como moldear el error para un servicio REST. Por defecto esta opción es la seleccionada.",
+      "default": "Object"
+    },{
+      "name": "GRAPHQL",
+      "type": "GRAPHQL",
+      "description": "Indicador para que la entidad Validations sepa que como moldear el error para un servicio GraphQL. ",
+      "default": "Object"
+    }
+  ]
+}

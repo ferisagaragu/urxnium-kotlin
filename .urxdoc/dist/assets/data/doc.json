@@ -1,0 +1,283 @@
+{
+  "functional": {
+    "title": "Urxnium Kotlin",
+    "description": "Dependency to simplify the functions in Spring Boot, avoiding the handling of POJO Objects",
+    "icon": "",
+    "version": "1.0.0",
+    "bookmarks": [],
+    "src": [
+      {
+        "name": "Request Esp",
+        "elements": [
+          {
+            "name": "to<T>",
+            "access": "public",
+            "bookmark": "letter-e-circle",
+            "description": "Este método convierte los datos proporcionados de un objeto JSON a una entidad del sistema para su mejor uso. Nos ayuda a convertir los ID o UUID a entidades del sistema por medio de su DAO a su vez nos ayuda a que algunos datos del JSON cumplan con las características que necesitamos para persistir la información.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Convierte un JSON en entidad",
+                "description": "En el siguiente código se manda a la petición un JSON. El método to nos ayudara a convertirlo en la entidad que nosotros queramos, la única condición es que las key del JSON se llamen igual que los campos de la entidad. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
+                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(Hero::class)\n  return heroDAO.save(heroSave)\n}",
+                "language": "kotlin"
+              },
+              {
+                "title": "Convierte JSON keys en entidades",
+                "description": "En el siguiente código se manda a la petición un JSON en el que la key ‘villain’ viene como un UUID, pero en el sistema es una entidad. El método to nos puede ayudar a hacer una conversión de esta entidad tan solo con decirle que campo, proporcionarle el DAO y decirle que tipo de ID es si ID convencional o UUID.",
+                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villain\",\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "language": "kotlin"
+              },
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+                "description": "En el siguiente código se manda a la petición un JSON. El método to nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = hero.to<Hero>(\n    Hero::class,\n    Validations(\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "language": "kotlin"
+              },
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas, si no regrese el mensaje de acuerdo a la tecnología que usas",
+                "description": "En el siguiente código se manda a la petición un JSON. También podemos decirle al método to con que tecnología estamos trabajando como lo es GraphQL. De esta manera el las validaciones serán envidas como mensajes válidos para esta tecnología.",
+                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = hero.to<Hero>(\n    Hero::class,\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "language": "kotlin"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "kClass",
+                "type": "KClass",
+                "description": "Esta es la entidad en la que se va a convertir el JSON de la petición.",
+                "default": "not null"
+              },
+              {
+                "name": "validations",
+                "type": "Validations",
+                "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+                "default": "null"
+              },
+              {
+                "name": "entityParse",
+                "type": "vararg<EntityParse>",
+                "description": "Los elementos de tipo EntityParse nos ayudaran a buscar y deserializar los ID o UUID provenientes del JSON de la petición",
+                "default": "[]"
+              }
+            ]
+          },
+          {
+            "name": "EntityParse",
+            "access": "entity",
+            "bookmark": "",
+            "description": "This entity helps us to give the necessary information to the to method, so that it can convert a JSON key into an entity",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "fieldName",
+                "type": "String",
+                "description": "Name of the field to be searched and serialized",
+                "default": "not null"
+              },
+              {
+                "name": "convertFieldName",
+                "type": "String",
+                "description": "This will be the dress name of the serialized field",
+                "default": "''"
+              },
+              {
+                "name": "dao",
+                "type": "Any",
+                "description": "This is the DAO object that to search for the object to be serialized in the field",
+                "default": "not null"
+              },
+              {
+                "name": "idType",
+                "type": "IdType",
+                "description": "This is the type of id that will be used for the search, either a UUID or a conventional numeric ID",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "Validations",
+            "access": "entity",
+            "bookmark": "",
+            "description": "La entidad Validations nos ayuda a indicarle al método to que requisitos debe tener el JSON que queremos serializar en entidad. También con el podemos especificar para que tecnología es el tipo de error que lanzaremos, si el JSON no cumple los requisitos que necesitamos este mandara un error 400 o un error de GraphQL según especifiquemos.",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "validations",
+                "type": "vararg Validation",
+                "description": "En este objeto se albergarán las validaciones que queremos para nuestro JSON.",
+                "default": "[]"
+              },
+              {
+                "name": "serviceType",
+                "type": "ServiceType",
+                "description": "Este especifica con qué tipo de tecnología estamos trabajando si es con REST o GraphQL.",
+                "default": "ServiceType.REST"
+              }
+            ]
+          },
+          {
+            "name": "Validation",
+            "access": "entity",
+            "bookmark": "",
+            "description": "Esta entidad nos ayuda a mapear que JSON key es la que queremos validar, que mensaje queremos mandar cuando algo no es como lo requerimos y que validaciones usaremos.",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "fieldName",
+                "type": "String",
+                "description": "Nombre del JSON key que queremos validar.",
+                "default": "not null"
+              },
+              {
+                "name": "message",
+                "type": "String",
+                "description": "Mensaje que enviaremos al cliente si la JSON key no cumple con nuestras validaciones.",
+                "default": "not null"
+              },
+              {
+                "name": "validationType",
+                "type": "MutableList<String>",
+                "description": "Validaciones que se le harán a la JSON key.",
+                "default": "[]"
+              }
+            ]
+          },
+          {
+            "name": "ValidationType",
+            "access": "entity",
+            "bookmark": "",
+            "description": "Esta entidad nos ayuda a saber que validaciones aplicaremos en nuestra JSON key dándonos una lista variada de diferentes aspectos que se piensa son los mas comunes al momento de pedir datos para una petición. Lamentablemente puede haber alguna validación que no este en este listado y tendremos que hacerla por nuestra propia cuenta.",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "NOT_NULL",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key no sea nula.",
+                "default": "'NOT_NULL'"
+              },
+              {
+                "name": "NOT_BLANK",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key no sea vacía.",
+                "default": "'NOT_BLANK'"
+              },
+              {
+                "name": "EXIST",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key exista.",
+                "default": "'EXIST'"
+              },
+              {
+                "name": "TEXT",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key sea texto.",
+                "default": "'TEXT'"
+              },
+              {
+                "name": "NUMBER",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key sea numérica.",
+                "default": "'NUMBER'"
+              },
+              {
+                "name": "BOOLEAN",
+                "type": "static String",
+                "description": "Indicador para validar que la JSON key sea booleana.",
+                "default": "'BOOLEAN'"
+              },
+              {
+                "name": "min(Double)",
+                "type": "method return String",
+                "description": "Método para validar que la JSON key no sea menor de cierto número, solo para datos numéricos.",
+                "default": "''"
+              },
+              {
+                "name": "max(Double)",
+                "type": "method return String",
+                "description": "Método para validar que la JSON key no sea mayor de cierto número, solo para datos numéricos.",
+                "default": "''"
+              },
+              {
+                "name": "minLength(Int)",
+                "type": "method return String",
+                "description": "Método para validar que el texto de la JSON key no sea menor a cierto número.",
+                "default": "''"
+              },
+              {
+                "name": "maxLength(Int)",
+                "type": "method return String",
+                "description": "Método para validar que el texto de la JSON key no sea mayor a cierto número.",
+                "default": "''"
+              },
+              {
+                "name": "pattern(String)",
+                "type": "method return String",
+                "description": "Método para validar que el texto de la JSON key coincide con las reglas regex que queramos.",
+                "default": "''"
+              },
+              {
+                "name": "includes(vararg String)",
+                "type": "method return String",
+                "description": "Método para validar que el texto de la JSON key coincida solo con las palabras que queramos.",
+                "default": "''"
+              }
+            ]
+          },
+          {
+            "name": "service-type",
+            "access": "enum",
+            "bookmark": "",
+            "description": "Este enumerado nos ayuda a distinguir como moldear los errores que se puedan causar al validar los datos del JSON entrante, ya sea con el tipo de servicio REST o GraphQL.",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "REST",
+                "type": "REST",
+                "description": "Indicador para que la entidad Validations sepa que como moldear el error para un servicio REST. Por defecto esta opción es la seleccionada.",
+                "default": "Object"
+              },
+              {
+                "name": "GRAPHQL",
+                "type": "GRAPHQL",
+                "description": "Indicador para que la entidad Validations sepa que como moldear el error para un servicio GraphQL. ",
+                "default": "Object"
+              }
+            ]
+          },
+          {
+            "name": "id-type",
+            "access": "enum",
+            "bookmark": "",
+            "description": "Este enumerado nos ayuda a distinguir entre los dos tipos de identificadores mas comunes que existen en una base de datos, Diciéndole a la entidad EntityParse por que tipo de identificador debe buscar.",
+            "html": null,
+            "exampleCodes": [],
+            "attributes": [
+              {
+                "name": "UUID",
+                "type": "UUID",
+                "description": "Indicador para que el EntityParse sepa que debe buscar por UUID.",
+                "default": "Object"
+              },
+              {
+                "name": "ID",
+                "type": "ID",
+                "description": "Indicador para que el EntityParse sepa que debe buscar por Id.",
+                "default": "Object"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

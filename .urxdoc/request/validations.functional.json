@@ -1,0 +1,21 @@
+{
+  "name": "Validations",
+  "access": "entity",
+  "bookmark": "",
+  "description": "La entidad Validations nos ayuda a indicarle al método to que requisitos debe tener el JSON que queremos serializar en entidad. También con el podemos especificar para que tecnología es el tipo de error que lanzaremos, si el JSON no cumple los requisitos que necesitamos este mandara un error 400 o un error de GraphQL según especifiquemos.",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "validations",
+      "type": "vararg Validation",
+      "description": "En este objeto se albergarán las validaciones que queremos para nuestro JSON.",
+      "default": "[]"
+    },{
+      "name": "serviceType",
+      "type": "ServiceType",
+      "description": "Este especifica con qué tipo de tecnología estamos trabajando si es con REST o GraphQL.",
+      "default": "ServiceType.REST"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Validation",
+  "access": "entity",
+  "bookmark": "",
+  "description": "Esta entidad nos ayuda a mapear que JSON key es la que queremos validar, que mensaje queremos mandar cuando algo no es como lo requerimos y que validaciones usaremos.",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "fieldName",
+      "type": "String",
+      "description": "Nombre del JSON key que queremos validar.",
+      "default": "not null"
+    },{
+      "name": "message",
+      "type": "String",
+      "description": "Mensaje que enviaremos al cliente si la JSON key no cumple con nuestras validaciones.",
+      "default": "not null"
+    },{
+      "name": "validationType",
+      "type": "MutableList<String>",
+      "description": "Validaciones que se le harán a la JSON key.",
+      "default": "[]"
+    }
+  ]
+}

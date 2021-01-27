@@ -1,0 +1,31 @@
+{
+  "name": "EntityParse",
+  "access": "entity",
+  "bookmark": "",
+  "description": "This entity helps us to give the necessary information to the to method, so that it can convert a JSON key into an entity",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "fieldName",
+      "type": "String",
+      "description": "Name of the field to be searched and serialized",
+      "default": "not null"
+    },{
+      "name": "convertFieldName",
+      "type": "String",
+      "description": "This will be the dress name of the serialized field",
+      "default": "''"
+    },{
+      "name": "dao",
+      "type": "Any",
+      "description": "This is the DAO object that to search for the object to be serialized in the field",
+      "default": "not null"
+    },{
+      "name": "idType",
+      "type": "IdType",
+      "description": "This is the type of id that will be used for the search, either a UUID or a conventional numeric ID",
+      "default": "not null"
+    }
+  ]
+}

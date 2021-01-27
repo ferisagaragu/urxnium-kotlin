@@ -1,0 +1,12 @@
+{
+  "functional": {
+    "title": "Urxnium Kotlin",
+    "description": "Dependency to simplify the functions in Spring Boot, avoiding the handling of POJO Objects",
+    "icon": "https://firebasestorage.googleapis.com/v0/b/urxnium-kotlin.appspot.com/o/logo.svg?alt=media&token=15d1a3b7-89af-4e24-9a6f-7b28bd03db2a",
+    "version": "1.0.0",
+    "bookmarks": [],
+    "src": [
+      ".urxdoc/request/request.json"
+    ]
+  }
+}

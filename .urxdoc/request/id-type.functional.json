@@ -1,0 +1,21 @@
+{
+  "name": "IdType",
+  "access": "enum",
+  "bookmark": "",
+  "description": "Este enumerado nos ayuda a distinguir entre los dos tipos de identificadores mas comunes que existen en una base de datos, Diciéndole a la entidad EntityParse por que tipo de identificador debe buscar.",
+  "html": null,
+  "exampleCodes": [],
+  "attributes": [
+    {
+      "name": "UUID",
+      "type": "UUID",
+      "description": "Indicador para que el EntityParse sepa que debe buscar por UUID.",
+      "default": "Object"
+    },{
+      "name": "ID",
+      "type": "ID",
+      "description": "Indicador para que el EntityParse sepa que debe buscar por Id.",
+      "default": "Object"
+    }
+  ]
+}

@@ -3,7 +3,6 @@ package org.pechblenda.exception
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 
-
 class BadRequestException(
 	status: HttpStatus,
 	reason: String
@@ -15,5 +14,9 @@ class BadRequestException(
 	constructor(reason: String) : this(HttpStatus.BAD_REQUEST, reason)
 	constructor(reason: String, developMessage: String): this(HttpStatus.BAD_REQUEST, reason) {
 		this.developMessage = developMessage
+	}
+
+	override fun getStackTrace(): Array<StackTraceElement> {
+		return arrayOf()
 	}
 }
