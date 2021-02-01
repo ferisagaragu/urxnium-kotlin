@@ -52,6 +52,20 @@
             <version>2.10.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.cloud/google-cloud-storage -->
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>1.113.9</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.auth/google-auth-library-oauth2-http -->
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>0.23.0</version>
+        </dependency>
+
         <dependency>
 		    <groupId>com.google.firebase</groupId>
 		    <artifactId>firebase-admin</artifactId>
@@ -117,6 +131,12 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.16.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 

@@ -4,9 +4,10 @@ import com.google.cloud.storage.Blob
 import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
+
 import org.pechblenda.util.Text
 
-import java.util.*
+import java.util.Base64
 import java.util.concurrent.TimeUnit
 
 class FirebaseStorage(
@@ -17,7 +18,7 @@ class FirebaseStorage(
 
 	private val slash: String = "(slash)"
 
-	fun get(fileName: String): Map<String, Any> {
+	fun get(fileName: String): FileInfo {
 		val file = fileName.replace(slash, "/")
 		val bucketStorage = storage[bucket]
 		val blob = bucketStorage[file]
@@ -160,7 +161,7 @@ class FirebaseStorage(
 		contentType: String,
 		extension: String,
 		base64File: String
-	): Map<String, Any> {
+	): FileInfo {
 		val blobId = BlobId.of(
 			bucket,
 			fileName.replace(slash, "/") +
@@ -194,17 +195,17 @@ class FirebaseStorage(
 		return out
 	}
 
-
-	private fun createBlobOut(blob: Blob): Map<String, Any> {
-		val out: MutableMap<String, Any> = LinkedHashMap()
-		out["fileName"] = blob.name
-		out["contentType"] = blob.contentType
-		out["updateTime"] = blob.updateTime
-		out["link"] = blob.signUrl(
-			100000L,
-			TimeUnit.DAYS
-		).toString()
-		return out
+	private fun createBlobOut(blob: Blob): FileInfo {
+		return FileInfo(
+			fileName = blob.name,
+			refName = "",
+			mediaType = blob.contentType,
+			createDate = blob.updateTime as String,
+			url = blob.signUrl(
+				100000L,
+				TimeUnit.DAYS
+			).toString()
+		)
 	}
 
 }
