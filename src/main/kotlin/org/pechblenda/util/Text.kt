@@ -3,7 +3,6 @@ package org.pechblenda.util
 import java.util.Base64
 import java.util.UUID
 
-
 class Text {
 
 	fun unique(): String {

@@ -33,4 +33,30 @@ class Color {
 		return colorsOut[randomNumber]
 	}
 
+	fun getHexRandomColorAndBackground(): Map<String, String> {
+		val isr = InputStreamReader(
+			this.javaClass.classLoader.getResourceAsStream("material-colors.json"),
+			StandardCharsets.UTF_8
+		)
+		val br = BufferedReader(isr)
+		val mapper = ObjectMapper()
+		val colorsOut = mutableListOf<Map<String, String>>()
+		var fileText = ""
+
+		for (line in br.lines()) {
+			fileText += line
+		}
+
+		var colors = mapper.readValue(fileText, Map::class.java)
+
+		for ((k, v) in colors) {
+			(v as List<Map<String, String>>).forEach { color ->
+				colorsOut.add(color)
+			}
+		}
+
+		val randomNumber: Int = 0 + java.util.Random().nextInt(colorsOut.size - 1)
+		return colorsOut[randomNumber]
+	}
+
 }

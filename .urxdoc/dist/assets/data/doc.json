@@ -2,7 +2,7 @@
   "functional": {
     "title": "Urxnium Kotlin",
     "description": "Dependency to simplify the functions in Spring Boot, avoiding the handling of POJO Objects",
-    "icon": "",
+    "icon": "https://firebasestorage.googleapis.com/v0/b/urxnium-kotlin.appspot.com/o/logo.svg?alt=media&token=15d1a3b7-89af-4e24-9a6f-7b28bd03db2a",
     "version": "1.0.0",
     "bookmarks": [],
     "src": [
@@ -26,8 +26,8 @@
               {
                 "title": "Convierte JSON keys en entidades",
                 "description": "En el siguiente código se manda a la petición un JSON en el que la key ‘villain’ viene como un UUID, pero en el sistema es una entidad. El método to nos puede ayudar a hacer una conversión de esta entidad tan solo con decirle que campo, proporcionarle el DAO y decirle que tipo de ID es si ID convencional o UUID.",
-                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
-                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villain\",\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "code": "{\n  \"name\": \"Spider-Man\",\n  \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroSave = storage.to<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villainId\",\n      \"villain\"\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
                 "language": "kotlin"
               },
               {
@@ -233,7 +233,7 @@
             ]
           },
           {
-            "name": "service-type",
+            "name": "ServiceType",
             "access": "enum",
             "bookmark": "",
             "description": "Este enumerado nos ayuda a distinguir como moldear los errores que se puedan causar al validar los datos del JSON entrante, ya sea con el tipo de servicio REST o GraphQL.",
@@ -255,7 +255,7 @@
             ]
           },
           {
-            "name": "id-type",
+            "name": "IdType",
             "access": "enum",
             "bookmark": "",
             "description": "Este enumerado nos ayuda a distinguir entre los dos tipos de identificadores mas comunes que existen en una base de datos, Diciéndole a la entidad EntityParse por que tipo de identificador debe buscar.",
@@ -273,6 +273,134 @@
                 "type": "ID",
                 "description": "Indicador para que el EntityParse sepa que debe buscar por Id.",
                 "default": "Object"
+              }
+            ]
+          },
+          {
+            "name": "merge<T>",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método convierte los datos proporcionados de un objeto JSON a una entidad y los une con datos ya existentes en el sistema, esto nos ayuda a no generar “sets” para asignar la información éntrate. Tan solo con proporcionar que campo contiene el ID o UUID de la información a modificar, su DAO y que tipo de ID es el que se usara para la búsqueda.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Convierte un JSON en entidad y únela con una que ya exista",
+                "description": "En el siguiente código se manda a la petición un JSON. El método merge nos ayudara a convertir la información en entidad y a unir dicha información con una entidad ya existente para generar una actualización en el sistema. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
+                "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "language": "javascript"
+              },
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+                "description": "En el siguiente código se manda a la petición un JSON. El método merge nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+                "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    ),\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "entityParse",
+                "type": "EntityParse",
+                "description": "Con esta clase vamos a especificar los objetos con los que buscaremos el objeto de nuestra entidad",
+                "default": "not-null"
+              },
+              {
+                "name": "validations",
+                "type": "Validations",
+                "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+                "default": "null"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Documentation Esp",
+        "elements": [
+          {
+            "name": "@Bean Documentation",
+            "access": "component",
+            "bookmark": "",
+            "description": "Este componente nos ayuda a tener una interface visual para los servicios que hagamos en Spring Boot, ya que nos un entorno embebido de \"Urxnium Doc\", el cual viene preparado para ayudarnos a documentar nuestros servicios con la menor cantidad de información posible.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Añade el Urxnium Doc a tu proyecto Spring Boot",
+                "description": "",
+                "code": "@Bean\nfun documentation(): Documentation {\n  return Documentation(\n    ApiInfo(\n      title = \"Api Demo\",\n      description = \"Api Demo rest api\",\n      iconUrl = \"\",\n      version = \"0.0.1\",\n      baseUrl = \"http://localhost:5000\"\n    ),\n    DemoClassOne::class,\n    DemoClassTwo::class\n  )\n}",
+                "out": null,
+                "language": "javascript"
+              },
+              {
+                "title": "Como ver la documentación de mis servicios",
+                "description": "Una ves hayas inyectado las dependencias en Spring Boot y le hayas dicho a Urxnium Doc que clases debe documentar, es momento de poder visualizar tus resultados los cuales podrás observar en la siguiente dirección.",
+                "code": "http://TU_HOST/api",
+                "out": null,
+                "language": "shell"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "title",
+                "type": "String",
+                "description": "Nombre de la aplicación",
+                "default": "\"\""
+              },
+              {
+                "name": "description",
+                "type": "String",
+                "description": "Descripción de la aplicación",
+                "default": "\"\""
+              },
+              {
+                "name": "iconUrl",
+                "type": "String",
+                "description": "Url del icono de la aplicación",
+                "default": "\"\""
+              },
+              {
+                "name": "version",
+                "type": "String",
+                "description": "Versión del Api REST",
+                "default": "\"\""
+              },
+              {
+                "name": "baseUrl",
+                "type": "String",
+                "description": "Url base, sobre el que corre la aplicación",
+                "default": "\"\""
+              }
+            ]
+          },
+          {
+            "name": "@ApiDocumentation",
+            "access": "interface",
+            "bookmark": "",
+            "description": "Esta anotación nos ayuda a poder crear una documentación más precisa. A pesar de que Urxnium Doc puede ayudarnos a documentar un servicio, con frecuencia se necesita más que una documentación básica y hay que ser más específicos para que se entienda el funcionamiento total, del servicio REST, @ApiDocument nos ayudara a indicarle a Urxnium Doc de donde puede sacar esta información extra para dejar un servicio REST más entendible para otros desarrolladores.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Crea un archivo de documentación personalizado",
+                "description": "Para documentar de una manera mas precisa, hay que crear un archivo de tipo JSON, donde le indicaremos a Urxnium Doc lo que queremos que muestre a otros desarrolladores en pantalla. Para esto se a colocado el archivo de documentación en la carpeta api/demo/demo-doc.json. ¿Por que la documentación esta en un archivo por separado? Para Pechblenda y Urxnium Kotlin, es muy importante mantener el código de programación 100% legible, por esta misma razón en vez de llenar el servicio de anotaciones como otras dependencias de documentación, preferimos separarlas en archivos unicos para de esta manera tener el código mas legible, ademas de poder encontrar la documentación de dicho servicio de manera mas sencilla.",
+                "code": "project\n  └──src\n      │──kotlin\n      └──resources\n          └──api\n              └──demo\n                  └──demo-doc.json",
+                "out": null,
+                "language": "shell"
+              },
+              {
+                "title": "Llena la documentación de manera mas detallada",
+                "description": "Para ser más detallados al documentar nuestra aplicación, Urxnium Doc puede leer la siguiente sintaxis dentro de un archivo JSON. Cada una de las keys que presenta este archivo pueden ser removibles si no son necesarias.",
+                "code": "{\n  \"description\": \"Servicio para registrar un nuevo usuario\", //Esta es la descripcion del servicio\n  \"authorization\": true, //Indica si va a ser necesario mostrar la interface de authorizacion en el servicio\n  \"responseOk\": { }, //Puede ser cualquier tipo de JSON o ARRAY\n  \"responseBadRequest\": { }, //Puede ser cualquier tipo de JSON o ARRAY,\n  \"responseInternalServerError\": { }, //Puede ser cualquier tipo de JSON o ARRAY,\n  \"requestBody\": { }, //Puede ser cualquier tipo de JSON o ARRAY. Tambien es un JSON de muestra para hacer la petición\n  \"pathVariables | pathParams\": [ //Mapeo de las variables de ruta\n    { \n      \"name\": \"param demo\",\n      \"value\": \"\",\n      \"type\": \"text\",\n      \"value\": \"9bb5bd86-a01c-4eab-a7eb-a9d17f5f18fa\",\n      \"required\": true\n    }\n  ]\n}",
+                "out": null,
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "path",
+                "type": "String",
+                "description": "Ruta del archivo de documentación",
+                "default": "\"\""
               }
             ]
           }

@@ -1,0 +1,265 @@
+package org.pechblenda.doc.refactor
+
+import com.fasterxml.jackson.databind.ObjectMapper
+
+import org.pechblenda.doc.ApiInfo
+import org.pechblenda.doc.annotation.ApiDocumentation
+import org.pechblenda.doc.entity.Rest
+import org.pechblenda.doc.entity.RestElement
+import org.pechblenda.doc.entity.Src
+import org.pechblenda.service.Request
+
+import org.springframework.core.io.ClassPathResource
+import org.springframework.web.bind.annotation.*
+
+import java.io.BufferedReader
+import java.lang.reflect.Method
+
+import kotlin.reflect.KClass
+
+class DocumentRecycle {
+
+	val mapper = ObjectMapper()
+
+	fun generateDoc(
+		apiInfo: ApiInfo,
+		controllersInfo: MutableList<KClass<*>>
+	): LinkedHashMap<String, Any> {
+		var out = LinkedHashMap<String, Any>()
+
+		out["rest"] = Rest(
+			title = apiInfo.title,
+			description = apiInfo.description,
+			icon = apiInfo.iconUrl,
+			version = apiInfo.version,
+			baseUrl = apiInfo.baseUrl,
+			baseUrlProd = apiInfo.baseUrl,
+			bookmarks = arrayOf(),
+			credentials = apiInfo.credentials,
+			src = generateSrc(controllersInfo)
+		)
+
+		return out
+	}
+
+	private fun generateSrc(controllersInfo: MutableList<KClass<*>>): ArrayList<Src> {
+		var out = ArrayList<Src>()
+
+		controllersInfo.forEach { controllerInfo ->
+			var basePath = ""
+			var controllerName = ""
+			var restElements = ArrayList<RestElement>()
+			var hasRequestBody = false
+
+			controllerInfo.java.annotations.forEach { annotation ->
+				if (annotation.annotationClass.java == RequestMapping::class.java) {
+					val requestMapping = annotation as RequestMapping
+					basePath = getPath(requestMapping.value)
+					controllerName = requestMapping.name
+				}
+			}
+
+			controllerInfo.java.declaredMethods.forEach { method ->
+				var pathVariables = ArrayList<org.pechblenda.doc.entity.PathVariable>()
+				var pathParams = ArrayList<org.pechblenda.doc.entity.PathVariable>()
+
+				method.parameters.forEach { parameter ->
+					parameter.annotations.forEach {  annotation ->
+						if (annotation.annotationClass.java == PathVariable::class.java) {
+							val pathVariableAnnotation = annotation as PathVariable
+
+							pathVariables.add(
+								org.pechblenda.doc.entity.PathVariable(
+									name = pathVariableAnnotation.value,
+									value = "",
+									type = "text",
+									required = true
+								)
+							)
+						}
+
+						if (annotation.annotationClass.java == RequestParam::class.java) {
+							val pathParamAnnotation = annotation as RequestParam
+
+							pathParams.add(
+								org.pechblenda.doc.entity.PathVariable(
+									name = pathParamAnnotation.value,
+									value = "",
+									type = "text",
+									required = true
+								)
+							)
+						}
+
+						if (annotation.annotationClass.java == RequestBody::class.java) {
+							hasRequestBody = true
+						}
+					}
+				}
+
+				method.annotations.forEach { annotation ->
+					if (annotation.annotationClass.java == GetMapping::class.java) {
+						val service = annotation as GetMapping
+
+						restElements.add(
+							setRestElement(
+								method,
+								method.name,
+								"$basePath${getPath(service.value)}",
+								"get",
+								pathVariables,
+								pathParams,
+								hasRequestBody
+							)
+						)
+					}
+
+					if (annotation.annotationClass.java == PostMapping::class.java) {
+						val service = annotation as PostMapping
+
+						restElements.add(
+							setRestElement(
+								method,
+								method.name,
+								"$basePath${getPath(service.value)}",
+								"post",
+								pathVariables,
+								pathParams,
+								hasRequestBody
+							)
+						)
+					}
+
+					if (annotation.annotationClass.java == PutMapping::class.java) {
+						val service = annotation as PutMapping
+
+						restElements.add(
+							setRestElement(
+								method,
+								method.name,
+								"$basePath${getPath(service.value)}",
+								"put",
+								pathVariables,
+								pathParams,
+								hasRequestBody
+							)
+						)
+					}
+
+					if (annotation.annotationClass.java == DeleteMapping::class.java) {
+						val service = annotation as DeleteMapping
+
+						restElements.add(
+							setRestElement(
+								method,
+								method.name,
+								"$basePath${getPath(service.value)}",
+								"delete",
+								pathVariables,
+								pathParams,
+								hasRequestBody
+							)
+						)
+					}
+
+					if (annotation.annotationClass.java == PatchMapping::class.java) {
+						val service = annotation as PatchMapping
+
+						restElements.add(
+							setRestElement(
+								method,
+								method.name,
+								"$basePath${getPath(service.value)}",
+								"patch",
+								pathVariables,
+								pathParams,
+								hasRequestBody
+							)
+						)
+					}
+				}
+			}
+
+			out.add(
+				Src(
+					controllerName,
+					restElements
+				)
+			)
+		}
+
+		return out
+	}
+
+
+	private fun setRestElement(
+		method: Method,
+		name: String,
+		mapping: String,
+		access: String,
+		pathVariables: ArrayList<org.pechblenda.doc.entity.PathVariable>,
+		pathParams: ArrayList<org.pechblenda.doc.entity.PathVariable>,
+		hasRequestBody: Boolean
+	): RestElement {
+		var doc = Request()
+
+		method.annotations.forEach { annotation ->
+			if (annotation.annotationClass.java == ApiDocumentation::class.java) {
+				val docPath = annotation as ApiDocumentation
+				val content: String = ClassPathResource(docPath.path).inputStream.bufferedReader().use(BufferedReader::readText)
+				doc = mapper.readValue(content, Request::class.java)
+			}
+		}
+
+		return RestElement(
+			name = "$name",
+			authorization = if (doc.containsKey("authorization")) doc["authorization"] as Boolean else false,
+			mapping = mapping,
+			access = access,
+			bookmark = "",
+			permissions = arrayOf(),
+			description = if (doc.containsKey("description")) doc["description"].toString() else "",
+			html = if (doc.containsKey("html")) doc["html"].toString() else null,
+			pathVariables = if (doc.containsKey("pathVariables"))
+				(doc["pathVariables"] as List<Map<String, Any>>).map { variable ->
+					org.pechblenda.doc.entity.PathVariable(
+						name = if (variable.containsKey("name")) variable["name"] as String else "",
+						value = if (variable.containsKey("value")) variable["value"] as String else "",
+						type = if (variable.containsKey("type")) variable["type"] as String else "",
+						required = if (variable.containsKey("required")) variable["required"] as Boolean else true
+					)
+				}
+			else if (pathVariables.size == 0) null else pathVariables,
+			pathParams = if (doc.containsKey("pathParams"))
+				(doc["pathParams"] as List<Map<String, Any>>).map { param ->
+					org.pechblenda.doc.entity.PathVariable(
+						name = if (param.containsKey("name")) param["name"] as String else "",
+						value = if (param.containsKey("value")) param["value"] as String else "",
+						type = if (param.containsKey("type")) param["type"] as String else "",
+						required = if (param.containsKey("required")) param["required"] as Boolean else true
+					)
+				}
+			else if (pathParams.size == 0) null else pathParams,
+			responseOk = if (doc.containsKey("responseOk"))
+				doc["responseOk"] as MutableMap<String, Any> else null,
+			responseBadRequest = if (doc.containsKey("responseBadRequest"))
+				doc["responseBadRequest"]  as MutableMap<String, Any> else null,
+			responseInternalServerError = if (doc.containsKey("responseInternalServerError"))
+				doc["responseInternalServerError"]  as MutableMap<String, Any> else null,
+			requestBody = when {
+				doc.containsKey("requestBody") -> doc["requestBody"]
+				hasRequestBody -> mutableMapOf<String, String>()
+				else -> null
+			}
+		)
+	}
+
+	private fun getPath(value: Array<String>): String {
+		if (value.isEmpty()) {
+			return ""
+		}
+
+		return value[0]
+	}
+
+}

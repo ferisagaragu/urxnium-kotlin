@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import java.io.InputStream
 
 class Response {
 
@@ -56,6 +57,20 @@ class Response {
 			.contentType(MediaType.parseMediaType(mediaType))
 			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
 			.body(fileData)
+	}
+
+	fun file(mediaType: MediaType, fileName: String, fileData: InputStream): ResponseEntity<Any> {
+		return ResponseEntity.ok()
+			.contentType(MediaType.parseMediaType(mediaType.type))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
+			.body(InputStreamResource(fileData))
+	}
+
+	fun file(mediaType: String, fileName: String, fileData: InputStream): ResponseEntity<Any> {
+		return ResponseEntity.ok()
+			.contentType(MediaType.parseMediaType(mediaType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
+			.body(InputStreamResource(fileData))
 	}
 
 	fun toMap(any: Any, vararg callMethods: String): ResponseMap {

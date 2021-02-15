@@ -6,7 +6,8 @@
     "version": "1.0.0",
     "bookmarks": [],
     "src": [
-      ".urxdoc/request/request.json"
+      ".urxdoc/request/request.json",
+      ".urxdoc/documentation/documentation.json"
     ]
   }
 }

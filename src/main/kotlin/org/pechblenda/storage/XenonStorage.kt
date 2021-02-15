@@ -12,7 +12,9 @@ import java.io.InputStream
 
 import kotlin.collections.LinkedHashMap
 
-class XenonStorage {
+class XenonStorage(
+	val storageUrl: String
+) {
 
 	fun put(
 		mimeType: String,
@@ -35,7 +37,7 @@ class XenonStorage {
 			)
 			.build()
 		val request = Request.Builder()
-			.url("http://localhost:6060/storages")
+			.url(storageUrl)
 			.method("POST", body)
 			.build()
 		val response = client.newCall(request).execute()
@@ -49,7 +51,7 @@ class XenonStorage {
 			refName = resp["name"]!!,
 			mediaType = resp["mediaType"]!!,
 			createDate = resp["createDate"]!!,
-			url = "http://localhost:6060/storages/${resp["uid"]}"
+			url = "$storageUrl/${resp["uid"]}"
 		)
 	}
 

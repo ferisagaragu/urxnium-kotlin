@@ -1,0 +1,30 @@
+{
+  "name": "@ApiDocumentation",
+  "access": "interface",
+  "bookmark": "",
+  "description": "Esta anotación nos ayuda a poder crear una documentación más precisa. A pesar de que Urxnium Doc puede ayudarnos a documentar un servicio, con frecuencia se necesita más que una documentación básica y hay que ser más específicos para que se entienda el funcionamiento total, del servicio REST, @ApiDocument nos ayudara a indicarle a Urxnium Doc de donde puede sacar esta información extra para dejar un servicio REST más entendible para otros desarrolladores.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Crea un archivo de documentación personalizado",
+      "description": "Para documentar de una manera mas precisa, hay que crear un archivo de tipo JSON, donde le indicaremos a Urxnium Doc lo que queremos que muestre a otros desarrolladores en pantalla. Para esto se a colocado el archivo de documentación en la carpeta api/demo/demo-doc.json. ¿Por que la documentación esta en un archivo por separado? Para Pechblenda y Urxnium Kotlin, es muy importante mantener el código de programación 100% legible, por esta misma razón en vez de llenar el servicio de anotaciones como otras dependencias de documentación, preferimos separarlas en archivos unicos para de esta manera tener el código mas legible, ademas de poder encontrar la documentación de dicho servicio de manera mas sencilla.",
+      "code": "project\n  └──src\n      │──kotlin\n      └──resources\n          └──api\n              └──demo\n                  └──demo-doc.json",
+      "out": null,
+      "language": "shell"
+    },{
+      "title": "Llena la documentación de manera mas detallada",
+      "description": "Para ser más detallados al documentar nuestra aplicación, Urxnium Doc puede leer la siguiente sintaxis dentro de un archivo JSON. Cada una de las keys que presenta este archivo pueden ser removibles si no son necesarias.",
+      "code": "{\n  \"description\": \"Servicio para registrar un nuevo usuario\", //Esta es la descripcion del servicio\n  \"authorization\": true, //Indica si va a ser necesario mostrar la interface de authorizacion en el servicio\n  \"responseOk\": { }, //Puede ser cualquier tipo de JSON o ARRAY\n  \"responseBadRequest\": { }, //Puede ser cualquier tipo de JSON o ARRAY,\n  \"responseInternalServerError\": { }, //Puede ser cualquier tipo de JSON o ARRAY,\n  \"requestBody\": { }, //Puede ser cualquier tipo de JSON o ARRAY. Tambien es un JSON de muestra para hacer la petición\n  \"pathVariables | pathParams\": [ //Mapeo de las variables de ruta\n    { \n      \"name\": \"param demo\",\n      \"value\": \"\",\n      \"type\": \"text\",\n      \"value\": \"9bb5bd86-a01c-4eab-a7eb-a9d17f5f18fa\",\n      \"required\": true\n    }\n  ]\n}",
+      "out": null,
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "path",
+      "type": "String",
+      "description": "Ruta del archivo de documentación",
+      "default": "\"\""
+    }
+  ]
+}

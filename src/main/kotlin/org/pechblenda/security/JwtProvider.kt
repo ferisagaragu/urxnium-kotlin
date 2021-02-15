@@ -1,6 +1,7 @@
 package org.pechblenda.security
 
 import com.auth0.jwt.JWT
+import com.auth0.jwt.interfaces.Claim
 
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -11,19 +12,21 @@ import io.jsonwebtoken.UnsupportedJwtException
 
 import org.pechblenda.exception.UnauthenticatedException
 
-import org.slf4j.LoggerFactory
-
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.stereotype.Component
+
+import org.slf4j.LoggerFactory
 
 import java.util.Date
 
-@Component
-class JwtProvider(
-	private val jwtSecret: String,
-	private val jwtExpiration: Int
-) {
+class JwtProvider {
+
+	@Value("\${app.auth.jwt-secret:jwt@_/urxnium-secret#}")
+	private lateinit var jwtSecret: String
+
+	@Value("\${app.auth.jwt-expiration:18000000}")
+	private lateinit var jwtExpiration: String
 
 	companion object {
 		private val logger = LoggerFactory.getLogger(JwtProvider::class.java)
@@ -32,9 +35,14 @@ class JwtProvider(
 	fun generateJwtToken(authentication: Authentication): MutableMap<String, Any> {
 		val userPrinciple = authentication.principal as UserDetails
 		val tokenAndExpiration: MutableMap<String, Any> = mutableMapOf()
-		val expiration = Date(Date().time + jwtExpiration)
+		val expiration = Date(Date().time + jwtExpiration.toInt())
+		val authorities: List<String> = userPrinciple.authorities.map { authority -> authority.authority }
+		val claims: MutableMap<String, Any> = mutableMapOf()
+
+		claims["authorities"] = authorities
 
 		tokenAndExpiration["token"] = Jwts.builder()
+			.setClaims(claims)
 			.setSubject(userPrinciple.username)
 			.setIssuedAt(Date())
 			.setExpiration(expiration)
@@ -49,8 +57,13 @@ class JwtProvider(
 	fun generateJwtTokenNotExpiration(authentication: Authentication): Map<String, Any> {
 		val userPrinciple = authentication.principal as UserDetails
 		val tokenAndExpiration: MutableMap<String, Any> = mutableMapOf()
+		val authorities: List<String> = userPrinciple.authorities.map { authority -> authority.authority }
+		val claims: MutableMap<String, Any> = mutableMapOf()
+
+		claims["authorities"] = authorities
 
 		tokenAndExpiration["token"] = Jwts.builder()
+			.setClaims(claims)
 			.setSubject(userPrinciple.username)
 			.setIssuedAt(Date())
 			.signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -65,8 +78,13 @@ class JwtProvider(
 		val userPrinciple = authentication.principal as UserDetails
 		val expiration = Date(Date().time + 31556900000)
 		val token = generateJwtToken(authentication)
+		val authorities: List<String> = userPrinciple.authorities.map { authority -> authority.authority }
+		val claims: MutableMap<String, Any> = mutableMapOf()
+
+		claims["authorities"] = authorities
 
 		token["refreshToken"] = Jwts.builder()
+			.setClaims(claims)
 			.setSubject("${userPrinciple.username}_refresh")
 			.setIssuedAt(Date())
 			.setExpiration(expiration)
@@ -79,7 +97,7 @@ class JwtProvider(
 	fun refreshToken(token: String): MutableMap<String, Any> {
 		val decodedJWT = JWT.decode(token)
 		val tokenAndExpiration: MutableMap<String, Any> = mutableMapOf()
-		val expiration = Date(Date().time + jwtExpiration)
+		val expiration = Date(Date().time + jwtExpiration.toInt())
 
 		if (decodedJWT.expiresAt < Date()) {
 			throw UnauthenticatedException("refresh token has expired")
@@ -89,7 +107,11 @@ class JwtProvider(
 			throw UnauthenticatedException("refresh token it's not valid")
 		}
 
+		val authorities = mutableMapOf<String, Any>()
+		authorities["authorities"] = (decodedJWT.claims["authorities"] as Claim).asList(String::class.java)
+
 		tokenAndExpiration["token"] = Jwts.builder()
+			.setClaims(authorities)
 			.setSubject(decodedJWT.subject.replace("_refresh", ""))
 			.setIssuedAt(Date())
 			.setExpiration(expiration)

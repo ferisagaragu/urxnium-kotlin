@@ -13,7 +13,7 @@ class JwtProviderSocket(
 	private val jwtExpiration: Int
 ) {
 
-	private val jwtProvider = JwtProvider(jwtSecret, jwtExpiration)
+	private val jwtProvider = JwtProvider()
 
 	fun getUserNameFromJwtToken(token: String): String {
 		return jwtProvider.getUserNameFromJwtToken(token)
