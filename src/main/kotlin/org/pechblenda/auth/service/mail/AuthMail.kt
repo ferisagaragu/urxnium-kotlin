@@ -15,7 +15,7 @@ class AuthMail {
 	private lateinit var googleMail: GoogleMail
 
 	@Value("\${app.language:en}")
-	lateinit var language: String
+	private lateinit var language: String
 
 	@Value("\${mail.auth.activate-account-subject:}")
 	private lateinit var activateAccountSubject: String

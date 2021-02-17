@@ -1,6 +1,4 @@
-package org.pechblenda.doc
-
-import org.pechblenda.doc.entity.Credential
+package org.pechblenda.doc.entity
 
 class ApiInfo(
 	val title: String,

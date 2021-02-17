@@ -1,0 +1,24 @@
+{
+  "description": "Service to verify if a token has not yet expired",
+  "authorization": true,
+  "responseOk": {
+    "timestamp": "02-16-2021  00:21:56 a. m.",
+    "status": 200,
+    "data": {
+      "validateToken": true
+    }
+  },
+  "responseBadRequest": {
+    "timestamp": "11-19-2020  22:53:11 p. m.",
+    "status": 400,
+    "error": "BAD_REQUEST",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  }
+}

@@ -2,7 +2,7 @@ package org.pechblenda.doc.refactor
 
 import com.fasterxml.jackson.databind.ObjectMapper
 
-import org.pechblenda.doc.ApiInfo
+import org.pechblenda.doc.entity.ApiInfo
 import org.pechblenda.doc.annotation.ApiDocumentation
 import org.pechblenda.doc.entity.Rest
 import org.pechblenda.doc.entity.RestElement
@@ -10,7 +10,15 @@ import org.pechblenda.doc.entity.Src
 import org.pechblenda.service.Request
 
 import org.springframework.core.io.ClassPathResource
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 
 import java.io.BufferedReader
 import java.lang.reflect.Method
@@ -49,7 +57,6 @@ class DocumentRecycle {
 			var basePath = ""
 			var controllerName = ""
 			var restElements = ArrayList<RestElement>()
-			var hasRequestBody = false
 
 			controllerInfo.java.annotations.forEach { annotation ->
 				if (annotation.annotationClass.java == RequestMapping::class.java) {
@@ -62,6 +69,7 @@ class DocumentRecycle {
 			controllerInfo.java.declaredMethods.forEach { method ->
 				var pathVariables = ArrayList<org.pechblenda.doc.entity.PathVariable>()
 				var pathParams = ArrayList<org.pechblenda.doc.entity.PathVariable>()
+				var hasRequestBody = false
 
 				method.parameters.forEach { parameter ->
 					parameter.annotations.forEach {  annotation ->
@@ -104,7 +112,6 @@ class DocumentRecycle {
 						restElements.add(
 							setRestElement(
 								method,
-								method.name,
 								"$basePath${getPath(service.value)}",
 								"get",
 								pathVariables,
@@ -120,7 +127,6 @@ class DocumentRecycle {
 						restElements.add(
 							setRestElement(
 								method,
-								method.name,
 								"$basePath${getPath(service.value)}",
 								"post",
 								pathVariables,
@@ -136,7 +142,6 @@ class DocumentRecycle {
 						restElements.add(
 							setRestElement(
 								method,
-								method.name,
 								"$basePath${getPath(service.value)}",
 								"put",
 								pathVariables,
@@ -152,7 +157,6 @@ class DocumentRecycle {
 						restElements.add(
 							setRestElement(
 								method,
-								method.name,
 								"$basePath${getPath(service.value)}",
 								"delete",
 								pathVariables,
@@ -168,7 +172,6 @@ class DocumentRecycle {
 						restElements.add(
 							setRestElement(
 								method,
-								method.name,
 								"$basePath${getPath(service.value)}",
 								"patch",
 								pathVariables,
@@ -194,7 +197,6 @@ class DocumentRecycle {
 
 	private fun setRestElement(
 		method: Method,
-		name: String,
 		mapping: String,
 		access: String,
 		pathVariables: ArrayList<org.pechblenda.doc.entity.PathVariable>,
@@ -212,8 +214,9 @@ class DocumentRecycle {
 		}
 
 		return RestElement(
-			name = "$name",
+			name = "${method.name}",
 			authorization = if (doc.containsKey("authorization")) doc["authorization"] as Boolean else false,
+			file = if (doc.containsKey("file")) doc["file"] as Boolean else false,
 			mapping = mapping,
 			access = access,
 			bookmark = "",
@@ -241,7 +244,11 @@ class DocumentRecycle {
 				}
 			else if (pathParams.size == 0) null else pathParams,
 			responseOk = if (doc.containsKey("responseOk"))
-				doc["responseOk"] as MutableMap<String, Any> else null,
+				if (doc["responseOk"] is String) doc["responseOk"] as String else
+					doc["responseOk"] as MutableMap<String, Any> else null,
+			responseCreated = if (doc.containsKey("responseCreated"))
+				if (doc["responseCreated"] is String) doc["responseCreated"] as String else
+					doc["responseCreated"] as MutableMap<String, Any> else null,
 			responseBadRequest = if (doc.containsKey("responseBadRequest"))
 				doc["responseBadRequest"]  as MutableMap<String, Any> else null,
 			responseInternalServerError = if (doc.containsKey("responseInternalServerError"))

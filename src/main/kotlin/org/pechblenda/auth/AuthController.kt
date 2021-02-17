@@ -1,6 +1,7 @@
 package org.pechblenda.auth
 
 import org.pechblenda.auth.service.AuthService
+import org.pechblenda.doc.annotation.ApiDocumentation
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.service.Request
 
@@ -33,6 +34,7 @@ class AuthController {
 	private lateinit var httpExceptionResponse: HttpExceptionResponse
 
 	@GetMapping("/validate-token")
+	@ApiDocumentation(path = "api/assets/auth/validate-token.json")
 	fun validateToken(): ResponseEntity<Any> {
 		return try {
 			authService.validateToken()
@@ -42,6 +44,7 @@ class AuthController {
 	}
 
 	@GetMapping("/can-activate-account/{userUid}")
+	@ApiDocumentation(path = "api/assets/auth/can-activate-account.json")
 	fun canActivate(
 		@PathVariable("userUid") userUid: UUID
 	): ResponseEntity<Any> {
@@ -53,6 +56,7 @@ class AuthController {
 	}
 
 	@GetMapping("/can-change-password/{activatePassword}")
+	@ApiDocumentation(path = "api/assets/auth/can-change-password.json")
 	fun canChangePassword(
 		@PathVariable("activatePassword") activatePassword: UUID
 	): ResponseEntity<Any> {
@@ -63,7 +67,18 @@ class AuthController {
 		}
 	}
 
+	@GetMapping("/generate-profile-image/{lyrics}/{color}/{background}")
+	@ApiDocumentation(path = "api/assets/auth/generate-profile-image.json")
+	fun generateProfileImage(
+		@PathVariable("lyrics") lyrics: String,
+		@PathVariable("color") color: String,
+		@PathVariable("background") background: String
+	): ResponseEntity<Any> {
+		return authService.generateProfileImage(lyrics, color, background)
+	}
+
 	@PostMapping("/activate-account")
+	@ApiDocumentation(path = "api/assets/auth/activate-account.json")
 	fun activateAccount(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -75,6 +90,7 @@ class AuthController {
 	}
 
 	@PostMapping("/change-password")
+	@ApiDocumentation(path = "api/assets/auth/change-password.json")
 	fun changePassword(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -86,6 +102,7 @@ class AuthController {
 	}
 
 	@PostMapping("/recover-password")
+	@ApiDocumentation(path = "api/assets/auth/recover-password.json")
 	fun recoverPassword(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -97,6 +114,7 @@ class AuthController {
 	}
 
 	@PostMapping("/sign-up")
+	@ApiDocumentation(path = "api/assets/auth/sign-up.json")
 	fun signUp(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -108,6 +126,7 @@ class AuthController {
 	}
 
 	@PostMapping("/sign-in")
+	@ApiDocumentation(path = "api/assets/auth/sign-in.json")
 	fun signIn(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -119,6 +138,7 @@ class AuthController {
 	}
 
 	@PostMapping("/refresh-token")
+	@ApiDocumentation(path = "api/assets/auth/refresh-token.json")
 	fun refreshToken(
 		@RequestBody request: Request
 	): ResponseEntity<Any> {
@@ -127,15 +147,6 @@ class AuthController {
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}
-	}
-
-	@GetMapping("/profile/{lyrics}/{color}/{background}")
-	fun generateProfileImage(
-		@PathVariable("lyrics") lyrics: String,
-		@PathVariable("color") color: String,
-		@PathVariable("background") background: String
-	): ResponseEntity<Any> {
-		return authService.generateProfileImage(lyrics, color, background)
 	}
 
 }

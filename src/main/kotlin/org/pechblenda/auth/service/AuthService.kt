@@ -4,9 +4,9 @@ import org.pechblenda.auth.entity.IUser
 import org.pechblenda.auth.repository.IAuthRepository
 import org.pechblenda.auth.service.`interface`.IAuthService
 import org.pechblenda.auth.service.mail.AuthMail
+import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.exception.BadRequestException
 import org.pechblenda.exception.UnauthenticatedException
-import org.pechblenda.mail.GoogleMail
 import org.pechblenda.security.JwtProvider
 import org.pechblenda.service.Request
 import org.pechblenda.service.Response
@@ -55,10 +55,10 @@ open class AuthService: IAuthService {
 	private lateinit var avatar: Avatar
 
 	@Autowired
-	private lateinit var googleMail: GoogleMail
+	private lateinit var authMail: AuthMail
 
 	@Autowired
-	private lateinit var authMail: AuthMail
+	private lateinit var authMessage: AuthMessage
 
 	private val authRepository: IAuthRepository<IUser, UUID>
 	private val userEntity: KClass<*>
@@ -77,15 +77,15 @@ open class AuthService: IAuthService {
 		val user = authRepository.findByUserName(
 			SecurityContextHolder.getContext().authentication.name
 		).orElseThrow {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.user-not-fount"))
+			throw BadRequestException(authMessage.getUserNotFount())
 		}
 
 		if (!user.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-not-active"))
+			throw BadRequestException(authMessage.getAccountNotActive())
 		}
 
 		if (!user.enabled) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-blocked"))
+			throw BadRequestException(authMessage.getAccountBlocked())
 		}
 
 		val request = Request()
@@ -97,7 +97,7 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun canActivate(userUid: UUID): ResponseEntity<Any> {
 		val user = authRepository.findById(userUid).orElseThrow {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.activate-user-not-fount"))
+			throw BadRequestException(authMessage.getActivateUserNotFount())
 		}
 
 		if (user.active) {
@@ -260,7 +260,7 @@ open class AuthService: IAuthService {
 
 		user.password = passwordEncoder.encode(temporalPassword)
 		user.enabled = true
-		user.photo = "http://localhost:5000/api/auth/profile/${user.name[0]}/" +
+		user.photo = "http://localhost:5000/api/auth/generate-profile-image/${user.name[0]}/" +
 			URLEncoder.encode(color["color"], StandardCharsets.UTF_8.toString()) +
 			"/" + URLEncoder.encode(color["background"], StandardCharsets.UTF_8.toString())
 

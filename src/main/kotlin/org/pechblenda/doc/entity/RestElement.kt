@@ -3,6 +3,7 @@ package org.pechblenda.doc.entity
 class RestElement(
 	val name: String,
 	val authorization: Boolean,
+	val file: Boolean,
 	val mapping: String,
 	val access: String,
 	val bookmark: String,
@@ -11,7 +12,8 @@ class RestElement(
 	val html: String?,
 	val pathVariables: List<PathVariable>?,
 	val pathParams: List<PathVariable>?,
-	val responseOk: MutableMap<String, Any>?,
+	val responseOk: Any?,
+	val responseCreated: Any?,
 	val responseBadRequest: MutableMap<String, Any>?,
 	val responseInternalServerError: MutableMap<String, Any>?,
 	val requestBody: Any?

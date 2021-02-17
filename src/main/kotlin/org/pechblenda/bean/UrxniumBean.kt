@@ -1,6 +1,7 @@
 package org.pechblenda.bean
 
 import org.pechblenda.auth.service.mail.AuthMail
+import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.mail.GoogleMail
 import org.pechblenda.service.Request
@@ -47,6 +48,11 @@ open class UrxniumBean {
 	@Bean
 	open fun authMail(): AuthMail {
 		return AuthMail()
+	}
+
+	@Bean
+	open fun authMessage(): AuthMessage {
+		return AuthMessage()
 	}
 
 }

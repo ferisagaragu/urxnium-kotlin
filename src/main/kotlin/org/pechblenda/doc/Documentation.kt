@@ -1,11 +1,15 @@
 package org.pechblenda.doc
 
+import org.pechblenda.doc.entity.ApiInfo
 import org.pechblenda.doc.refactor.DocumentRecycle
 
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.CrossOrigin
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RestController
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -194,7 +198,7 @@ class Documentation {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/main.d441e8de4ab50bed83a6.js"
+					"api/main.0afe05a356ffe0859166.js"
 				),
 				StandardCharsets.UTF_8
 			)
