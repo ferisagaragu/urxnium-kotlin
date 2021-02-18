@@ -77,6 +77,16 @@ class AuthController {
 		return authService.generateProfileImage(lyrics, color, background)
 	}
 
+	@GetMapping("/generate-google-authentication-url")
+	@ApiDocumentation(path = "api/assets/auth/generate-google-authentication-url.json")
+	fun generateGoogleAuthenticationUrl(): ResponseEntity<Any> {
+		return try {
+			return authService.generateGoogleAuthenticationUrl()
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PostMapping("/activate-account")
 	@ApiDocumentation(path = "api/assets/auth/activate-account.json")
 	fun activateAccount(

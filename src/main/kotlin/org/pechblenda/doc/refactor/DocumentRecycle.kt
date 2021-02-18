@@ -219,10 +219,11 @@ class DocumentRecycle {
 			file = if (doc.containsKey("file")) doc["file"] as Boolean else false,
 			mapping = mapping,
 			access = access,
-			bookmark = "",
+			bookmark = if (doc.containsKey("bookmark")) doc["bookmark"].toString() else "",
 			permissions = arrayOf(),
 			description = if (doc.containsKey("description")) doc["description"].toString() else "",
-			html = if (doc.containsKey("html")) doc["html"].toString() else null,
+			html = if (doc.containsKey("html")) doc["html"] else null,
+			steps = if (doc.containsKey("steps")) doc["steps"] else null,
 			pathVariables = if (doc.containsKey("pathVariables"))
 				(doc["pathVariables"] as List<Map<String, Any>>).map { variable ->
 					org.pechblenda.doc.entity.PathVariable(
@@ -249,6 +250,9 @@ class DocumentRecycle {
 			responseCreated = if (doc.containsKey("responseCreated"))
 				if (doc["responseCreated"] is String) doc["responseCreated"] as String else
 					doc["responseCreated"] as MutableMap<String, Any> else null,
+			responseUnauthorized = if (doc.containsKey("responseUnauthorized"))
+				if (doc["responseUnauthorized"] is String) doc["responseUnauthorized"] as String else
+					doc["responseUnauthorized"] as MutableMap<String, Any> else null,
 			responseBadRequest = if (doc.containsKey("responseBadRequest"))
 				doc["responseBadRequest"]  as MutableMap<String, Any> else null,
 			responseInternalServerError = if (doc.containsKey("responseInternalServerError"))

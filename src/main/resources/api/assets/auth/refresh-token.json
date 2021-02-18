@@ -1,6 +1,7 @@
 {
   "description": "Service to refresh a user's token",
   "authorization": false,
+  "bookmark": "mdi-numeric-6-circle",
   "responseOk": {
     "timestamp": "11-20-2020  17:01:02 p. m.",
     "status": 200,

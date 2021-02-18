@@ -12,9 +12,14 @@ import okhttp3.Request
 
 import org.pechblenda.exception.UnauthenticatedException
 
-class GoogleAuthentication(
-	val redirectUri: String
-) {
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+
+@Component
+class GoogleAuthentication {
+
+	@Value("\${google.auth.redirect-uri:}")
+	private lateinit var redirectUri: String
 
 	private val objectMapper: ObjectMapper = ObjectMapper()
 	private val apiKeyDeserialized = objectMapper

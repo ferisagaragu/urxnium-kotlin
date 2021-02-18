@@ -7,6 +7,7 @@ import org.pechblenda.auth.service.mail.AuthMail
 import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.exception.BadRequestException
 import org.pechblenda.exception.UnauthenticatedException
+import org.pechblenda.security.GoogleAuthentication
 import org.pechblenda.security.JwtProvider
 import org.pechblenda.service.Request
 import org.pechblenda.service.Response
@@ -59,6 +60,9 @@ open class AuthService: IAuthService {
 
 	@Autowired
 	private lateinit var authMessage: AuthMessage
+
+	@Autowired
+	private lateinit var googleAuthentication: GoogleAuthentication
 
 	private val authRepository: IAuthRepository<IUser, UUID>
 	private val userEntity: KClass<*>
@@ -119,6 +123,13 @@ open class AuthService: IAuthService {
 		val out = Request()
 		out["canChangePassword"] = true
 
+		return response.ok(out)
+	}
+
+	@Transactional(readOnly = true)
+	override fun generateGoogleAuthenticationUrl(): ResponseEntity<Any> {
+		val out = mutableMapOf<String, Any>()
+		out["authUrl"] = googleAuthentication.generateAuthenticationUrl()
 		return response.ok(out)
 	}
 

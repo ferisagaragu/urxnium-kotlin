@@ -49,22 +49,22 @@ class Documentation {
 		val resource =
 			"<!doctype html>" +
 			"<html lang=\"en\">" +
-			"<head>" +
-			"  <meta charset=\"utf-8\">" +
-			"  <title>${apiInfo.title}</title>" +
-			"  <base href=\"/api/\">" +
-			"  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-			"  <link rel=\"icon\" type=\"image/x-icon\" href=\"/api/favicon.ico\">" +
-			"  <link href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap\" rel=\"stylesheet\">" +
-			"  <link href=\"https://fonts.googleapis.com/icon?family=Material+Icons\" rel=\"stylesheet\">" +
-			"  <link rel=\"stylesheet\" href=\"/api/styles.css\">" +
-			"</head>" +
-			"<body class=\"mat-typography\">" +
-			"  <app-root></app-root>" +
-			"  <script src=\"/api/runtime.js\" defer></script>" +
-			"  <script src=\"/api/polyfills.js\" defer></script>" +
-			"  <script src=\"/api/main.js\" defer></script>" +
-			"</body>" +
+			" <head>" +
+			"   <meta charset=\"utf-8\">" +
+			"   <title>${apiInfo.title}</title>" +
+			"   <base href=\"/api/\">" +
+			"   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+			"   <link rel=\"icon\" type=\"image/x-icon\" href=\"/api/favicon.ico\">" +
+			"   <link href=\"https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap\" rel=\"stylesheet\">" +
+			"   <link href=\"https://fonts.googleapis.com/icon?family=Material+Icons\" rel=\"stylesheet\">" +
+			"   <link rel=\"stylesheet\" href=\"/api/styles.css\">" +
+			" </head>" +
+			" <body class=\"mat-typography\">" +
+			"   <app-root></app-root>" +
+			"   <script src=\"/api/runtime.js\" defer></script>" +
+			"   <script src=\"/api/polyfills.js\" defer></script>" +
+			"   <script src=\"/api/main.js\" defer></script>" +
+			" </body>" +
 			"</html>"
 
 		response.contentType = "text/html";
@@ -198,7 +198,7 @@ class Documentation {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/main.0afe05a356ffe0859166.js"
+					"api/main.1e65c86418cb79accc44.js"
 				),
 				StandardCharsets.UTF_8
 			)

@@ -1,6 +1,7 @@
 {
   "description": "Service to log into the system",
   "authorization": false,
+  "bookmark": "mdi-numeric-4-circle",
   "responseOk": {
     "timestamp": "02-16-2021  22:41:19 p. m.",
     "status": 200,

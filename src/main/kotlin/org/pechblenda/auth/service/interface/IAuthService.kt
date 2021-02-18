@@ -11,11 +11,12 @@ interface IAuthService {
 	fun validateToken(): ResponseEntity<Any>
 	fun canActivate(userUid: UUID): ResponseEntity<Any>
 	fun canChangePassword(activatePassword: UUID): ResponseEntity<Any>
+	fun generateProfileImage(lyrics: String, color: String, background: String): ResponseEntity<Any>
+	fun generateGoogleAuthenticationUrl(): ResponseEntity<Any>
 	fun activateAccount(request: Request): ResponseEntity<Any>
 	fun changePassword(request: Request): ResponseEntity<Any>
 	fun recoverPassword(request: Request): ResponseEntity<Any>
 	fun signUp(request: Request): ResponseEntity<Any>
 	fun signIn(request: Request): ResponseEntity<Any>
 	fun refreshToken(request: Request): ResponseEntity<Any>
-	fun generateProfileImage(lyrics: String, color: String, background: String): ResponseEntity<Any>
 }

@@ -1,6 +1,7 @@
 {
   "description": "Service to know if the user account can be activated",
   "authorization": false,
+  "bookmark": "mdi-numeric-2-circle",
   "responseOk": {
     "timestamp": "11-19-2020  22:53:57 p. m.",
     "status": 200,
