@@ -1,7 +1,7 @@
 {
   "description": "Service to log into the system",
   "authorization": false,
-  "bookmark": "mdi-numeric-4-circle",
+  "bookmark": "mdi-numeric-2-circle",
   "responseOk": {
     "timestamp": "02-16-2021  22:41:19 p. m.",
     "status": 200,
@@ -35,7 +35,7 @@
     "message": "your error message"
   },
   "requestBody": {
-    "userName": "ferisagaragu@gmail.com",
-    "password": "fernny27"
+    "code": "Code from Google or Outlook",
+    "type": "Google | Outlook"
   }
 }

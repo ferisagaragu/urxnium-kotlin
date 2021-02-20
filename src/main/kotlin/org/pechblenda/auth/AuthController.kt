@@ -19,6 +19,8 @@ import org.springframework.web.server.ResponseStatusException
 
 import java.util.UUID
 
+import javax.servlet.http.HttpServletRequest
+
 @CrossOrigin(methods = [
 	RequestMethod.GET,
 	RequestMethod.POST
@@ -87,6 +89,16 @@ class AuthController {
 		}
 	}
 
+	@GetMapping("/generate-outlook-authentication-url")
+	@ApiDocumentation(path = "api/assets/auth/generate-outlook-authentication-url.json")
+	fun generateOutlookAuthenticationUrl(): ResponseEntity<Any> {
+		return try {
+			return authService.generateOutlookAuthenticationUrl()
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PostMapping("/activate-account")
 	@ApiDocumentation(path = "api/assets/auth/activate-account.json")
 	fun activateAccount(
@@ -126,10 +138,11 @@ class AuthController {
 	@PostMapping("/sign-up")
 	@ApiDocumentation(path = "api/assets/auth/sign-up.json")
 	fun signUp(
-		@RequestBody request: Request
+		@RequestBody request: Request,
+		servletRequest: HttpServletRequest
 	): ResponseEntity<Any> {
 		return try {
-			authService.signUp(request)
+			authService.signUp(request, servletRequest)
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}
@@ -142,6 +155,19 @@ class AuthController {
 	): ResponseEntity<Any> {
 		return try {
 			authService.signIn(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
+	@PostMapping("/sign-in-form-code")
+	@ApiDocumentation(path = "api/assets/auth/sign-in-form-code.json")
+	fun signInFormCode(
+		@RequestBody request: Request,
+		servletRequest: HttpServletRequest
+	): ResponseEntity<Any> {
+		return try {
+			authService.signInFormCode(request, servletRequest)
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}

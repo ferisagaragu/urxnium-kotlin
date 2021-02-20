@@ -6,11 +6,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.MultipartBody
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
+
 import java.net.URLEncoder
 
-class OutlookAuthentication(
-	val redirectUri: String
-) {
+@Component
+class OutlookAuthentication {
+
+	@Value("\${app.auth.front-base-url:}")
+	private lateinit var redirectUri: String
 
 	private val objectMapper: ObjectMapper = ObjectMapper()
 	private val apiKeyDeserialized = objectMapper
@@ -32,14 +37,17 @@ class OutlookAuthentication(
 			"&state=${URLEncoder.encode(redirectUri, "UTF-8")}"
 	}
 
-	fun signIn(code: String): OutlookUser {
+	fun signIn(code: String): User {
 		val token = getOutlookToken(code)
 		val userInfo = getUserInfo(token)
 
-		return OutlookUser(
+		return User(
 			id = userInfo["id"]!!,
+			locale = "",
 			firstName = userInfo["givenName"]!!,
 			lastName = userInfo["surname"]!!,
+			coverPhoto = "",
+			photo = "",
 			email = userInfo["userPrincipalName"]!!
 		)
 	}

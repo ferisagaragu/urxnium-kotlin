@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component
 @Component
 class GoogleAuthentication {
 
-	@Value("\${google.auth.redirect-uri:}")
+	@Value("\${app.auth.front-base-url:}")
 	private lateinit var redirectUri: String
 
 	private val objectMapper: ObjectMapper = ObjectMapper()
@@ -45,7 +45,7 @@ class GoogleAuthentication {
 			.build()
 	}
 
-	fun signIn(code: String): GoogleUser {
+	fun signIn(code: String): User {
 		val tokenResponse: TokenResponse
 
 		try {
@@ -72,10 +72,10 @@ class GoogleAuthentication {
 		return convertData(response.body().string())
 	}
 
-	private fun convertData(userData: String): GoogleUser {
+	private fun convertData(userData: String): User {
 		val objectMapper = ObjectMapper()
 		val googleResponse = objectMapper.readValue(userData, LinkedHashMap::class.java)
-		val googleUser = GoogleUser()
+		val googleUser = User()
 
 		googleUser.id = (googleResponse["resourceName"] as String)
 			.replace("people/", "")

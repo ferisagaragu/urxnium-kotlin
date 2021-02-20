@@ -1,6 +1,6 @@
 package org.pechblenda.security
 
-class GoogleUser(
+class User(
 	var id: String,
 	var locale: String,
 	var firstName: String,

@@ -9,6 +9,7 @@ import org.pechblenda.exception.BadRequestException
 import org.pechblenda.exception.UnauthenticatedException
 import org.pechblenda.security.GoogleAuthentication
 import org.pechblenda.security.JwtProvider
+import org.pechblenda.security.OutlookAuthentication
 import org.pechblenda.service.Request
 import org.pechblenda.service.Response
 import org.pechblenda.service.helper.Validation
@@ -19,6 +20,7 @@ import org.pechblenda.util.Color
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ClassPathResource
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -36,6 +38,7 @@ import kotlin.reflect.KClass
 import java.net.URLEncoder
 
 import java.nio.charset.StandardCharsets
+import javax.servlet.http.HttpServletRequest
 
 @Service
 open class AuthService: IAuthService {
@@ -63,6 +66,9 @@ open class AuthService: IAuthService {
 
 	@Autowired
 	private lateinit var googleAuthentication: GoogleAuthentication
+
+	@Autowired
+	private lateinit var outlookAuthentication: OutlookAuthentication
 
 	private val authRepository: IAuthRepository<IUser, UUID>
 	private val userEntity: KClass<*>
@@ -130,6 +136,13 @@ open class AuthService: IAuthService {
 	override fun generateGoogleAuthenticationUrl(): ResponseEntity<Any> {
 		val out = mutableMapOf<String, Any>()
 		out["authUrl"] = googleAuthentication.generateAuthenticationUrl()
+		return response.ok(out)
+	}
+
+	@Transactional(readOnly = true)
+	override fun generateOutlookAuthenticationUrl(): ResponseEntity<Any> {
+		val out = mutableMapOf<String, Any>()
+		out["authUrl"] = outlookAuthentication.generateAuthenticationUrl()
 		return response.ok(out)
 	}
 
@@ -222,7 +235,7 @@ open class AuthService: IAuthService {
 	}
 
 	@Transactional
-	override fun signUp(request: Request): ResponseEntity<Any> {
+	override fun signUp(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any> {
 		val user = request.to<IUser>(
 			userEntity,
 			Validations(
@@ -271,7 +284,7 @@ open class AuthService: IAuthService {
 
 		user.password = passwordEncoder.encode(temporalPassword)
 		user.enabled = true
-		user.photo = "http://localhost:5000/api/auth/generate-profile-image/${user.name[0]}/" +
+		user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
 			URLEncoder.encode(color["color"], StandardCharsets.UTF_8.toString()) +
 			"/" + URLEncoder.encode(color["background"], StandardCharsets.UTF_8.toString())
 
@@ -346,6 +359,85 @@ open class AuthService: IAuthService {
 			.ok()
 	}
 
+	@Transactional
+	override fun signInFormCode(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any> {
+		request.to<LinkedHashMap<String, String>>(
+			LinkedHashMap::class,
+			Validations(
+				Validation(
+					"code",
+					"Upss el codigo de acceso es necesario para iniciar sesión",
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"type",
+					"Upss el tipo de codigo es necesario, los tipos aceptados son 'Google' u 'Outlook'",
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK,
+					ValidationType.includes("Google", "Outlook")
+				)
+			)
+		)
+		val userLogged = if (request["type"].toString() == "Google")
+			googleAuthentication.signIn(request["code"].toString()) else
+			outlookAuthentication.signIn(request["code"].toString())
+		var userSearched = authRepository.findByUserNameOrEmail(userLogged.email).orElse(null)
+		val password = UUID.randomUUID().toString()
+		val session: Map<String, Any>
+
+		if (userSearched == null) {
+			val user = userEntity.java.getDeclaredConstructor().newInstance() as IUser
+			val lastNames = userLogged.lastName.split(" ")
+			val color = Color().getHexRandomColorAndBackground()
+
+			user.name = userLogged.firstName
+			user.surname = lastNames[0]
+			user.motherSurname = if (lastNames.size > 1) lastNames[1] else ""
+			user.userName = "${userLogged.firstName.replace(" ", "")}-${UUID.randomUUID()}"
+			user.password = passwordEncoder.encode(password)
+			user.email = userLogged.email
+			user.active = true
+			user.enabled = true
+			user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
+				URLEncoder.encode(color["color"], StandardCharsets.UTF_8.toString()) +
+				"/" + URLEncoder.encode(color["background"], StandardCharsets.UTF_8.toString())
+
+			userSearched = authRepository.save(user)
+		} else {
+			userSearched.password = passwordEncoder.encode(password)
+			userSearched = authRepository.save(userSearched)
+		}
+
+		try {
+			val authentication: Authentication = authenticationManager.authenticate(
+				UsernamePasswordAuthenticationToken(
+					userSearched.userName,
+					password
+				)
+			)
+
+			session = jwtProvider.generateJwtTokenRefresh(authentication)
+		} catch (e: Exception) {
+			throw UnauthenticatedException(propertiesMessage.getProperty("message.auth.password-incorrect"))
+		}
+
+		val out = response.toMap(userSearched)
+
+		out["session"] = session
+
+		return out
+			.exclude(
+				"password",
+				"enabled",
+				"active",
+				"activatePassword",
+				"refreshToken"
+			)
+			.firstId()
+			.ok()
+	}
+
 	@Transactional(readOnly = true)
 	override fun refreshToken(request: Request): ResponseEntity<Any> {
 		if (!request.containsKey("refreshToken")) {
@@ -374,6 +466,12 @@ open class AuthService: IAuthService {
 			"userprofile.png",
 			avatar.createDefaultAccountImage(lyrics, color, background)
 		)
+	}
+
+	private fun getHost(servletRequest: HttpServletRequest): String {
+		return if (servletRequest.localAddr.contains("0:0:0"))
+			"http://localhost:${servletRequest.localPort}" else
+			"http://${servletRequest.localAddr}:${servletRequest.localPort}"
 	}
 
 }
