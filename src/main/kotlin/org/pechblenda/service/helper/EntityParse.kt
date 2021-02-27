@@ -1,6 +1,7 @@
 package org.pechblenda.service.helper
 
 import org.pechblenda.exception.BadRequestException
+import org.pechblenda.service.Response
 import org.pechblenda.service.enum.IdType
 
 import kotlin.collections.LinkedHashMap
@@ -9,6 +10,8 @@ import java.util.UUID
 import java.util.Optional
 
 class EntityParse {
+
+	private val response = Response()
 
 	private var fieldName: String
 	private var convertFieldName: String
@@ -50,9 +53,9 @@ class EntityParse {
 		}
 
 		if (convertFieldName.isNotBlank())
-			serializedEntity[convertFieldName] = out
+			serializedEntity[convertFieldName] = response.toMap(out, false)
 		else
-			serializedEntity[fieldName] = out
+			serializedEntity[fieldName] = response.toMap(out, false)
 	}
 
 	fun convertEntityMerge(serializedEntity: LinkedHashMap<String, Any?>): Any {

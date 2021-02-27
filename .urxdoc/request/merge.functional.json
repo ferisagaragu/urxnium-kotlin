@@ -9,13 +9,13 @@
       "title": "Convierte un JSON en entidad y únela con una que ya exista",
       "description": "En el siguiente código se manda a la petición un JSON. El método merge nos ayudara a convertir la información en entidad y a unir dicha información con una entidad ya existente para generar una actualización en el sistema. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
       "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
-      "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      heroDao,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
       "language": "javascript"
     },{
       "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
       "description": "En el siguiente código se manda a la petición un JSON. El método merge nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
       "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
-      "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    ),\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+      "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      heroDao,\n      IdType.UUID\n    ),\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
       "language": "javascript"
     }
   ],
