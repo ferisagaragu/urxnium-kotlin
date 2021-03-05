@@ -8,8 +8,8 @@ import org.pechblenda.security.GoogleAuthentication
 import org.pechblenda.security.OutlookAuthentication
 import org.pechblenda.service.Request
 import org.pechblenda.service.Response
-import org.pechblenda.util.Avatar
-import org.pechblenda.util.Color
+import org.pechblenda.style.Avatar
+import org.pechblenda.style.Color
 import org.pechblenda.util.Report
 
 import org.springframework.context.annotation.Bean

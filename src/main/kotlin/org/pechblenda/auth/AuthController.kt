@@ -69,14 +69,14 @@ class AuthController {
 		}
 	}
 
-	@GetMapping("/generate-profile-image/{lyrics}/{color}/{background}")
+	@GetMapping("/generate-profile-image/{initialLetter}/{color}/{background}")
 	@ApiDocumentation(path = "api/assets/auth/generate-profile-image.json")
 	fun generateProfileImage(
-		@PathVariable("lyrics") lyrics: String,
+		@PathVariable("initialLetter") initialLetter: Char,
 		@PathVariable("color") color: String,
 		@PathVariable("background") background: String
 	): ResponseEntity<Any> {
-		return authService.generateProfileImage(lyrics, color, background)
+		return authService.generateProfileImage(initialLetter, color, background)
 	}
 
 	@GetMapping("/generate-google-authentication-url")

@@ -17,6 +17,7 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 import java.util.stream.Collectors
+import javax.servlet.http.HttpServletRequest
 
 import javax.servlet.http.HttpServletResponse
 
@@ -258,8 +259,18 @@ class Documentation {
 	}
 
 	@RequestMapping("/assets/data/doc.json")
-	fun getDoc(response: HttpServletResponse): ResponseEntity<Any> {
-		return ResponseEntity(documentRecycle.generateDoc(apiInfo, controllersInfo), HttpStatus.OK)
+	fun getDoc(
+		response: HttpServletResponse,
+		servletRequest: HttpServletRequest
+	): ResponseEntity<Any> {
+		return ResponseEntity(
+			documentRecycle.generateDoc(
+				apiInfo,
+				controllersInfo,
+				servletRequest
+			),
+			HttpStatus.OK
+		)
 	}
 
 }

@@ -12,7 +12,7 @@ interface IAuthService {
 	fun validateToken(): ResponseEntity<Any>
 	fun canActivate(userUid: UUID): ResponseEntity<Any>
 	fun canChangePassword(activatePassword: UUID): ResponseEntity<Any>
-	fun generateProfileImage(lyrics: String, color: String, background: String): ResponseEntity<Any>
+	fun generateProfileImage(initialLetter: Char, color: String, background: String): ResponseEntity<Any>
 	fun generateGoogleAuthenticationUrl(): ResponseEntity<Any>
 	fun generateOutlookAuthenticationUrl(): ResponseEntity<Any>
 	fun activateAccount(request: Request): ResponseEntity<Any>

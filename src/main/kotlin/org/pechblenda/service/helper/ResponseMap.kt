@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity
 
 import kotlin.collections.LinkedHashMap
 
-
 class ResponseMap: LinkedHashMap<String, Any?>() {
 
 	fun order(vararg order: String): ResponseMap {
@@ -78,6 +77,10 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 
 	fun response(message: String, httpStatus: HttpStatus): ResponseEntity<Any> {
 		return ResponseRecycle.response(message, this, HttpStatus.CREATED)
+	}
+
+	fun json(): LinkedHashMap<String, Any?> {
+		return this
 	}
 
 }

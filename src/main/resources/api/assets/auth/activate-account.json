@@ -23,6 +23,6 @@
   },
   "requestBody": {
     "password": "Fernny27",
-    "uid": "9bb5bd86-a01c-4eab-a7eb-a9d17f5f18fa"
+    "uuid": "9bb5bd86-a01c-4eab-a7eb-a9d17f5f18fa"
   }
 }

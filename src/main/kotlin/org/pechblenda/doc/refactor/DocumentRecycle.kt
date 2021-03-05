@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import java.io.BufferedReader
 import java.lang.reflect.Method
 
+import javax.servlet.http.HttpServletRequest
+
 import kotlin.reflect.KClass
 
 class DocumentRecycle {
@@ -31,7 +33,8 @@ class DocumentRecycle {
 
 	fun generateDoc(
 		apiInfo: ApiInfo,
-		controllersInfo: MutableList<KClass<*>>
+		controllersInfo: MutableList<KClass<*>>,
+		servletRequest: HttpServletRequest
 	): LinkedHashMap<String, Any> {
 		var out = LinkedHashMap<String, Any>()
 
@@ -40,8 +43,8 @@ class DocumentRecycle {
 			description = apiInfo.description,
 			icon = apiInfo.iconUrl,
 			version = apiInfo.version,
-			baseUrl = apiInfo.baseUrl,
-			baseUrlProd = apiInfo.baseUrl,
+			baseUrl = getHost(servletRequest),
+			baseUrlProd = getHost(servletRequest),
 			bookmarks = arrayOf(),
 			credentials = apiInfo.credentials,
 			src = generateSrc(controllersInfo)
@@ -271,6 +274,12 @@ class DocumentRecycle {
 		}
 
 		return value[0]
+	}
+
+	private fun getHost(servletRequest: HttpServletRequest): String {
+		return if (servletRequest.localAddr.contains("0:0:0"))
+			"http://localhost:${servletRequest.localPort}" else
+			"http://${servletRequest.localAddr}:${servletRequest.localPort}"
 	}
 
 }

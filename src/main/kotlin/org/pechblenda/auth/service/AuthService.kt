@@ -15,12 +15,12 @@ import org.pechblenda.service.Response
 import org.pechblenda.service.helper.Validation
 import org.pechblenda.service.helper.ValidationType
 import org.pechblenda.service.helper.Validations
-import org.pechblenda.util.Avatar
-import org.pechblenda.util.Color
+import org.pechblenda.style.Avatar
+import org.pechblenda.style.Color
+import org.pechblenda.style.CategoryColor
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ClassPathResource
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -272,7 +272,7 @@ open class AuthService: IAuthService {
 			)
 		)
 		val temporalPassword = UUID.randomUUID().toString()
-		val color = Color().getHexRandomColorAndBackground()
+		val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 		if (authRepository.existsByUserName(user.userName)) {
 			throw BadRequestException(propertiesMessage.getProperty("message.auth.user-name-registered"))
@@ -285,8 +285,8 @@ open class AuthService: IAuthService {
 		user.password = passwordEncoder.encode(temporalPassword)
 		user.enabled = true
 		user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
-			URLEncoder.encode(color["color"], StandardCharsets.UTF_8.toString()) +
-			"/" + URLEncoder.encode(color["background"], StandardCharsets.UTF_8.toString())
+			URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
+			"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
 
 		val userOut = authRepository.save(user)
 
@@ -389,7 +389,7 @@ open class AuthService: IAuthService {
 		if (userSearched == null) {
 			val user = userEntity.java.getDeclaredConstructor().newInstance() as IUser
 			val lastNames = userLogged.lastName.split(" ")
-			val color = Color().getHexRandomColorAndBackground()
+			val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 			user.name = userLogged.firstName
 			user.surname = lastNames[0]
@@ -400,8 +400,8 @@ open class AuthService: IAuthService {
 			user.active = true
 			user.enabled = true
 			user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
-				URLEncoder.encode(color["color"], StandardCharsets.UTF_8.toString()) +
-				"/" + URLEncoder.encode(color["background"], StandardCharsets.UTF_8.toString())
+				URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
+				"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
 
 			userSearched = authRepository.save(user)
 		} else {
@@ -457,14 +457,14 @@ open class AuthService: IAuthService {
 
 	@Transactional(readOnly = true)
 	override fun generateProfileImage(
-		lyrics: String,
+		initialLetter: Char,
 		color: String,
 		background: String
 	): ResponseEntity<Any> {
 		return response.file(
 			"image/png",
 			"userprofile.png",
-			avatar.createDefaultAccountImage(lyrics, color, background)
+			avatar.createDefaultAccountImage(initialLetter, color, background)
 		)
 	}
 

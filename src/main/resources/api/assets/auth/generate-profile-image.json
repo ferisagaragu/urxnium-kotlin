@@ -18,7 +18,7 @@
   },
   "pathVariables": [
     {
-      "name": "lyrics",
+      "name": "initialLetter",
       "value": "F",
       "type": "text",
       "required": true
