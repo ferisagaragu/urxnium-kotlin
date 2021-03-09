@@ -60,7 +60,7 @@ class Validations {
 
 				if (validationTypeEach == ValidationType.NUMBER) {
 					try {
-						serialized[validation.fieldName] as Double
+						serialized[validation.fieldName].toString().toDouble()
 					} catch (e: Exception) {
 						logger.error("Number validation was broken with key ${validation.fieldName}")
 						throwException(validation.message)
@@ -73,6 +73,15 @@ class Validations {
 						serialized[validation.fieldName].toString().toLowerCase() == "false")
 					) {
 						logger.error("Boolean validation was broken with key ${validation.fieldName}")
+						throwException(validation.message)
+					}
+				}
+
+				if (validationTypeEach == ValidationType.ARRAY) {
+					try {
+						serialized[validation.fieldName] as List<Any>
+					} catch (e: Exception) {
+						logger.error("Array validation was broken with key ${validation.fieldName}")
 						throwException(validation.message)
 					}
 				}

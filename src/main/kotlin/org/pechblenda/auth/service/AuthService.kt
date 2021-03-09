@@ -464,7 +464,7 @@ open class AuthService: IAuthService {
 		return response.file(
 			"image/png",
 			"userprofile.png",
-			avatar.createDefaultAccountImage(initialLetter, color, background)
+			avatar.generateUserImage(initialLetter, color, background)
 		)
 	}
 

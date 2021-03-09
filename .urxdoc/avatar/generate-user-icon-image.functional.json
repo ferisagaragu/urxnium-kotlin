@@ -1,0 +1,40 @@
+{
+  "name": "generateUserIconImage",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos permite generar una imagen de usuario con un icono Material Design sacando el código del icono de la página ‘https://materialdesignicons.com/’. ATENCIÓN esta funcionalidad solo puede ser utilizada si se cuenta con una conexión a Internet, de lo contrario esta marcara un error en el código.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Genera una imagen de usuario basada en un icono",
+      "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono. Los colores se darán al azar basados en la gama 500 de Material Design.",
+      "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserIconImage(\"\uDB80\uDC31\")\n}",
+      "out": "InputStream",
+      "language": "javascript"
+    },{
+      "title": "Genera una imagen de usuario basada en un icono y eligiendo los colores que queremos",
+      "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono, color de text y de fondo.",
+      "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserIconImage(\n    \"\uDB80\uDC31\", \n    materialColor.color, \n    materialColor.background\n  )\n}",
+      "out": "InputStream",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "icon",
+      "type": "String",
+      "description": "Código del icono elegido de la pagina 'https://materialdesignicons.com'",
+      "default": "not null"
+    },{
+      "name": "color",
+      "type": "String",
+      "description": "Color de letra que llevara la imagen de usuario.",
+      "default": "not null"
+    },{
+      "name": "background",
+      "type": "String",
+      "description": "Color de fondo que llevara la imagen de usuario.",
+      "default": "not null"
+    }
+  ]
+}

@@ -22,6 +22,9 @@ class ValidationType {
 		val BOOLEAN = "BOOLEAN"
 
 		@JvmStatic
+		val ARRAY = "ARRAY"
+
+		@JvmStatic
 		fun min(min: Double): String {
 			return "_MIN,${min}"
 		}

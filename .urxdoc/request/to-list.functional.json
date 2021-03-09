@@ -1,0 +1,52 @@
+{
+  "name": "toList<T>",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos ayuda a convertir la KEY de un JSON en una lista de peticiones controlada, dándonos así las mismas funciones que nos otorga el método ‘to’, dándonos la oportunidad de validar y convertir datos de manera masiva.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Convierte JSON keys en entidades",
+      "description": "En el siguiente código se manda a la petición un Array JSON. El método toList nos ayudara a convertirlo en la lista de entidades que nosotros queramos, la única condición es que las key del JSON se llamen igual que los campos de la entidad. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
+      "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+      "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(Hero::class)\n  \n  heroes.forEach { hero -> println(hero.name) }\n}",
+      "language": "javascript"
+    },{
+      "title": "Convierte JSON keys en entidades",
+      "description": "En el siguiente código se manda a la petición un JSON en el que la key ‘villain’ viene como un UUID, pero en el sistema es una entidad. El método toList nos puede ayudar a hacer una conversión de esta entidad tan solo con decirle que campo, proporcionarle el DAO y decirle que tipo de ID es si ID convencional o UUID.",
+      "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+      "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villainId\",\n      \"villain\"\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+      "language": "javascript"
+    },{
+      "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+      "description": "En el siguiente código se manda a la petición un JSON. El método toList nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+      "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+      "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    Validations(\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST\n      )\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+      "language": "javascript"
+    },{
+      "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas, si no regrese el mensaje de acuerdo a la tecnología que usas",
+      "description": "En el siguiente código se manda a la petición un JSON. También podemos decirle al método toList con que tecnología estamos trabajando como lo es GraphQL. De esta manera el las validaciones serán envidas como mensajes válidos para esta tecnología.",
+      "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+      "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "kClass",
+      "type": "KClass",
+      "description": "Esta es la entidad en la que se va a convertir el JSON de la petición.",
+      "default": "not null"
+    },{
+      "name": "validations",
+      "type": "Validations",
+      "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+      "default": "null"
+    },{
+      "name": "entityParse",
+      "type": "vararg<EntityParse>",
+      "description": "Los elementos de tipo EntityParse nos ayudaran a buscar y deserializar los ID o UUID provenientes del JSON de la petición",
+      "default": "[]"
+    }
+  ]
+}

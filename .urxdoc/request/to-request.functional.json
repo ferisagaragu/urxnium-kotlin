@@ -1,0 +1,29 @@
+{
+  "name": "toRequest",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos ayuda a convertir un objeto, en uno Request. Normalmente el objeto Request proviene de una petición REST, pero también podemos usarlo para validar, Mapas o texto que sabemos que es un JSON valido",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Convierte un objeto en Request",
+      "description": "A continuación, se muestra como podemos convertir texto que sabemos que es un JSON valido en un objeto Request.",
+      "code": "{\n  \"uuid\": \"983d5f02-7bcf-4e47-928c-10f6bfb02299\",\n  \"name\": \"Spider-Man\"\n}",
+      "out": "fun createHero(heroJSON: String) {\n  val request = Request().toRequest(hero)\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "json",
+      "type": "String",
+      "description": "Texto que sabemos que es un objeto JSON valido.",
+      "default": "not null"
+    },{
+      "name": "linkedHashMap",
+      "type": "LinkedHashMap<String, Any>",
+      "description": "Mapa que queremos convertir a Request.",
+      "default": "not null"
+    }
+  ]
+}

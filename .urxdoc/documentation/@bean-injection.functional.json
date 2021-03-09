@@ -1,0 +1,17 @@
+{
+  "name": "Inyección de Componentes",
+  "access": "component",
+  "bookmark": "",
+  "description": "Urxnium Kotlin nos ofrece funcionalidades agregadas para el framework Spring Boot, pero antes de poder utilizarlas hay decirle a Spring Boot donde debe buscar, para que todas nuestras funcionalidades sean @Beans inyectables en nuestra aplicación.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Inyecta los componentes de Urxnium Kotlin en Spring Boot",
+      "description": "Hacer la inyección de los componentes de Urxnium Kotlin es muy fácil, pero también es un paso super importante para que todos los componentes que te ofrecemos funcionen de manera correcta.",
+      "code": "@Configuration\n@ComponentScan(\"org.pechblenda.bean\")\nclass BeanConfig",
+      "out": null,
+      "language": "javascript"
+    }
+  ],
+  "attributes": [ ]
+}

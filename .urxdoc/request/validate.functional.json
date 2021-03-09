@@ -1,0 +1,24 @@
+{
+  "name": "validate",
+  "access": "public",
+  "bookmark": "",
+  "description": "En ocasiones puede que el JSON entrante a nuestro servicio no se pueda serializar en ninguno de nuestras entidades, la función ‘validate’ nos ayuda a poder hacer validaciones de igual manera que el método ‘to’, sin hacer una convención a entidad.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+      "description": "En el siguiente código se manda a la petición un JSON. El método to nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+      "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Spider\",\n  \"rescuePerson\": 5\n}",
+      "out": "fun saveHeroes(request: Request): ResponseEntity<Any> {\n  request.validate(\n    Validations(\n      Validation(\n        \"heroName\",\n        \"Upps el nombre del super heroe no es valido\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.includes(\"spider\", \"cat\", \"lizard\")\n      ),\n      Validation(\n        \"rescuePerson\",\n        \"Upps las personas rescatadas no son validas\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.NUMBER\n      )\n    )\n  )\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "validations",
+      "type": "Validations",
+      "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+      "default": null
+    }
+  ]
+}

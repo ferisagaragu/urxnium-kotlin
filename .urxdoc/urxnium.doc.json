@@ -7,7 +7,9 @@
     "bookmarks": [],
     "src": [
       ".urxdoc/request/request.json",
-      ".urxdoc/documentation/documentation.json"
+      ".urxdoc/documentation/documentation.json",
+      ".urxdoc/color/color.json",
+      ".urxdoc/avatar/avatar.json"
     ]
   }
 }

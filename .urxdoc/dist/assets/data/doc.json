@@ -7,7 +7,7 @@
     "bookmarks": [],
     "src": [
       {
-        "name": "Request Esp",
+        "name": "Request",
         "elements": [
           {
             "name": "to<T>",
@@ -287,14 +287,14 @@
                 "title": "Convierte un JSON en entidad y únela con una que ya exista",
                 "description": "En el siguiente código se manda a la petición un JSON. El método merge nos ayudara a convertir la información en entidad y a unir dicha información con una entidad ya existente para generar una actualización en el sistema. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
                 "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
-                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      heroDao,\n      IdType.UUID\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
                 "language": "javascript"
               },
               {
                 "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
                 "description": "En el siguiente código se manda a la petición un JSON. El método merge nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
                 "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Iron-Man\"\n}",
-                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      hero,\n      IdType.UUID\n    ),\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
+                "out": "fun createHero(hero: Request): Hero {\n  val heroUpdate = request.merge<Hero>(\n    EntityParse(\n      \"uid\",\n      heroDao,\n      IdType.UUID\n    ),\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  return heroDAO.save(heroSave)\n}",
                 "language": "javascript"
               }
             ],
@@ -312,11 +312,139 @@
                 "default": "null"
               }
             ]
+          },
+          {
+            "name": "validate",
+            "access": "public",
+            "bookmark": "",
+            "description": "En ocasiones puede que el JSON entrante a nuestro servicio no se pueda serializar en ninguno de nuestras entidades, la función ‘validate’ nos ayuda a poder hacer validaciones de igual manera que el método ‘to’, sin hacer una convención a entidad.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+                "description": "En el siguiente código se manda a la petición un JSON. El método to nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+                "code": "{\n  \"uid\": \"bb9f3dc7-e277-4d9c-a69a-93ec8aad6539\",\n  \"name\": \"Spider\",\n  \"rescuePerson\": 5\n}",
+                "out": "fun saveHeroes(request: Request): ResponseEntity<Any> {\n  request.validate(\n    Validations(\n      Validation(\n        \"heroName\",\n        \"Upps el nombre del super heroe no es valido\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.includes(\"spider\", \"cat\", \"lizard\")\n      ),\n      Validation(\n        \"rescuePerson\",\n        \"Upps las personas rescatadas no son validas\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.NUMBER\n      )\n    )\n  )\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "validations",
+                "type": "Validations",
+                "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+                "default": null
+              }
+            ]
+          },
+          {
+            "name": "toList<T>",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos ayuda a convertir la KEY de un JSON en una lista de peticiones controlada, dándonos así las mismas funciones que nos otorga el método ‘to’, dándonos la oportunidad de validar y convertir datos de manera masiva.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Convierte JSON keys en entidades",
+                "description": "En el siguiente código se manda a la petición un Array JSON. El método toList nos ayudara a convertirlo en la lista de entidades que nosotros queramos, la única condición es que las key del JSON se llamen igual que los campos de la entidad. Todas aquellas keys que no coincidan con la entidad serán ignoradas.",
+                "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villain\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+                "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(Hero::class)\n  \n  heroes.forEach { hero -> println(hero.name) }\n}",
+                "language": "javascript"
+              },
+              {
+                "title": "Convierte JSON keys en entidades",
+                "description": "En el siguiente código se manda a la petición un JSON en el que la key ‘villain’ viene como un UUID, pero en el sistema es una entidad. El método toList nos puede ayudar a hacer una conversión de esta entidad tan solo con decirle que campo, proporcionarle el DAO y decirle que tipo de ID es si ID convencional o UUID.",
+                "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+                "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    EntityParse(\n      \"villainId\",\n      \"villain\"\n      villainDAO,\n      IdType.UUID\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+                "language": "javascript"
+              },
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas",
+                "description": "En el siguiente código se manda a la petición un JSON. El método toList nos puede ayudar a validar que los datos que necesitamos cumplan con ciertas características y evitarnos hacer esto de manera manual.",
+                "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+                "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    Validations(\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST\n      )\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+                "language": "javascript"
+              },
+              {
+                "title": "Valida que el JSON de la petición cumple con los campos y los datos que necesitas, si no regrese el mensaje de acuerdo a la tecnología que usas",
+                "description": "En el siguiente código se manda a la petición un JSON. También podemos decirle al método toList con que tecnología estamos trabajando como lo es GraphQL. De esta manera el las validaciones serán envidas como mensajes válidos para esta tecnología.",
+                "code": "[\n  {\n    \"name\": \"Spider-Man\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  },{\n    \"name\": \"Magneto\",\n    \"villainId\": \"83b824dd-8c7e-480c-a68c-729f8365d5f3\"\n  }\n]",
+                "out": "fun createHero(hero: Request) {\n  val heroes = storage.toList<Hero>(\n    Hero::class,\n    Validations(\n      ServiceType.GRAPHQL,\n      Validation(\n        \"name\",\n        \"Upps the name is required\",\n        ValidationType.NOT_NULL,\n        ValidationType.NOT_BLANK,\n        ValidationType.EXIST,\n        ValidationType.TEXT,\n        ValidationType.minLength(5),\n        ValidationType.maxLength(10),\n        ValidationType.pattern(\"[a-zA-Z]+\"),\n        ValidationType.includes(\"Fernando\", \"Isaías\")\n      )\n    )\n  )\n\n  heroes.forEach { hero -> heroDAO.save(heroSave) }\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "kClass",
+                "type": "KClass",
+                "description": "Esta es la entidad en la que se va a convertir el JSON de la petición.",
+                "default": "not null"
+              },
+              {
+                "name": "validations",
+                "type": "Validations",
+                "description": "La clase Validation nos ayudara a validar los los datos del JSON provenientes de la petición",
+                "default": "null"
+              },
+              {
+                "name": "entityParse",
+                "type": "vararg<EntityParse>",
+                "description": "Los elementos de tipo EntityParse nos ayudaran a buscar y deserializar los ID o UUID provenientes del JSON de la petición",
+                "default": "[]"
+              }
+            ]
+          },
+          {
+            "name": "toJSON",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos ayuda a convertir un objeto tipo Request en JSON, normalmente este método es muy utilizado en pruebas unitarias.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Vamos a convertir nuestro objeto Request en uno tipo JSON",
+                "description": "A continuación, se muestra un ejemplo de como podemos convertir un objeto Request, el cual nos puede ayudar para comparar un objeto completo, o exportarlo a JavaScript.",
+                "code": "fun createHero(hero: Request) {\n  println(hero.toJSON())\n}",
+                "out": "{\n  \"uuid\": \"983d5f02-7bcf-4e47-928c-10f6bfb02299\",\n  \"name\": \"Spider-Man\"\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": null
+          },
+          {
+            "name": "toRequest",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos ayuda a convertir un objeto, en uno Request. Normalmente el objeto Request proviene de una petición REST, pero también podemos usarlo para validar, Mapas o texto que sabemos que es un JSON valido",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Convierte un objeto en Request",
+                "description": "A continuación, se muestra como podemos convertir texto que sabemos que es un JSON valido en un objeto Request.",
+                "code": "{\n  \"uuid\": \"983d5f02-7bcf-4e47-928c-10f6bfb02299\",\n  \"name\": \"Spider-Man\"\n}",
+                "out": "fun createHero(heroJSON: String) {\n  val request = Request().toRequest(hero)\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "json",
+                "type": "String",
+                "description": "Texto que sabemos que es un objeto JSON valido.",
+                "default": "not null"
+              },
+              {
+                "name": "linkedHashMap",
+                "type": "LinkedHashMap<String, Any>",
+                "description": "Mapa que queremos convertir a Request.",
+                "default": "not null"
+              }
+            ]
           }
         ]
       },
       {
-        "name": "Documentation Esp",
+        "name": "Documentation",
         "elements": [
           {
             "name": "@Bean Documentation",
@@ -328,14 +456,14 @@
               {
                 "title": "Añade el Urxnium Doc a tu proyecto Spring Boot",
                 "description": "",
-                "code": "@Bean\nfun documentation(): Documentation {\n  return Documentation(\n    ApiInfo(\n      title = \"Api Demo\",\n      description = \"Api Demo rest api\",\n      iconUrl = \"\",\n      version = \"0.0.1\",\n      baseUrl = \"http://localhost:5000\"\n    ),\n    DemoClassOne::class,\n    DemoClassTwo::class\n  )\n}",
+                "code": "@Bean\nfun documentation(): Documentation {\n  val bodyRequest = LinkedHashMap<String, String>()\n  bodyRequest[\"userName\"] = \"fake.mail@fake.com\"\n  bodyRequest[\"password\"] = \"fakepassword\"\n\n  return Documentation(\n    ApiInfo(\n      title = \"Nombre de tu aplicacion\",\n      description = \"La description de tu api\",\n      iconUrl = \"\",\n      version = \"0.0.1\",\n      credentials = listOf(\n        Credential(\n          name = \"El nombre de tu credencial\",\n          endPoint = \"Aquí va el end point que genera el token de autenticación\",\n          bodyRequest = bodyRequest,\n          tokenMapping = \"data.session.token <- mapea en donde debe buscar Urxnium Doc el token de autenticación\"\n        )\n      )\n    ),\n    Controller1::class,\n    Controller2::class\n  )\n}",
                 "out": null,
                 "language": "javascript"
               },
               {
                 "title": "Como ver la documentación de mis servicios",
                 "description": "Una ves hayas inyectado las dependencias en Spring Boot y le hayas dicho a Urxnium Doc que clases debe documentar, es momento de poder visualizar tus resultados los cuales podrás observar en la siguiente dirección.",
-                "code": "http://TU_HOST/api",
+                "code": "http://TU_HOST/rest/auth",
                 "out": null,
                 "language": "shell"
               }
@@ -401,6 +529,263 @@
                 "type": "String",
                 "description": "Ruta del archivo de documentación",
                 "default": "\"\""
+              }
+            ]
+          },
+          {
+            "name": "Inyección de Componentes",
+            "access": "component",
+            "bookmark": "",
+            "description": "Urxnium Kotlin nos ofrece funcionalidades agregadas para el framework Spring Boot, pero antes de poder utilizarlas hay decirle a Spring Boot donde debe buscar, para que todas nuestras funcionalidades sean @Beans inyectables en nuestra aplicación.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Inyecta los componentes de Urxnium Kotlin en Spring Boot",
+                "description": "Hacer la inyección de los componentes de Urxnium Kotlin es muy fácil, pero también es un paso super importante para que todos los componentes que te ofrecemos funcionen de manera correcta.",
+                "code": "@Configuration\n@ComponentScan(\"org.pechblenda.bean\")\nclass BeanConfig",
+                "out": null,
+                "language": "javascript"
+              }
+            ],
+            "attributes": []
+          }
+        ]
+      },
+      {
+        "name": "Color",
+        "elements": [
+          {
+            "name": "getMaterialColor",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos da al azar un color de Material Design de la gama que nosotros le indiquemos o de todas las gamas.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Obteniendo un color al azar",
+                "description": "A continuación, se muestra como podemos obtener un color me Material Design al azar.",
+                "code": "fun getMaterialColor() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  println(materialColor.color)\n  println(materialColor.background)\n}",
+                "out": "#2196F3\n#FFFFFF",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "categoryColor",
+                "type": "CategoryColor",
+                "description": "Enumerado para definir que tipo de gama se obtendrá de los colores de Material Design",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "CategoryColor",
+            "access": "enum",
+            "bookmark": "",
+            "description": "El enumerado CategoryColor nos ayudara a definir entre diferentes opciones que gama de colores de Material Design queremos para que el color al azar sea dentro de la misma.",
+            "html": null,
+            "attributes": [
+              {
+                "name": "MATERIAL_50",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_100",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_200",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_300",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_400",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_500",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_600",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_700",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_800",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_900",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_A100",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_A200",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_A400",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "MATERIAL_A700",
+                "type": "Object",
+                "description": "Gama de colores de Material Design.",
+                "default": "not null"
+              },
+              {
+                "name": "ALL",
+                "type": "Object",
+                "description": "Todas las gamas de colores de Material Design.",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "MaterialColor",
+            "access": "entity",
+            "bookmark": "",
+            "description": "La entidad material color, nos ayuda a definir y obtener el color y background del Material Design color.",
+            "html": null,
+            "attributes": [
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color de letras",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Color principal",
+                "default": "not null"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Avatar",
+        "elements": [
+          {
+            "name": "generateUserImage",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos ayuda a generar una imagen de usuario basada en alguna letra estilo Google.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Genera una imagen de usuario basada en una letra",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra. Los colores se darán al azar basados en la gama 500 de Material Design.",
+                "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserImage('F')\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              },
+              {
+                "title": "Genera una imagen de usuario basada en una letra y eligiendo los colores que queremos",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra, color de text y de fondo.",
+                "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserImage(\n    'F', \n    materialColor.color, \n    materialColor.background\n  )\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "initialLetter",
+                "type": "String",
+                "description": "Letra que llevara la imagen de usuario.",
+                "default": "not null"
+              },
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color de letra que llevara la imagen de usuario.",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Color de fondo que llevara la imagen de usuario.",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "generateUserIconImage",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos permite generar una imagen de usuario con un icono Material Design sacando el código del icono de la página ‘https://materialdesignicons.com/’. ATENCIÓN esta funcionalidad solo puede ser utilizada si se cuenta con una conexión a Internet, de lo contrario esta marcara un error en el código.",
+            "html": null,
+            "exampleCodes": [
+              {
+                "title": "Genera una imagen de usuario basada en un icono",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono. Los colores se darán al azar basados en la gama 500 de Material Design.",
+                "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserIconImage(\"󰀱\")\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              },
+              {
+                "title": "Genera una imagen de usuario basada en un icono y eligiendo los colores que queremos",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono, color de text y de fondo.",
+                "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserIconImage(\n    \"󰀱\", \n    materialColor.color, \n    materialColor.background\n  )\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "icon",
+                "type": "String",
+                "description": "Código del icono elegido de la pagina 'https://materialdesignicons.com'",
+                "default": "not null"
+              },
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color de letra que llevara la imagen de usuario.",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Color de fondo que llevara la imagen de usuario.",
+                "default": "not null"
               }
             ]
           }

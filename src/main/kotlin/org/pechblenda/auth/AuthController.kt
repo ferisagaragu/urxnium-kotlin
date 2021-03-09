@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest
 	RequestMethod.POST
 ])
 @RestController
-@RequestMapping(name = "Auth", value = ["/api/auth"])
+@RequestMapping(name = "Auth", value = ["/rest/auth"])
 class AuthController {
 
 	@Autowired

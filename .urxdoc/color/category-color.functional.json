@@ -1,0 +1,85 @@
+{
+  "name": "CategoryColor",
+  "access": "enum",
+  "bookmark": "",
+  "description": "El enumerado CategoryColor nos ayudara a definir entre diferentes opciones que gama de colores de Material Design queremos para que el color al azar sea dentro de la misma.",
+  "html": null,
+  "attributes": [
+    {
+      "name": "MATERIAL_50",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_100",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_200",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_300",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_400",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_500",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_600",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_700",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_800",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_900",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_A100",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_A200",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_A400",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "MATERIAL_A700",
+      "type": "Object",
+      "description": "Gama de colores de Material Design.",
+      "default": "not null"
+    },{
+      "name": "ALL",
+      "type": "Object",
+      "description": "Todas las gamas de colores de Material Design.",
+      "default": "not null"
+    }
+  ]
+}

@@ -19,7 +19,7 @@ class Request: LinkedHashMap<String, Any?>() {
 	}
 
 	fun <T> to(kClass: KClass<*>, vararg entityParse: EntityParse): T {
-		return this.to(kClass, Validations(),*entityParse)
+		return this.to(kClass, Validations(), *entityParse)
 	}
 
 	fun <T> to(kClass: KClass<*>, validations: Validations, vararg entityParse: EntityParse): T {
@@ -44,6 +44,34 @@ class Request: LinkedHashMap<String, Any?>() {
 			toSerialize,
 			kClass.java
 		) as T
+	}
+
+	fun <T> toList(
+		key: String,
+		kClass: KClass<*>,
+		vararg entityParse: EntityParse
+	): List<T> {
+		return toList(key, kClass, Validations(), *entityParse)
+	}
+
+	fun <T> toList(
+		key: String,
+		kClass: KClass<*>,
+		validations: Validations,
+		vararg entityParse: EntityParse
+	): List<T> {
+		var out = ArrayList<T>()
+		val value = if (key.isBlank()) this else this[key]
+
+		if(value != null) {
+			(value as List<LinkedHashMap<String, Any>>).forEach {
+				item -> out.add(
+					toRequest(item).to(kClass, validations, *entityParse)
+				)
+			}
+		}
+
+		return out
 	}
 
 	fun <T> merge(entityParse: EntityParse): T {
@@ -89,6 +117,16 @@ class Request: LinkedHashMap<String, Any?>() {
 
 	fun toRequest(json: String): Request {
 		return ObjectMapper().readValue(json, Request::class.java)
+	}
+
+	fun toRequest(linkedHashMap: LinkedHashMap<String, Any>): Request {
+		var out = Request()
+
+		for ((key, value) in linkedHashMap) {
+			out[key] = value
+		}
+
+		return out
 	}
 
 }

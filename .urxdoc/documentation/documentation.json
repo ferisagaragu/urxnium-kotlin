@@ -1,7 +1,8 @@
 {
-  "name": "Documentation Esp",
+  "name": "Documentation",
   "elements": [
     ".urxdoc/documentation/@bean.functional.json",
-    ".urxdoc/documentation/@apidocumentation.functional.json"
+    ".urxdoc/documentation/@apidocumentation.functional.json",
+    ".urxdoc/documentation/@bean-injection.functional.json"
   ]
 }

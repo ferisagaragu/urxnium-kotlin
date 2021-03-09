@@ -8,14 +8,14 @@
     {
       "title": "Añade el Urxnium Doc a tu proyecto Spring Boot",
       "description": "",
-      "code": "@Bean\nfun documentation(): Documentation {\n  return Documentation(\n    ApiInfo(\n      title = \"Api Demo\",\n      description = \"Api Demo rest api\",\n      iconUrl = \"\",\n      version = \"0.0.1\",\n      baseUrl = \"http://localhost:5000\"\n    ),\n    DemoClassOne::class,\n    DemoClassTwo::class\n  )\n}",
+      "code": "@Bean\nfun documentation(): Documentation {\n  val bodyRequest = LinkedHashMap<String, String>()\n  bodyRequest[\"userName\"] = \"fake.mail@fake.com\"\n  bodyRequest[\"password\"] = \"fakepassword\"\n\n  return Documentation(\n    ApiInfo(\n      title = \"Nombre de tu aplicacion\",\n      description = \"La description de tu api\",\n      iconUrl = \"\",\n      version = \"0.0.1\",\n      credentials = listOf(\n        Credential(\n          name = \"El nombre de tu credencial\",\n          endPoint = \"Aquí va el end point que genera el token de autenticación\",\n          bodyRequest = bodyRequest,\n          tokenMapping = \"data.session.token <- mapea en donde debe buscar Urxnium Doc el token de autenticación\"\n        )\n      )\n    ),\n    Controller1::class,\n    Controller2::class\n  )\n}",
       "out": null,
       "language": "javascript"
     },
     {
       "title": "Como ver la documentación de mis servicios",
       "description": "Una ves hayas inyectado las dependencias en Spring Boot y le hayas dicho a Urxnium Doc que clases debe documentar, es momento de poder visualizar tus resultados los cuales podrás observar en la siguiente dirección.",
-      "code": "http://TU_HOST/api",
+      "code": "http://TU_HOST/rest/auth",
       "out": null,
       "language": "shell"
     }
