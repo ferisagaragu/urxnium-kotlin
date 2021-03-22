@@ -2,18 +2,24 @@ package org.pechblenda.security
 
 import io.jsonwebtoken.Jwts
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 
 @Component
-class JwtProviderSocket(
-	private val jwtSecret: String,
-	private val jwtExpiration: Int
-) {
+class JwtProviderSocket {
 
-	private val jwtProvider = JwtProvider()
+	@Value("\${app.auth.jwt-secret:jwt@_/urxnium-secret#}")
+	private lateinit var jwtSecret: String
+
+	@Value("\${app.auth.jwt-expiration:18000000}")
+	private lateinit var jwtExpiration: String
+
+	@Autowired
+	private lateinit var jwtProvider: JwtProvider
 
 	fun getUserNameFromJwtToken(token: String): String {
 		return jwtProvider.getUserNameFromJwtToken(token)

@@ -1,20 +1,28 @@
 package org.pechblenda.storage
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.MediaType
 
+import com.fasterxml.jackson.databind.ObjectMapper
+
 import java.io.InputStream
+
+import java.util.UUID
+
+import org.springframework.beans.factory.annotation.Value
 
 import kotlin.collections.LinkedHashMap
 
-class XenonStorage(
-	val storageUrl: String
-) {
+class XenonStorage {
+
+	@Value("\${storage.xenon.base-url:}")
+	private lateinit var storageUrl: String
+
+	@Value("\${storage.xenon.project-uuid:}")
+	private lateinit var projectUuid: String
 
 	fun put(
 		mimeType: String,
@@ -22,11 +30,19 @@ class XenonStorage(
 		extension: String,
 		file: InputStream
 	): FileInfo {
+		if (storageUrl.isBlank()) {
+			throw Exception("Xenon storage base url not found")
+		}
+
+		if (projectUuid.isBlank()) {
+			throw Exception("Xenon storage project identifier not found")
+		}
+
 		val objectMapper = ObjectMapper()
 		val client = OkHttpClient().newBuilder()
 			.build()
 		val body: RequestBody = MultipartBody.Builder().setType(MultipartBody.FORM)
-			.addFormDataPart("projectUid", "6ea35904-4af3-4e38-8713-7a52a97df3bd")
+			.addFormDataPart("projectUid", projectUuid)
 			.addFormDataPart(
 				"file",
 				"$name$extension",
@@ -37,7 +53,7 @@ class XenonStorage(
 			)
 			.build()
 		val request = Request.Builder()
-			.url(storageUrl)
+			.url("$storageUrl/storages")
 			.method("POST", body)
 			.build()
 		val response = client.newCall(request).execute()
@@ -51,7 +67,7 @@ class XenonStorage(
 			refName = resp["name"]!!,
 			mediaType = resp["mediaType"]!!,
 			createDate = resp["createDate"]!!,
-			url = "$storageUrl/${resp["uid"]}"
+			url = "$storageUrl/storages/${resp["uid"]}"
 		)
 	}
 

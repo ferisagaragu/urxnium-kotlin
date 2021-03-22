@@ -74,18 +74,25 @@ class Request: LinkedHashMap<String, Any?>() {
 		return out
 	}
 
-	fun <T> merge(entityParse: EntityParse): T {
-		return merge(entityParse, Validations())
+	fun <T> merge(entityParse: EntityParse, vararg entityParses: EntityParse): T {
+		return merge(entityParse, Validations(), *entityParses)
 	}
 
-	fun <T> merge(entityParse: EntityParse, validations: Validations): T {
+	fun <T> merge(entityParse: EntityParse, validations: Validations, vararg entityParses: EntityParse): T {
 		validations.validate(this)
 
 		val mergeData = entityParse.convertEntityMerge(this)
-		val requestClass = mapper.convertValue(
+		println(mergeData::class.java.name)
+		mergeData::class.java.declaredFields.forEach { member ->
+
+		}
+
+
+		/*val requestClass = mapper.convertValue(
 			this,
 			mergeData::class.java
 		)
+
 
 		mergeData::class.java.declaredFields.forEach { member ->
 			if (this.containsKey(member.name)) {
@@ -101,7 +108,7 @@ class Request: LinkedHashMap<String, Any?>() {
 					logger.info("Value '${fieldRequest.name}' was update")
 				}
 			}
-		}
+		}*/
 
 		return mergeData as T
 	}
