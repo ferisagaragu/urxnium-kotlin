@@ -3,6 +3,7 @@ package org.pechblenda.service
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import org.pechblenda.service.helper.EntityParse
+import org.pechblenda.service.helper.ProtectFields
 import org.pechblenda.service.helper.Validations
 
 import kotlin.collections.LinkedHashMap
@@ -75,40 +76,54 @@ class Request: LinkedHashMap<String, Any?>() {
 	}
 
 	fun <T> merge(entityParse: EntityParse, vararg entityParses: EntityParse): T {
-		return merge(entityParse, Validations(), *entityParses)
+		return merge(entityParse, ProtectFields(), Validations(), *entityParses)
 	}
 
-	fun <T> merge(entityParse: EntityParse, validations: Validations, vararg entityParses: EntityParse): T {
+	fun <T> merge(
+		entityParse: EntityParse,
+		validations: Validations,
+		vararg entityParses: EntityParse
+	): T {
+		return merge(entityParse, ProtectFields(), validations, *entityParses)
+	}
+
+	fun <T> merge(
+		entityParse: EntityParse,
+		protectFields: ProtectFields,
+		vararg entityParses: EntityParse
+	): T {
+		return merge(entityParse, protectFields, Validations(), *entityParses)
+	}
+
+	fun <T> merge(
+		entityParse: EntityParse,
+		protectFields: ProtectFields,
+		validations: Validations,
+		vararg entityParses: EntityParse
+	): T {
 		validations.validate(this)
 
 		val mergeData = entityParse.convertEntityMerge(this)
-		println(mergeData::class.java.name)
-		mergeData::class.java.declaredFields.forEach { member ->
+		var entitiesParses = this.to<T>(mergeData::class, *entityParses) as Any
 
-		}
+		entitiesParses::class.java.declaredFields.forEach { member ->
+			member.isAccessible = true
+			val value = member.get(entitiesParses)
 
+			if (value != null) {
+				val valueVoid = "$value" //esta linea hace que los datos vacíos tampoco se guarden
 
-		/*val requestClass = mapper.convertValue(
-			this,
-			mergeData::class.java
-		)
+				if (valueVoid.isNotBlank() && (!protectFields.protectField.contains(member.name))) {
+					val setField = mergeData::class.java.declaredFields.filter{ field ->
+						field.name == member.name
+					}[0]
 
-
-		mergeData::class.java.declaredFields.forEach { member ->
-			if (this.containsKey(member.name)) {
-				val fieldRequest = requestClass::class.java.declaredFields.find {
-					field -> field.name == member.name
-				}
-
-				if (fieldRequest != null) {
-					member.isAccessible = true
-					fieldRequest.isAccessible = true
-
-					member.set(mergeData, fieldRequest.get(requestClass))
-					logger.info("Value '${fieldRequest.name}' was update")
+					setField.isAccessible = true
+					setField.set(mergeData, value)
+					logger.info("Value '${member.name}' was update")
 				}
 			}
-		}*/
+		}
 
 		return mergeData as T
 	}
