@@ -107,21 +107,17 @@ class Request: LinkedHashMap<String, Any?>() {
 		var entitiesParses = this.to<T>(mergeData::class, *entityParses) as Any
 
 		entitiesParses::class.java.declaredFields.forEach { member ->
-			member.isAccessible = true
-			val value = member.get(entitiesParses)
+			if (this.containsKey(member.name) && (!protectFields.protectField.contains(member.name))) {
+				member.isAccessible = true
+				val value = member.get(entitiesParses)
 
-			if (value != null) {
-				val valueVoid = "$value" //esta linea hace que los datos vacíos tampoco se guarden
+				val setField = mergeData::class.java.declaredFields.filter{ field ->
+					field.name == member.name
+				}[0]
 
-				if (valueVoid.isNotBlank() && (!protectFields.protectField.contains(member.name))) {
-					val setField = mergeData::class.java.declaredFields.filter{ field ->
-						field.name == member.name
-					}[0]
-
-					setField.isAccessible = true
-					setField.set(mergeData, value)
-					logger.info("Value '${member.name}' was update")
-				}
+				setField.isAccessible = true
+				setField.set(mergeData, value)
+				logger.info("Value '${member.name}' was update")
 			}
 		}
 

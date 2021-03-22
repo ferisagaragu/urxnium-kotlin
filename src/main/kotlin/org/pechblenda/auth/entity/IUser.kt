@@ -14,4 +14,5 @@ interface IUser {
 	var enabled: Boolean
 	var active: Boolean
 	var activatePassword: UUID?
+	var accountType: String
 }

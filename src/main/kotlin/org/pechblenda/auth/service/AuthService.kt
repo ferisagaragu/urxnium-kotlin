@@ -39,6 +39,7 @@ import java.net.URLEncoder
 
 import java.nio.charset.StandardCharsets
 import javax.servlet.http.HttpServletRequest
+import org.pechblenda.auth.enum.AccountType
 
 @Service
 open class AuthService: IAuthService {
@@ -98,10 +99,17 @@ open class AuthService: IAuthService {
 			throw BadRequestException(authMessage.getAccountBlocked())
 		}
 
-		val request = Request()
-		request["validateToken"] = true
-
-		return response.ok(request)
+		return response
+			.toMap(user)
+			.exclude(
+				"password",
+				"enabled",
+				"active",
+				"activatePassword",
+				"refreshToken"
+			)
+			.firstId()
+			.ok()
 	}
 
 	@Transactional(readOnly = true)
@@ -284,9 +292,10 @@ open class AuthService: IAuthService {
 
 		user.password = passwordEncoder.encode(temporalPassword)
 		user.enabled = true
-		user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
+		user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
 			URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
 			"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
+		user.accountType = AccountType.DEFAULT.name
 
 		val userOut = authRepository.save(user)
 
@@ -399,9 +408,11 @@ open class AuthService: IAuthService {
 			user.email = userLogged.email
 			user.active = true
 			user.enabled = true
-			user.photo = "${getHost(servletRequest)}/api/auth/generate-profile-image/${user.name[0]}/" +
+			user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
 				URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
 				"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
+			user.accountType = if (request["type"].toString() == "Google")
+				AccountType.GMAIL.name else AccountType.OUTLOOK.name
 
 			userSearched = authRepository.save(user)
 		} else {
