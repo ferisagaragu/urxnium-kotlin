@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import javax.servlet.http.HttpServletRequest
 
 interface IAuthService {
-	fun validateToken(): ResponseEntity<Any>
+	fun validateToken(authorization: String): ResponseEntity<Any>
 	fun canActivate(userUid: UUID): ResponseEntity<Any>
 	fun canChangePassword(activatePassword: UUID): ResponseEntity<Any>
 	fun generateProfileImage(initialLetter: Char, color: String, background: String): ResponseEntity<Any>

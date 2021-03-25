@@ -3,17 +3,12 @@
   "authorization": true,
   "bookmark": "mdi-numeric-5-circle",
   "responseOk": {
-    "timestamp": "03-22-2021  12:12:59 p. m.",
+    "timestamp": "03-24-2021  19:05:53 p. m.",
     "status": 200,
     "data": {
-      "uuid": "3fc4321f-2de0-4f39-8be0-97bd87fb600e",
-      "name": "Fernando Isaías",
-      "surname": "García",
-      "motherSurname": "Aguirre",
-      "userName": "fernnypay95",
-      "email": "ferisagaragu@gmail.com",
-      "phoneNumber": "",
-      "photo": "http://localhost:5000/api/auth/generate-profile-image/F/%23000000/%2300BCD4"
+      "token": "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6W10sInN1YiI6IkZlcm5hbmRvSXNhw61hcy0zNTE5YmIwZS00MzkwLTQ5ODgtOTlkMy0zN2I4MDk4MWRmNmYiLCJpYXQiOjE2MTY2MzMxNTEsImV4cCI6MTYxNjY1MTE1MX0.2o9eaLJs2Xc2wwAfwQXp0Xz9Icojwigmumf02QtSRGgoAN3fwQ6m0kfczlcdMxUrh_JduFf3ZFhIuYWAYTokpQ",
+      "expiration": 16797343,
+      "expirationDate": "Wed Mar 24 23:45:51 CST 2021"
     }
   },
   "responseBadRequest": {

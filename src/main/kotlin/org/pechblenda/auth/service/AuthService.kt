@@ -30,16 +30,15 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-import java.util.Properties
-import java.util.UUID
-
 import kotlin.reflect.KClass
 
 import java.net.URLEncoder
 
 import java.nio.charset.StandardCharsets
+import java.util.*
 import javax.servlet.http.HttpServletRequest
 import org.pechblenda.auth.enum.AccountType
+import kotlin.collections.LinkedHashMap
 
 @Service
 open class AuthService: IAuthService {
@@ -84,7 +83,7 @@ open class AuthService: IAuthService {
 	}
 
 	@Transactional(readOnly = true)
-	override fun validateToken(): ResponseEntity<Any> {
+	override fun validateToken(authorization: String): ResponseEntity<Any> {
 		val user = authRepository.findByUserName(
 			SecurityContextHolder.getContext().authentication.name
 		).orElseThrow {
@@ -99,17 +98,14 @@ open class AuthService: IAuthService {
 			throw BadRequestException(authMessage.getAccountBlocked())
 		}
 
-		return response
-			.toMap(user)
-			.exclude(
-				"password",
-				"enabled",
-				"active",
-				"activatePassword",
-				"refreshToken"
-			)
-			.firstId()
-			.ok()
+		val provider = jwtProvider.decodeJwt(authorization.replace("Bearer ", ""))
+		val session = mutableMapOf<String, Any>()
+
+		session["token"] = authorization.replace("Bearer ", "")
+		session["expiration"] = Date(provider.expiresAt.time - Date().time).time
+		session["expirationDate"] = provider.expiresAt.toString()
+
+		return response.ok(session)
 	}
 
 	@Transactional(readOnly = true)

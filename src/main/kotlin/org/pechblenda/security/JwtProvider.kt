@@ -2,6 +2,7 @@ package org.pechblenda.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.interfaces.Claim
+import com.auth0.jwt.interfaces.DecodedJWT
 
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
@@ -49,7 +50,7 @@ class JwtProvider {
 			.signWith(SignatureAlgorithm.HS512, jwtSecret)
 			.compact()
 		tokenAndExpiration["expiration"] = jwtExpiration
-		tokenAndExpiration["expirationDate"] = expiration
+		tokenAndExpiration["expirationDate"] = expiration.toString()
 
 		return tokenAndExpiration
 	}
@@ -118,9 +119,13 @@ class JwtProvider {
 			.signWith(SignatureAlgorithm.HS512, jwtSecret)
 			.compact()
 		tokenAndExpiration["expiration"] = jwtExpiration
-		tokenAndExpiration["expirationDate"] = expiration
+		tokenAndExpiration["expirationDate"] = expiration.toString()
 
 		return tokenAndExpiration
+	}
+
+	fun decodeJwt(token: String): DecodedJWT {
+		return JWT.decode(token)
 	}
 
 	fun isJwtExpire(token: String): Boolean {

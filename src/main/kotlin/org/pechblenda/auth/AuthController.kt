@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException
 import java.util.UUID
 
 import javax.servlet.http.HttpServletRequest
+import org.springframework.web.bind.annotation.RequestHeader
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
@@ -37,9 +38,11 @@ class AuthController {
 
 	@GetMapping("/validate-token")
 	@ApiDocumentation(path = "api/assets/auth/validate-token.json")
-	fun validateToken(): ResponseEntity<Any> {
+	fun validateToken(
+		@RequestHeader("Authorization") authorization: String
+	): ResponseEntity<Any> {
 		return try {
-			authService.validateToken()
+			authService.validateToken(authorization)
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}
