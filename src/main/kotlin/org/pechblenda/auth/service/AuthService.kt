@@ -98,14 +98,24 @@ open class AuthService: IAuthService {
 			throw BadRequestException(authMessage.getAccountBlocked())
 		}
 
+		val out = response.toMap(user)
 		val provider = jwtProvider.decodeJwt(authorization.replace("Bearer ", ""))
 		val session = mutableMapOf<String, Any>()
 
 		session["token"] = authorization.replace("Bearer ", "")
 		session["expiration"] = Date(provider.expiresAt.time - Date().time).time
 		session["expirationDate"] = provider.expiresAt.toString()
+		out["session"] = session
 
-		return response.ok(session)
+		return out
+			.exclude(
+				"password",
+				"enabled",
+				"active",
+				"activatePassword",
+				"refreshToken"
+			)
+			.ok()
 	}
 
 	@Transactional(readOnly = true)
