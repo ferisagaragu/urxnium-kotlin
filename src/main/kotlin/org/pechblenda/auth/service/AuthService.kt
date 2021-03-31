@@ -465,6 +465,17 @@ open class AuthService: IAuthService {
 			throw BadRequestException(propertiesMessage.getProperty("message.auth.refresh-token-required"))
 		}
 
+		val user = authRepository.findByUserName(
+			jwtProvider.getUserNameFromJwtToken(request["refreshToken"].toString())
+				.replace("_refresh", "")
+		).orElseThrow {
+			UnauthenticatedException("Upps el usuario no existe")
+		}
+
+		if (!user.enabled || !user.active) {
+			throw UnauthenticatedException("Upps el usuario esta bloqueado")
+		}
+
 		return response.ok(
 			jwtProvider.refreshToken(
 				request["refreshToken"].toString()

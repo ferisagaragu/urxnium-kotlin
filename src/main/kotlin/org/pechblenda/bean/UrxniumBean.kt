@@ -5,6 +5,7 @@ import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.mail.GoogleMail
 import org.pechblenda.security.GoogleAuthentication
+import org.pechblenda.security.JwtProvider
 import org.pechblenda.security.JwtProviderSocket
 import org.pechblenda.security.OutlookAuthentication
 import org.pechblenda.service.Request
@@ -73,6 +74,11 @@ open class UrxniumBean {
 	@Bean
 	open fun outlookAuthentication(): OutlookAuthentication {
 		return OutlookAuthentication()
+	}
+
+	@Bean
+	open fun jwtProvider(): JwtProvider {
+		return JwtProvider()
 	}
 
 	@Bean
