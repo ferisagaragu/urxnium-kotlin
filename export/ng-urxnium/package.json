@@ -1,0 +1,22 @@
+{
+  "name": "ng-urxnium",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^10.2.4",
+    "@angular/core": "^10.2.4"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0",
+    "sweetalert2": "^10.15.6"
+  },
+  "main": "bundles/ng-urxnium.umd.js",
+  "module": "fesm2015/ng-urxnium.js",
+  "es2015": "fesm2015/ng-urxnium.js",
+  "esm2015": "esm2015/ng-urxnium.js",
+  "fesm2015": "fesm2015/ng-urxnium.js",
+  "typings": "ng-urxnium.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "prepublishOnly": "node --eval \"console.error('ERROR: Trying to publish a package that has been compiled by Ivy. This is not allowed.\\nPlease delete and rebuild the package, without compiling with Ivy, before attempting to publish.\\n')\" && exit 1"
+  }
+}

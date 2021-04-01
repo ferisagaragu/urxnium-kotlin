@@ -1,0 +1,12 @@
+{
+  "name": "ng-urxnium",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^10.2.4",
+    "@angular/core": "^10.2.4",
+    "sweetalert2": "^10.15.6"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  }
+}
