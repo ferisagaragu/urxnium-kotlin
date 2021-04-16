@@ -1,22 +1,53 @@
 package org.pechblenda.storage
 
+import com.google.auth.oauth2.GoogleCredentials
 import com.google.cloud.storage.Blob
 import com.google.cloud.storage.BlobId
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
+import com.google.cloud.storage.StorageOptions
 
-import org.pechblenda.util.Text
-
+import org.apache.commons.io.IOUtils
+import java.io.InputStream
+import java.util.Date
+import java.util.UUID
 import java.util.Base64
+import javax.annotation.PostConstruct
+
 import java.util.concurrent.TimeUnit
 
-class FirebaseStorage(
-	var storage: Storage,
-	var bucket: String,
-	private val text: Text = Text()
-) {
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ClassPathResource
+
+import kotlin.collections.ArrayList
+import kotlin.collections.LinkedHashMap
+
+class FirebaseStorage {
+
+	@Value("\${storage.firebase.bucket:}")
+	private lateinit var bucket: String
+
+	@Value("\${storage.firebase.service-account-key-path:}")
+	private lateinit var serviceAccountKeyPath: String
+
+	private lateinit var storage: Storage
 
 	private val slash: String = "(slash)"
+
+	@PostConstruct
+	private fun postConstructor() {
+		try {
+			if (serviceAccountKeyPath.isNotBlank()) {
+				val resource = ClassPathResource(serviceAccountKeyPath)
+				storage = StorageOptions.newBuilder()
+					.setCredentials(GoogleCredentials.fromStream(resource.inputStream))
+					.build()
+					.service
+			}
+		} catch (e: Exception) {
+			error(e.message!!)
+		}
+	}
 
 	fun get(fileName: String): FileInfo {
 		val file = fileName.replace(slash, "/")
@@ -41,7 +72,7 @@ class FirebaseStorage(
 		extension: String,
 		base64File: String
 	): String {
-		val fileName = text.unique() + extension
+		val fileName = UUID.randomUUID().toString() + extension
 		val blobId = BlobId.of(
 			bucket,
 			directory.replace(slash, "/")
@@ -99,11 +130,11 @@ class FirebaseStorage(
 
 	fun put(
 		directory: String,
-		contentType: String,
+		mediaType: String,
 		name: String,
 		extension: String,
-		file: ByteArray
-	): String {
+		file: InputStream
+	): FileInfo {
 		val fileName = name + extension
 		val blobId = BlobId.of(
 			bucket,
@@ -113,18 +144,24 @@ class FirebaseStorage(
 		)
 
 		val blobInfo = BlobInfo.newBuilder(blobId)
-			.setContentType(contentType)
+			.setContentType(mediaType)
 			.build()
 
 		val blob = storage.create(
 			blobInfo,
-			file
+			IOUtils.toByteArray(file)
 		)
 
-		return blob.signUrl(
-			100000L,
-			TimeUnit.DAYS
-		).toString()
+		return FileInfo(
+			fileName,
+			fileName,
+			mediaType,
+			Date().toString(),
+			blob.signUrl(
+				100000L,
+				TimeUnit.DAYS
+			).toString()
+		)
 }
 
 	fun put(
@@ -133,7 +170,7 @@ class FirebaseStorage(
 		extension: String,
 		file: ByteArray
 	): String {
-		val fileName = text.unique() + extension
+		val fileName = UUID.randomUUID().toString() + extension
 		val blobId = BlobId.of(
 			bucket,
 			directory.replace(slash, "/")

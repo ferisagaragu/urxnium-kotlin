@@ -10,6 +10,7 @@ import org.pechblenda.security.JwtProviderSocket
 import org.pechblenda.security.OutlookAuthentication
 import org.pechblenda.service.Request
 import org.pechblenda.service.Response
+import org.pechblenda.storage.FirebaseStorage
 import org.pechblenda.storage.XenonStorage
 import org.pechblenda.style.Avatar
 import org.pechblenda.style.Color
@@ -89,6 +90,11 @@ open class UrxniumBean {
 	@Bean
 	open fun xenonStorage(): XenonStorage {
 		return XenonStorage()
+	}
+
+	@Bean
+	open fun firebaseStorage(): FirebaseStorage {
+		return FirebaseStorage()
 	}
 
 }
