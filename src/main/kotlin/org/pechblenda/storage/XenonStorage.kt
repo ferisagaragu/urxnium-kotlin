@@ -9,6 +9,7 @@ import okhttp3.MediaType
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import java.io.InputStream
+import org.apache.commons.io.IOUtils
 
 import org.springframework.beans.factory.annotation.Value
 
@@ -46,7 +47,7 @@ class XenonStorage {
 				"$name$extension",
 				RequestBody.create(
 					MediaType.parse(mimeType),
-					file.readAllBytes()
+					IOUtils.toByteArray(file)
 				)
 			)
 			.build()
