@@ -156,6 +156,12 @@
             <artifactId>batik-bridge</artifactId>
             <version>1.11</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
         <!--JASPER DEPENDENCIES-->
 
         <dependency>

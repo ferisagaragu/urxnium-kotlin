@@ -20,7 +20,6 @@ import org.pechblenda.style.Color
 import org.pechblenda.style.CategoryColor
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -35,9 +34,11 @@ import kotlin.reflect.KClass
 import java.net.URLEncoder
 
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 import org.pechblenda.auth.enum.AccountType
+import java.util.Date
+import org.springframework.beans.factory.annotation.Value
 import kotlin.collections.LinkedHashMap
 
 @Service
@@ -70,16 +71,16 @@ open class AuthService: IAuthService {
 	@Autowired
 	private lateinit var outlookAuthentication: OutlookAuthentication
 
+	@Value("\${app.host:}")
+	private lateinit var hostName: String
+
 	private val authRepository: IAuthRepository<IUser, UUID>
 	private val userEntity: KClass<*>
-	private val propertiesMessage: Properties
+
 
 	constructor(authRepository: Any, userEntity: KClass<*>) {
 		this.authRepository = authRepository as IAuthRepository<IUser, UUID>
 		this.userEntity = userEntity
-
-		propertiesMessage = Properties()
-		propertiesMessage.load(ClassPathResource("messages/auth-messages.properties").inputStream)
 	}
 
 	@Transactional(readOnly = true)
@@ -125,7 +126,7 @@ open class AuthService: IAuthService {
 		}
 
 		if (user.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.activate-user-invalid"))
+			throw BadRequestException(authMessage.getActivateUserInvalid())
 		}
 
 		val out = Request()
@@ -137,7 +138,7 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun canChangePassword(activatePassword: UUID): ResponseEntity<Any> {
 		if (!authRepository.existsByActivatePassword(activatePassword)) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.recover-code-invalid"))
+			throw BadRequestException(authMessage.getRecoverCodeInvalid())
 		}
 
 		val out = Request()
@@ -167,7 +168,7 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"password",
-					propertiesMessage.getProperty("message.auth.password-required"),
+					authMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -175,17 +176,17 @@ open class AuthService: IAuthService {
 		)
 
 		val findUser = authRepository.findById(user.uuid).orElseThrow {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.user-not-fount"))
+			throw BadRequestException(authMessage.getUserNotFount())
 		}
 
 		if (findUser.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-be-activated"))
+			throw BadRequestException(authMessage.getAccountBeActivated())
 		}
 
 		findUser.password = passwordEncoder.encode(user.password)
 		findUser.active = true
 
-		return response.ok(propertiesMessage.getProperty("message.auth.account-activated"))
+		return response.ok(authMessage.getAccountActivated())
 	}
 
 	@Transactional
@@ -195,24 +196,24 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"password",
-					propertiesMessage.getProperty("message.auth.password-required"),
+					authMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
 			)
 		)
 		val userFind = authRepository.findByActivatePassword(user.activatePassword!!).orElseThrow {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-not-match"))
+			throw BadRequestException(authMessage.getAccountNotMatch())
 		}
 
 		if (!userFind.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-not-activate"))
+			throw BadRequestException(authMessage.getAccountNotActivate())
 		}
 
 		userFind.activatePassword = null
 		userFind.password = passwordEncoder.encode(user.password)
 
-		return response.ok(propertiesMessage.getProperty("message.auth.password-changed"))
+		return response.ok(authMessage.getPasswordChanged())
 	}
 
 	@Transactional
@@ -222,18 +223,18 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"email",
-					propertiesMessage.getProperty("message.auth.email-required"),
+					authMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
 			)
 		)
 		val userFind = authRepository.findByUserNameOrEmail(user.email).orElseThrow {
-			BadRequestException(propertiesMessage.getProperty("message.auth.account-not-match"))
+			BadRequestException(authMessage.getAccountNotMatch())
 		}
 
 		if (!userFind.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-not-activate"))
+			throw BadRequestException(authMessage.getAccountNotActivate())
 		}
 
 		userFind.activatePassword = UUID.randomUUID()
@@ -241,7 +242,7 @@ open class AuthService: IAuthService {
 		authMail.sendRecoverPasswordMail(userFind)
 
 		return response.ok(
-			propertiesMessage.getProperty("message.auth.recover-instruction").replace(
+			authMessage.getRecoverInstruction().replace(
 				"{email}",
 				userFind.email
 			)
@@ -255,31 +256,31 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"name",
-					propertiesMessage.getProperty("message.auth.name-required"),
+					authMessage.getNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"surname",
-					propertiesMessage.getProperty("message.auth.surname-required"),
+					authMessage.getSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"motherSurname",
-					propertiesMessage.getProperty("message.auth.mother-surname-required"),
+					authMessage.getMotherSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"userName",
-					propertiesMessage.getProperty("message.auth.user-name-required"),
+					authMessage.getUserNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"email",
-					propertiesMessage.getProperty("message.auth.email-required"),
+					authMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -289,11 +290,11 @@ open class AuthService: IAuthService {
 		val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 		if (authRepository.existsByUserName(user.userName)) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.user-name-registered"))
+			throw BadRequestException(authMessage.getUserNameRegistered())
 		}
 
 		if (authRepository.existsByEmail(user.email)) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.email-registered"))
+			throw BadRequestException(authMessage.getEmailRegistered())
 		}
 
 		user.password = passwordEncoder.encode(temporalPassword)
@@ -307,7 +308,7 @@ open class AuthService: IAuthService {
 
 		authMail.sendActivateAccountMail(userOut)
 
-		return response.created(propertiesMessage.getProperty("message.auth.account-created"))
+		return response.created(authMessage.getAccountCreated())
 	}
 
 	@Transactional
@@ -317,13 +318,13 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"userName",
-					propertiesMessage.getProperty("message.auth.user-name-required"),
+					authMessage.getUserNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"password",
-					propertiesMessage.getProperty("message.auth.password-required"),
+					authMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -331,14 +332,14 @@ open class AuthService: IAuthService {
 		)
 		val userOut = authRepository.findByUserNameOrEmail(
 			user.userName
-		).orElseThrow { throw BadRequestException(propertiesMessage.getProperty("message.auth.user-not-fount")) }
+		).orElseThrow { throw BadRequestException(authMessage.getUserNotFount()) }
 
 		if (!userOut.active) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-not-activate"))
+			throw BadRequestException(authMessage.getAccountNotActivate())
 		}
 
 		if (!userOut.enabled) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.account-blocked"))
+			throw BadRequestException(authMessage.getAccountBlocked())
 		}
 
 		val session: Map<String, Any>
@@ -353,7 +354,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(propertiesMessage.getProperty("message.auth.password-incorrect"))
+			throw UnauthenticatedException(authMessage.getPasswordIncorrect())
 		}
 
 		val out = response.toMap(
@@ -381,13 +382,13 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"code",
-					"Upss el codigo de acceso es necesario para iniciar sesión",
+					authMessage.getAccessCodeRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"type",
-					"Upss el tipo de codigo es necesario, los tipos aceptados son 'Google' u 'Outlook'",
+					authMessage.getTypeCodeRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.includes("Google", "Outlook")
@@ -436,7 +437,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(propertiesMessage.getProperty("message.auth.password-incorrect"))
+			throw UnauthenticatedException(authMessage.getPasswordIncorrect())
 		}
 
 		val out = response.toMap(userSearched)
@@ -458,22 +459,22 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun refreshToken(request: Request): ResponseEntity<Any> {
 		if (!request.containsKey("refreshToken")) {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.refresh-token-required"))
+			throw BadRequestException(authMessage.getRefreshTokenRequired())
 		}
 
 		request["refreshToken"].toString().ifEmpty {
-			throw BadRequestException(propertiesMessage.getProperty("message.auth.refresh-token-required"))
+			throw BadRequestException(authMessage.getRefreshTokenRequired())
 		}
 
 		val user = authRepository.findByUserName(
 			jwtProvider.getUserNameFromJwtToken(request["refreshToken"].toString())
 				.replace("_refresh", "")
 		).orElseThrow {
-			UnauthenticatedException("Upps el usuario no existe")
+			UnauthenticatedException(authMessage.getUserNotFount())
 		}
 
 		if (!user.enabled || !user.active) {
-			throw UnauthenticatedException("Upps el usuario esta bloqueado")
+			throw UnauthenticatedException(authMessage.getAccountBlocked())
 		}
 
 		return response.ok(
@@ -497,6 +498,10 @@ open class AuthService: IAuthService {
 	}
 
 	private fun getHost(servletRequest: HttpServletRequest): String {
+		if (hostName.isNotBlank()) {
+			return hostName
+		}
+
 		return if (servletRequest.localAddr.contains("0:0:0"))
 			"http://localhost:${servletRequest.localPort}" else
 			"http://${servletRequest.localAddr}:${servletRequest.localPort}"

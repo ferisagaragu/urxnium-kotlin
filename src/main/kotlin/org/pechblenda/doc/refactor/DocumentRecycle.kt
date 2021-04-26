@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.beans.factory.annotation.Value
 
 import java.io.BufferedReader
 import java.lang.reflect.Method
@@ -30,6 +31,9 @@ import kotlin.reflect.KClass
 class DocumentRecycle {
 
 	val mapper = ObjectMapper()
+
+	@Value("\${app.host:}")
+	private lateinit var hostName: String
 
 	fun generateDoc(
 		apiInfo: ApiInfo,
@@ -277,6 +281,10 @@ class DocumentRecycle {
 	}
 
 	private fun getHost(servletRequest: HttpServletRequest): String {
+		if (hostName.isNotBlank()) {
+			return hostName
+		}
+
 		return if (servletRequest.localAddr.contains("0:0:0"))
 			"http://localhost:${servletRequest.localPort}" else
 			"http://${servletRequest.localAddr}:${servletRequest.localPort}"
