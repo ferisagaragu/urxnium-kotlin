@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 import org.pechblenda.service.Response
+import org.springframework.beans.factory.annotation.Autowired
 import kotlin.reflect.KClass
 
 @CrossOrigin(methods = [
@@ -32,8 +33,12 @@ import kotlin.reflect.KClass
 @RequestMapping("/api")
 class Documentation {
 
-	private val resp = Response()
-	private val documentRecycle = DocumentRecycle()
+	@Autowired
+	private lateinit var documentRecycle: DocumentRecycle
+
+	@Autowired
+	private lateinit var resp: Response
+
 	private var apiInfo: ApiInfo
 	private var controllersInfo = mutableListOf<KClass<*>>()
 

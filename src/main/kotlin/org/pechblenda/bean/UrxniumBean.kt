@@ -2,6 +2,7 @@ package org.pechblenda.bean
 
 import org.pechblenda.auth.service.mail.AuthMail
 import org.pechblenda.auth.service.message.AuthMessage
+import org.pechblenda.doc.refactor.DocumentRecycle
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.mail.GoogleMail
 import org.pechblenda.security.GoogleAuthentication
@@ -95,6 +96,11 @@ open class UrxniumBean {
 	@Bean
 	open fun firebaseStorage(): FirebaseStorage {
 		return FirebaseStorage()
+	}
+
+	@Bean
+	open fun document(): DocumentRecycle {
+		return DocumentRecycle()
 	}
 
 }

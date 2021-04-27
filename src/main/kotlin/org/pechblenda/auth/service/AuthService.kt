@@ -237,6 +237,10 @@ open class AuthService: IAuthService {
 			throw BadRequestException(authMessage.getAccountNotActivate())
 		}
 
+		if (userFind.accountType != AccountType.DEFAULT.name) {
+			throw BadRequestException(authMessage.getAccountTypeNotRecover(userFind.accountType))
+		}
+
 		userFind.activatePassword = UUID.randomUUID()
 
 		authMail.sendRecoverPasswordMail(userFind)
@@ -340,6 +344,10 @@ open class AuthService: IAuthService {
 
 		if (!userOut.enabled) {
 			throw BadRequestException(authMessage.getAccountBlocked())
+		}
+
+		if (userOut.accountType != AccountType.DEFAULT.name) {
+			throw UnauthenticatedException(authMessage.getAccountTypeNotValid(userOut.accountType))
 		}
 
 		val session: Map<String, Any>

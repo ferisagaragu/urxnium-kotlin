@@ -25,9 +25,11 @@ import java.io.BufferedReader
 import java.lang.reflect.Method
 
 import javax.servlet.http.HttpServletRequest
+import org.springframework.stereotype.Component
 
 import kotlin.reflect.KClass
 
+@Component
 class DocumentRecycle {
 
 	val mapper = ObjectMapper()

@@ -1,5 +1,6 @@
 package org.pechblenda.auth.service.message
 
+import org.pechblenda.auth.enum.AccountType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
@@ -86,6 +87,12 @@ class AuthMessage {
 
 	@Value("\${message.auth.type-code-required:}")
 	private lateinit var typeCodeRequired: String
+
+	@Value("\${message.auth.account-type-not-recover:}")
+	private lateinit var accountTypeNotRecover: String
+
+	@Value("\${message.auth.account-type-not-valid:}")
+	private lateinit var accountTypeNotValid: String
 
 	fun getUserNotFount(): String {
 		return when {
@@ -317,6 +324,34 @@ class AuthMessage {
 						"'Google' u 'Outlook'"
 			else -> "${if (formalLanguage == "true") "Upps the" else "The"} type of code is necessary, the accepted types " +
 					"are 'Google' or 'Outlook'"
+		}
+	}
+
+	fun getAccountTypeNotValid(accountType: String): String {
+		return when {
+			accountTypeNotValid.isNotEmpty() -> accountTypeNotValid
+			accountTypeNotValid.isEmpty() && language == "es" -> "${if (formalLanguage == "true") "Upps no" else "No"} " +
+				"se puede iniciar sesión con esta cuenta por que ha sido registrada como una cuenta externa de " +
+				"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', intenta iniciar " +
+				"sesión por medio de el mismo proveedor"
+			else -> "${if (formalLanguage == "true") "Upps cannot" else "Cannot"} log in with this account because it " +
+					"has been registered as an external account of " +
+					"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', " +
+					"try log in through the same provider"
+		}
+	}
+
+	fun getAccountTypeNotRecover(accountType: String): String {
+		return when {
+			accountTypeNotRecover.isNotEmpty() -> accountTypeNotRecover
+			accountTypeNotRecover.isEmpty() && language == "es" -> "${if (formalLanguage == "true") "Upps no" else "No"} " +
+				"se recuperar la contraseña de esta cuenta por que ha sido registrada como una cuenta externa de " +
+				"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', intenta gestionar " +
+				"la recuperación por medio de el mismo proveedor"
+			else -> "${if (formalLanguage == "true") "Upps the" else "The"} password of this account will be recovered " +
+					"because it has been registered as an external " +
+					"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}' account, try to manage the " +
+					"recovery through the same provider"
 		}
 	}
 
