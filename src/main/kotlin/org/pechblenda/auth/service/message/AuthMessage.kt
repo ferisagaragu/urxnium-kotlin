@@ -94,6 +94,9 @@ class AuthMessage {
 	@Value("\${message.auth.account-type-not-valid:}")
 	private lateinit var accountTypeNotValid: String
 
+	@Value("\${message.auth.account-registered:}")
+	private lateinit var accountRegistered: String
+
 	fun getUserNotFount(): String {
 		return when {
 			userNotFount.isNotEmpty() -> userNotFount
@@ -352,6 +355,17 @@ class AuthMessage {
 					"because it has been registered as an external " +
 					"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}' account, try to manage the " +
 					"recovery through the same provider"
+		}
+	}
+
+	fun getAccountRegistered(): String {
+		return when {
+			accountRegistered.isNotEmpty() -> accountRegistered
+			accountRegistered.isEmpty() && language == "es" ->
+				"${if (formalLanguage == "true") "Upps ya" else "Ya"} hay una cuenta registrada con este correo " +
+					"electrónico"
+			else -> "${if (formalLanguage == "true") "Upps there" else "There"} is already an account registered " +
+					"with this email"
 		}
 	}
 

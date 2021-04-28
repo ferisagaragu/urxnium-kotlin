@@ -431,6 +431,10 @@ open class AuthService: IAuthService {
 
 			userSearched = authRepository.save(user)
 		} else {
+			if (userSearched.accountType == AccountType.DEFAULT.name) {
+				throw UnauthenticatedException(authMessage.getAccountRegistered())
+			}
+
 			userSearched.password = passwordEncoder.encode(password)
 			userSearched = authRepository.save(userSearched)
 		}
