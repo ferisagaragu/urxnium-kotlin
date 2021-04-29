@@ -101,8 +101,8 @@ class AuthMessage {
 		return when {
 			userNotFount.isNotEmpty() -> userNotFount
 			userNotFount.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss no" else "No"} se encuentra el usuario"
-			else -> "${if (formalLanguage == "true") "Upss the" else "The"} user cannot be found"
+				"${if (formalLanguage != "true") "Upss no" else "No"} se encuentra el usuario"
+			else -> "${if (formalLanguage != "true") "Upss the" else "The"} user cannot be found"
 		}
 	}
 
@@ -110,9 +110,9 @@ class AuthMessage {
 		return when {
 			accountNotActive.isNotEmpty() -> accountNotActive
 			accountNotActive.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss tu" else "Tu"} cuenta no esta activada aun, sigue las " +
+				"${if (formalLanguage != "true") "Upss tu" else "Tu"} cuenta no esta activada aun, sigue las " +
 						"instrucciones enviadas a tu correo electrónico para activarla"
-			else -> "${if (formalLanguage == "true") "Upss your" else "Your"} account is not activated yet, follow " +
+			else -> "${if (formalLanguage != "true") "Upss your" else "Your"} account is not activated yet, follow " +
 					"the instructions sent to your email to activate it"
 		}
 	}
@@ -121,9 +121,9 @@ class AuthMessage {
 		return when {
 			accountBlocked.isNotEmpty() -> accountBlocked
 			accountBlocked.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss tu" else "Tu"} cuenta se encuentra bloqueada, " +
+				"${if (formalLanguage != "true") "Upss tu" else "Tu"} cuenta se encuentra bloqueada, " +
 						"te enviamos a tu correo electrónico las razones"
-			else -> "${if (formalLanguage == "true") "Upss your" else "Your"} account is blocked, we will send " +
+			else -> "${if (formalLanguage != "true") "Upss your" else "Your"} account is blocked, we will send " +
 					"you the reasons to your email"
 		}
 	}
@@ -132,8 +132,8 @@ class AuthMessage {
 		return when {
 			activateUserNotFount.isNotEmpty() -> activateUserNotFount
 			activateUserNotFount.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss no" else "No"} se encuentra el usuario que quieres activar"
-			else -> "${if (formalLanguage == "true") "Upss the" else "The"} user you want to activate cannot be found"
+				"${if (formalLanguage != "true") "Upss no" else "No"} se encuentra el usuario que quieres activar"
+			else -> "${if (formalLanguage != "true") "Upss the" else "The"} user you want to activate cannot be found"
 		}
 	}
 
@@ -141,9 +141,9 @@ class AuthMessage {
 		return when {
 			activateUserInvalid.isNotEmpty() -> activateUserInvalid
 			activateUserInvalid.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss tu" else "Tu"} cuenta ya esta activada, intenta iniciar " +
+				"${if (formalLanguage != "true") "Upss tu" else "Tu"} cuenta ya esta activada, intenta iniciar " +
 						"sesión de forma habitual"
-			else -> "${if (formalLanguage == "true") "Upps your" else "Your"} account is already activated, " +
+			else -> "${if (formalLanguage != "true") "Upps your" else "Your"} account is already activated, " +
 					"try to log in regularly"
 		}
 	}
@@ -152,8 +152,8 @@ class AuthMessage {
 		return when {
 			recoverCodeInvalid.isNotEmpty() -> recoverCodeInvalid
 			recoverCodeInvalid.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss el" else "El"} código de recuperación no es valido"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} recovery code is not valid"
+				"${if (formalLanguage != "true") "Upss el" else "El"} código de recuperación no es valido"
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} recovery code is not valid"
 		}
 	}
 
@@ -161,8 +161,8 @@ class AuthMessage {
 		return when {
 			passwordRequired.isNotEmpty() -> passwordRequired
 			passwordRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps la" else "La"} contraseña es requerida"
-			else -> "${if (formalLanguage == "true") "Upps password" else "Password"} is required"
+				"${if (formalLanguage != "true") "Upps la" else "La"} contraseña es requerida"
+			else -> "${if (formalLanguage != "true") "Upps password" else "Password"} is required"
 		}
 	}
 
@@ -170,8 +170,8 @@ class AuthMessage {
 		return when {
 			accountBeActivated.isNotEmpty() -> accountBeActivated
 			accountBeActivated.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps tu" else "Tu"} cuenta ya esta activada"
-			else -> "${if (formalLanguage == "true") "Upps your" else "Your"} account is already activated"
+				"${if (formalLanguage != "true") "Upps tu" else "Tu"} cuenta ya esta activada"
+			else -> "${if (formalLanguage != "true") "Upps your" else "Your"} account is already activated"
 		}
 	}
 
@@ -187,9 +187,9 @@ class AuthMessage {
 		return when {
 			accountNotMatch.isNotEmpty() -> accountNotMatch
 			accountNotMatch.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upss no" else "No"} se encuentra ningún registro que coincida con el " +
+				"${if (formalLanguage != "true") "Upss no" else "No"} se encuentra ningún registro que coincida con el " +
 						"correo electrónico o nombre de usuario"
-			else -> "${if (formalLanguage == "true") "Upss no" else "No"} record is found that matches email or username"
+			else -> "${if (formalLanguage != "true") "Upss no" else "No"} record is found that matches email or username"
 		}
 	}
 
@@ -197,9 +197,9 @@ class AuthMessage {
 		return when {
 			accountNotActivate.isNotEmpty() -> accountNotActivate
 			accountNotActivate.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps tu" else "Tu"} cuenta aun no esta activada, revisa tu correo " +
+				"${if (formalLanguage != "true") "Upps tu" else "Tu"} cuenta aun no esta activada, revisa tu correo " +
 						"electrónico para saber como activarla"
-			else -> "${if (formalLanguage == "true") "Upps your" else "Your"} account is not activated yet, check your " +
+			else -> "${if (formalLanguage != "true") "Upps your" else "Your"} account is not activated yet, check your " +
 					"email to know how to activate it"
 		}
 	}
@@ -216,8 +216,8 @@ class AuthMessage {
 		return when {
 			emailRequired.isNotEmpty() -> emailRequired
 			emailRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} correo electrónico es requerido"
-			else -> "${if (formalLanguage == "true") "Upps email" else "Email"} is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"} correo electrónico es requerido"
+			else -> "${if (formalLanguage != "true") "Upps email" else "Email"} is required"
 		}
 	}
 
@@ -234,8 +234,8 @@ class AuthMessage {
 		return when {
 			nameRequired.isNotEmpty() -> nameRequired
 			nameRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"}  nombre es requerido"
-			else -> "${if (formalLanguage == "true") "Upps name" else "Name"} is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"}  nombre es requerido"
+			else -> "${if (formalLanguage != "true") "Upps name" else "Name"} is required"
 		}
 	}
 
@@ -243,8 +243,8 @@ class AuthMessage {
 		return when {
 			surnameRequired.isNotEmpty() -> surnameRequired
 			surnameRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} apellido paterno es requerido"
-			else -> "${if (formalLanguage == "true") "Upps surname" else "Surname"} is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"} apellido paterno es requerido"
+			else -> "${if (formalLanguage != "true") "Upps surname" else "Surname"} is required"
 		}
 	}
 
@@ -252,8 +252,8 @@ class AuthMessage {
 		return when {
 			motherSurnameRequired.isNotEmpty() -> motherSurnameRequired
 			motherSurnameRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} apellido materno es requerido"
-			else -> "${if (formalLanguage == "true") "Upps mother surname" else "Mother surname"} is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"} apellido materno es requerido"
+			else -> "${if (formalLanguage != "true") "Upps mother surname" else "Mother surname"} is required"
 		}
 	}
 
@@ -261,8 +261,8 @@ class AuthMessage {
 		return when {
 			userNameRequired.isNotEmpty() -> userNameRequired
 			userNameRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} nombre de usuario es requerido"
-			else -> "${if (formalLanguage == "true") "Upps user name" else "User name"} is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"} nombre de usuario es requerido"
+			else -> "${if (formalLanguage != "true") "Upps user name" else "User name"} is required"
 		}
 	}
 
@@ -296,8 +296,8 @@ class AuthMessage {
 		return when {
 			passwordIncorrect.isNotEmpty() -> passwordIncorrect
 			passwordIncorrect.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps la" else "La"} contraseña es incorrecta"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} password is wrong"
+				"${if (formalLanguage != "true") "Upps la" else "La"} contraseña es incorrecta"
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} password is wrong"
 		}
 	}
 
@@ -305,8 +305,8 @@ class AuthMessage {
 		return when {
 			refreshTokenRequired.isNotEmpty() -> refreshTokenRequired
 			refreshTokenRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} refresh Token es requerido"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} refresh Token is required"
+				"${if (formalLanguage != "true") "Upps el" else "El"} refresh Token es requerido"
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} refresh Token is required"
 		}
 	}
 
@@ -314,8 +314,8 @@ class AuthMessage {
 		return when {
 			accessCodeRequired.isNotEmpty() -> accessCodeRequired
 			accessCodeRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} código de acceso es necesario para iniciar sesión"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} access code is required to log in"
+				"${if (formalLanguage != "true") "Upps el" else "El"} código de acceso es necesario para iniciar sesión"
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} access code is required to log in"
 		}
 	}
 
@@ -323,9 +323,9 @@ class AuthMessage {
 		return when {
 			typeCodeRequired.isNotEmpty() -> typeCodeRequired
 			typeCodeRequired.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps el" else "El"} tipo de código es necesario, los tipos aceptados son " +
+				"${if (formalLanguage != "true") "Upps el" else "El"} tipo de código es necesario, los tipos aceptados son " +
 						"'Google' u 'Outlook'"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} type of code is necessary, the accepted types " +
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} type of code is necessary, the accepted types " +
 					"are 'Google' or 'Outlook'"
 		}
 	}
@@ -333,11 +333,11 @@ class AuthMessage {
 	fun getAccountTypeNotValid(accountType: String): String {
 		return when {
 			accountTypeNotValid.isNotEmpty() -> accountTypeNotValid
-			accountTypeNotValid.isEmpty() && language == "es" -> "${if (formalLanguage == "true") "Upps no" else "No"} " +
+			accountTypeNotValid.isEmpty() && language == "es" -> "${if (formalLanguage != "true") "Upps no" else "No"} " +
 				"se puede iniciar sesión con esta cuenta por que ha sido registrada como una cuenta externa de " +
 				"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', intenta iniciar " +
 				"sesión por medio de el mismo proveedor"
-			else -> "${if (formalLanguage == "true") "Upps cannot" else "Cannot"} log in with this account because it " +
+			else -> "${if (formalLanguage != "true") "Upps cannot" else "Cannot"} log in with this account because it " +
 					"has been registered as an external account of " +
 					"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', " +
 					"try log in through the same provider"
@@ -347,11 +347,11 @@ class AuthMessage {
 	fun getAccountTypeNotRecover(accountType: String): String {
 		return when {
 			accountTypeNotRecover.isNotEmpty() -> accountTypeNotRecover
-			accountTypeNotRecover.isEmpty() && language == "es" -> "${if (formalLanguage == "true") "Upps no" else "No"} " +
+			accountTypeNotRecover.isEmpty() && language == "es" -> "${if (formalLanguage != "true") "Upps no" else "No"} " +
 				"se recuperar la contraseña de esta cuenta por que ha sido registrada como una cuenta externa de " +
 				"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}', intenta gestionar " +
 				"la recuperación por medio de el mismo proveedor"
-			else -> "${if (formalLanguage == "true") "Upps the" else "The"} password of this account will be recovered " +
+			else -> "${if (formalLanguage != "true") "Upps the" else "The"} password of this account will be recovered " +
 					"because it has been registered as an external " +
 					"'${if (accountType == AccountType.GMAIL.name) "Google" else "Outlook"}' account, try to manage the " +
 					"recovery through the same provider"
@@ -362,9 +362,9 @@ class AuthMessage {
 		return when {
 			accountRegistered.isNotEmpty() -> accountRegistered
 			accountRegistered.isEmpty() && language == "es" ->
-				"${if (formalLanguage == "true") "Upps ya" else "Ya"} hay una cuenta registrada con este correo " +
+				"${if (formalLanguage != "true") "Upps ya" else "Ya"} hay una cuenta registrada con este correo " +
 					"electrónico"
-			else -> "${if (formalLanguage == "true") "Upps there" else "There"} is already an account registered " +
+			else -> "${if (formalLanguage != "true") "Upps there" else "There"} is already an account registered " +
 					"with this email"
 		}
 	}
