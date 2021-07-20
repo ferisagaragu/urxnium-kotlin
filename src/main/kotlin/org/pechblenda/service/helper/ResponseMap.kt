@@ -55,28 +55,33 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 		return out
 	}
 
+	fun firstUuid(): ResponseMap {
+		val out = this.order("uuid")
+		return out
+	}
+
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.OK)
+		return ResponseRecycle.response(null, this, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.OK)
+		return ResponseRecycle.response(message, this, null, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, null, HttpStatus.CREATED)
 	}
 
 	fun response(httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, null, httpStatus)
 	}
 
 	fun response(message: String, httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, null, httpStatus)
 	}
 
 	fun json(): LinkedHashMap<String, Any?> {

@@ -42,28 +42,32 @@ class ResponseList: ArrayList<ResponseMap>() {
 		return this.order("id")
 	}
 
+	fun firstUuid(): ResponseList {
+		return this.order("uuid")
+	}
+
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.OK)
+		return ResponseRecycle.response(null, this, this.size, HttpStatus.OK)
 	}
 
 	fun ok(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.OK)
+		return ResponseRecycle.response(message, this, this.size, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, this.size, HttpStatus.CREATED)
 	}
 
 	fun created(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, this.size, HttpStatus.CREATED)
 	}
 
 	fun response(httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, this.size, httpStatus)
 	}
 
 	fun response(message: String, httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, this.size, httpStatus)
 	}
 
 	fun json(): List<LinkedHashMap<String, Any?>> {
