@@ -15,35 +15,35 @@ import java.io.InputStream
 class Response {
 
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null,null, HttpStatus.OK)
+		return ResponseRecycle.response(null,null, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, null, HttpStatus.OK)
+		return ResponseRecycle.response(message, null, null, HttpStatus.OK)
 	}
 
 	fun ok(data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, data, HttpStatus.OK)
+		return ResponseRecycle.response(null, data, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String?, data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, data, HttpStatus.OK)
+		return ResponseRecycle.response(message, data, null, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null,null, HttpStatus.CREATED)
+		return ResponseRecycle.response(null,null, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, null, null, HttpStatus.CREATED)
 	}
 
 	fun created(data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, data, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, data, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String?, data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, data, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, data, null, HttpStatus.CREATED)
 	}
 
 	fun file(mediaType: MediaType, fileName: String, fileData: InputStreamResource): ResponseEntity<Any> {
