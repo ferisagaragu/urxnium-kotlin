@@ -1,0 +1,7 @@
+{
+  "name": "Avatar",
+  "elements": [
+    ".urxdoc/avatar/generate-user-image.functional.json",
+    ".urxdoc/avatar/generate-user-icon-image.functional.json"
+  ]
+}

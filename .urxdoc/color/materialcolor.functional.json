@@ -1,0 +1,20 @@
+{
+  "name": "MaterialColor",
+  "access": "entity",
+  "bookmark": "",
+  "description": "Esta es la entidad contiene un color de la paleta de colores Material Design el cual nos da el color y el contraste de letras adecuado para  el mismo.",
+  "html": null,
+  "attributes": [
+    {
+      "name": "color",
+      "type": "String",
+      "description": "Color Material Design",
+      "default": "not null"
+    }, {
+      "name": "background",
+      "type": "String",
+      "description": "Contraste de color Material Design",
+      "default": "not null"
+    }
+  ]
+}

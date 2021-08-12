@@ -1,0 +1,39 @@
+{
+  "name": "generateUserImage",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos permite generar una imagen de usuario basada en una letra y color, pueden ser dadas al azar o controladas.",
+  "exampleCodes": [
+    {
+      "title": "Genera una imagen de usuario",
+      "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra. Los colores se darán al azar basados en la gama 500 de Material Design.",
+      "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserImage('F')\n}",
+      "out": "InputStream",
+      "language": "javascript"
+    },{
+      "title": "Genera una imagen de usuario basada en una letra y eligiendo los colores que queremos",
+      "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra, color de text y de fondo.",
+      "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserImage(\n    'F', \n    materialColor.color, \n    materialColor.background\n  )\n}",
+      "out": "InputStream",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "initialLetter",
+      "type": "String",
+      "description": "Letra inicial.",
+      "default": "not null"
+    },{
+      "name": "color",
+      "type": "String",
+      "description": "Color de letra que llevara la imagen de usuario.",
+      "default": "not null"
+    },{
+      "name": "background",
+      "type": "String",
+      "description": "Color de fondo que llevara la imagen de usuario.",
+      "default": "not null"
+    }
+  ]
+}

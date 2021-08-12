@@ -1,0 +1,24 @@
+{
+  "name": "getMaterialColor",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos provee de toda la paleta de colores de Material Design, esta utilidad funciona para diferentes cosas ya sea para dar color al usuario o secciones del sistema de acuerdo a diferentes requerimientos.",
+  "html": "Para saber sobre todas las tonalidades de Material Design te invitamos a ir a la siguiente página <a target=\"_blank\" href=\"https://material.io/design/color/the-color-system.html\">Material Colors</a> donde podrás ver detalladamente y elegir el color que prefieras más.",
+  "exampleCodes": [
+    {
+      "title": "Obteniendo Color",
+      "description": "Hoy en día el dinamismo es algo que atrapa mucho en las páginas web, por eso en Urxnium decidimos que el color siempre será al azar solo hay que llamar al siguiente método y nos dará un color de la gama Material Design con el fondo de letra que se le adecua mejor.",
+      "code": "getMaterialColor(CategoryColor.MATERIAL_50)",
+      "out": "{\n  \"color\": \"#2196F3\",\n  \"background\": \"#000\"\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "categoryColor",
+      "type": "CategoryColor",
+      "description": "Este enumerado nos ayuda a saber de qué tonalidad queremos el color",
+      "default": "not null"
+    }
+  ]
+}
