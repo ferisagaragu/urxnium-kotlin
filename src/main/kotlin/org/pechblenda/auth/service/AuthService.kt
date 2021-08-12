@@ -34,7 +34,6 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.io.ClassPathResource
 
 import kotlin.reflect.KClass
 
@@ -45,7 +44,6 @@ import java.util.UUID
 import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletResponse
 import kotlin.collections.LinkedHashMap
@@ -174,6 +172,7 @@ open class AuthService: IAuthService {
 		return response.ok(out)
 	}
 
+	@Transactional(readOnly = true)
 	override fun generateQRAuthentication(servletRequest: HttpServletRequest): ResponseEntity<Any> {
 		val matrix = MultiFormatWriter().encode(
 			"${getHost(servletRequest)}/rest/auth/sign-in-qr-view/${jwtProvider.generateJwtSecretToken()}",
@@ -201,6 +200,7 @@ open class AuthService: IAuthService {
 			).ok()
 	}
 
+	@Transactional(readOnly = true)
 	override fun signInQRView(response: HttpServletResponse): ResponseEntity<Any> {
 		return Response().file(
 			"text/html",

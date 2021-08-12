@@ -2,8 +2,7 @@
   "name": "generateUserIconImage",
   "access": "public",
   "bookmark": "",
-  "description": "Este método nos permite generar una imagen de usuario con un icono Material Design sacando el código del icono de la página ‘https://materialdesignicons.com/’. ATENCIÓN esta funcionalidad solo puede ser utilizada si se cuenta con una conexión a Internet, de lo contrario esta marcara un error en el código.",
-  "html": null,
+  "html": "Este método nos permite generar una imagen de usuario con un icono Material Design sacando el código del icono de la página <a target=\"_blank\" href=\"https://materialdesignicons.com/\">Material Icons</a>. ATENCIÓN esta funcionalidad solo puede ser utilizada si se cuenta con una conexión a Internet, de lo contrario esta marcara un error en el código.",
   "exampleCodes": [
     {
       "title": "Genera una imagen de usuario basada en un icono",

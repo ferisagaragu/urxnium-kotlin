@@ -8,8 +8,9 @@
     "src": [
       ".urxdoc/request/request.json",
       ".urxdoc/documentation/documentation.json",
+      ".urxdoc/avatar/avatar.json",
       ".urxdoc/color/color.json",
-      ".urxdoc/avatar/avatar.json"
+      ".urxdoc/report/report.json"
     ]
   }
 }

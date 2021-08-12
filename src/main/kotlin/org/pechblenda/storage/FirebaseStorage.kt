@@ -13,7 +13,6 @@ import java.util.Date
 import java.util.UUID
 import java.util.Base64
 import javax.annotation.PostConstruct
-
 import java.util.concurrent.TimeUnit
 
 import org.springframework.beans.factory.annotation.Value

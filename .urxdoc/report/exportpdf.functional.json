@@ -1,0 +1,46 @@
+{
+  "name": "exportPdf",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos ayuda a compilar y generar un PDF de salida compilando un archivo de JasperReports.",
+  "html": "Te recomendamos utilices la herramienta de <a href=\"https://sourceforge.net/projects/jasperstudio/files/JaspersoftStudio-6.16.0/\" target=\"_blank\">JasperReports Studio en su versión 6.16.0</a> ya que es con la que se testeó Urxnium Kotlin.",
+  "exampleCodes": [
+    {
+      "title": "Convierte un archivo .jrxml a un reporte compatible con Spring Boot",
+      "description": "Hoy en día es muy común que los servicios web generen reportes detallados de la información del sistema, con ayuda de Urxnium podemos hacer fácilmente la compilación y creación de reportes para que en pocas líneas lo logremos y así solo preocuparnos por obtener la información.",
+      "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->\n<jasperReport xmlns=\"http://jasperreports.sourceforge.net/jasperreports\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\" name=\"tiket\" pageWidth=\"595\" pageHeight=\"842\" columnWidth=\"555\" leftMargin=\"20\" rightMargin=\"20\" topMargin=\"20\" bottomMargin=\"20\" uuid=\"5e945d8c-3f04-4724-9ca3-13d82ba24fad\">\n\t<parameter name=\"background\" class=\"java.io.InputStream\"/>\n\n\t<field name=\"name\" class=\"java.lang.String\">\n\t\t<property name=\"net.sf.jasperreports.json.field.expression\" value=\"name\"/>\n\t\t<fieldDescription><![CDATA[name]]></fieldDescription>\n\t</field>\n\n\t<background>\n\t\t<band splitType=\"Stretch\"/>\n\t</background>\n\n\t<detail>\n\t\t<band height=\"197\" splitType=\"Stretch\">\n\t\t\t<image>\n\t\t\t\t<reportElement x=\"111\" y=\"0\" width=\"360\" height=\"195\" uuid=\"0c69c389-4b98-4a87-9c0a-8554725fd2c4\">\n\t\t\t\t\t<property name=\"com.jaspersoft.studio.unit.height\" value=\"pixel\"/>\n\t\t\t\t</reportElement>\n\n\t\t\t\t<box topPadding=\"0\" leftPadding=\"0\" rightPadding=\"0\"/>\n\n\t\t\t\t<imageExpression><![CDATA[$P{background}]]></imageExpression>\n\t\t\t</image>\n\n\t\t\t<textField>\n\t\t\t\t<reportElement x=\"164\" y=\"80\" width=\"260\" height=\"15\" uuid=\"5dfc52e2-c1d0-46c0-a69e-e764059bbeaa\">\n\t\t\t\t\t<property name=\"com.jaspersoft.studio.unit.height\" value=\"px\"/>\n\t\t\t\t</reportElement>\n\n\t\t\t\t<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">\n\t\t\t\t\t<font fontName=\"Josefin Sans\"/>\n\t\t\t\t</textElement>\n\n\t\t\t\t<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>\n\t\t\t</textField>\n\t\t</band>\n\t</detail>\n</jasperReport>\n",
+      "out": "fun superHeroesPDF(): InputStreamResource {\n  val parameters = mutableMapOf<String, Any>()\n  val fields = mutableListOf<MutableMap<String, Any>>()\n  val heroOne = mutableMapOf<String, Any>()\n  val heroTow = mutableMapOf<String, Any>()\n  \n  heroOne[\"name\"] = \"Tony Stark\"\n  heroTow[\"name\"] = \"Petter Parker\"\n  parameters[\"background\"] = ClassPathResource(\"template/report/background.png\").inputStream\t\n\t\n  fields.add(heroOne)\n  fields.add(heroTow)\n\n  return report.exportPdf(\n    ClassPathResource(\"template/report/heroes_report.jrxml\").inputStream,\n    parameters,\n    fields.toMutableList()\n  )\n}",
+      "language": "javascript"
+    }, {
+      "title": "¿Cómo puedo agregar otros tipos de letras?",
+      "description": "Después de una ardua investigación en Urxnium y con la ayuda de JasperReports te mostraremos cómo integrar diferentes tipos de letras de manera fácil. Primero tienes que generar la siguiente estructura en tus recursos, para que JasperReports pueda vincularlas con tu reporte.",
+      "code": "> project\n  └──src\n      │──kotlin\n      └──resources\n          │──fonts.jrxml\n          └──font\n              │──your-font-Bold.ttf\n              │──your-font-BoldItalic.ttf\n              │──your-font-Italic.ttf\n              └──your-font-Regular.ttf",
+      "out": null,
+      "language": "shell"
+    }, {
+      "title": "Configurando el archivo de rutas para los fondos",
+      "description": "Por último luego de añadir nuestro tipo de letra y sus variantes hay que indicarle a JasperReports donde están y para eso necesitaremos el siguiente archivo, una vez todo en su lugar todo estará listo para funcionar.",
+      "code": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<fontFamilies>\n    <fontFamily name=\"fond name\">\n        <normal><![CDATA[font/josefin-sans/JosefinSans-Regular.ttf]]></normal>\n        <bold><![CDATA[font/josefin-sans/JosefinSans-Bold.ttf]]></bold>\n        <italic><![CDATA[font/josefin-sans/JosefinSans-Italic.ttf]]></italic>\n        <bolditalic><![CDATA[font/josefin-sans/JosefinSans-BoldItalic.ttf]]></bolditalic>\n        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>\n        <exportFonts/>\n    </fontFamily>\n</fontFamilies>",
+      "out": null,
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "report",
+      "type": "InputStream",
+      "description": "Path del archivo .jrxml para ser transformado en PDF",
+      "default": "not null"
+    },{
+      "name": "params",
+      "type": "MutableMap<String, Any>",
+      "description": "Parámetros que el reporte puede tener fondos, títulos, tamaños, etc.",
+      "default": "optional"
+    },{
+      "name": "data",
+      "type": "MutableList<Any>",
+      "description": "Datos que se mostrarán en el PDF",
+      "default": "not null"
+    }
+  ]
+}

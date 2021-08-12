@@ -1,8 +1,8 @@
 {
   "name": "Color",
   "elements": [
-    ".urxdoc/color/get-material-color.functional.json",
     ".urxdoc/color/category-color.functional.json",
-    ".urxdoc/color/material-color.functional.json"
+    ".urxdoc/color/get-material-color.functional.json",
+    ".urxdoc/color/materialcolor.functional.json"
   ]
 }

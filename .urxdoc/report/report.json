@@ -1,0 +1,6 @@
+{
+  "name": "Report",
+  "elements": [
+    ".urxdoc/report/exportpdf.functional.json"
+  ]
+}
