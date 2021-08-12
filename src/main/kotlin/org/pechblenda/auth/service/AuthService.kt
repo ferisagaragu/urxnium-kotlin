@@ -389,8 +389,8 @@ open class AuthService: IAuthService {
 		val code = jwtProvider.validateJwtSecretToken(request["secret"].toString())
 		val userFind = authRepository.likeByUserName("%${request["uuid"].toString()}").orElse(null)
 
-		if (!authRepository.findByPassword(code).isEmpty) {
-			throw BadRequestException("Upps el codigo de inicio de sesión ya esta registrado")
+		if (authRepository.findByPassword(code).orElse(null) != null) {
+			throw BadRequestException("Upps el código de inicio de sesión ya esta registrado")
 		}
 
 		if (userFind == null) {
