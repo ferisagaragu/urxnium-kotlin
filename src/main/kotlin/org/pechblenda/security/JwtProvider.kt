@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.slf4j.LoggerFactory
 
 import java.util.Date
+import kotlin.random.Random
 
 class JwtProvider {
 
@@ -71,6 +72,28 @@ class JwtProvider {
 			.compact()
 
 		return tokenAndExpiration
+	}
+
+	fun generateJwtSecretToken(): String {
+		val tokenAndExpiration: MutableMap<String, Any> = mutableMapOf()
+		val expiration = Date(Date().time + 1800000)
+		val claims: MutableMap<String, Any> = mutableMapOf()
+
+		claims["code"] = "${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+				"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+				"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)}"
+
+		tokenAndExpiration["token"] = Jwts.builder()
+			.setClaims(claims)
+			.setSubject(jwtSecret)
+			.setIssuedAt(Date())
+			.setExpiration(expiration)
+			.signWith(SignatureAlgorithm.HS512, jwtSecret)
+			.compact()
+		tokenAndExpiration["expiration"] = 1800000
+		tokenAndExpiration["expirationDate"] = expiration.toString()
+
+		return tokenAndExpiration["token"].toString()
 	}
 
 	fun generateJwtTokenRefresh(
@@ -157,6 +180,18 @@ class JwtProvider {
 		}
 
 		return false
+	}
+
+	fun validateJwtSecretToken(secretToken: String): String {
+		val claims = decodeJwt(secretToken).claims
+		val secret = (claims["sub"] as Claim).asString()
+		val code = (claims["code"] as Claim).asString()
+
+		if (secret != jwtSecret || isJwtExpire(secretToken)) {
+			throw UnauthenticatedException("Invalid JWT secret")
+		}
+
+		return code
 	}
 
 }

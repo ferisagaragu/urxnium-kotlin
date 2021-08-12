@@ -1,0 +1,27 @@
+{
+  "description": "Service to see QR code for sign in",
+  "authorization": false,
+  "bookmark": "mdi-numeric-2-circle",
+  "responseOk": "FILE",
+  "responseBadRequest": {
+    "timestamp": "11-19-2020  22:53:11 p. m.",
+    "status": 400,
+    "error": "BAD_REQUEST",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "pathVariables": [
+    {
+      "name": "secret",
+      "value": "eyJhbGciOiJIUzUxMiJ9.eyJjb2RlIjoiNDIgLSAwNSAtIDg4Iiwic3ViIjoiand0QF8vYXBwLXJlc3QjIiwiaWF0IjoxNjI4NzMzNDU0LCJleHAiOjE2Mjg3MzUyNTR9.Gz7nnjFAj9699GCipzvPIjS0vPwxLzr_9MrJ_O6HE7WzSl4Xvbd6W7bkLq8SFZI9jw2CHTtAURh6AHokkkofNQ",
+      "type": "text",
+      "required": true
+    }
+  ]
+}

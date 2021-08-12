@@ -1,0 +1,69 @@
+<form [formGroup]="form" (ngSubmit)="save()">
+  <div class="info">
+    <em>
+      <strong>¿Por que pedimos estos datos? </strong>
+      Ya que este inicio de sesión es por medio del celular,
+      necesitamos tener algunos de tus datos por si algún dia quieres recuperar tu cuenta,
+      esto sera un registro único y solo es por esta vez.
+    </em>
+  </div>
+
+  <mat-form-field class="w-100" appearance="outline">
+    <mat-label>Nombre</mat-label>
+
+    <input
+      matInput
+      formControlName="name"
+      required
+    >
+
+    <mat-error>
+      El nombre es requerido
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-100" appearance="outline">
+    <mat-label>Apellido paterno</mat-label>
+
+    <input
+      matInput
+      formControlName="surname"
+      required
+    >
+
+    <mat-error>
+      El apellido paterno es requerido
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="w-100" appearance="outline">
+    <mat-label>Apellido materno</mat-label>
+
+    <input
+      matInput
+      formControlName="motherSurname"
+    >
+  </mat-form-field>
+
+  <mat-form-field class="w-100" appearance="outline">
+    <mat-label>Correo electrónico</mat-label>
+
+    <input
+      matInput
+      formControlName="email"
+      required
+    >
+
+    <mat-error>
+      El correo electronico es requerido
+    </mat-error>
+  </mat-form-field>
+
+  <div class="button-position">
+    <button mat-stroked-button color="accent">
+      Terminar mi registro
+    </button>
+  </div>
+</form>
+
+

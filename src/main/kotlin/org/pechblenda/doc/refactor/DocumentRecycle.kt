@@ -53,13 +53,13 @@ class DocumentRecycle {
 			baseUrlProd = getHost(servletRequest),
 			bookmarks = arrayOf(),
 			credentials = apiInfo.credentials,
-			src = generateSrc(controllersInfo)
+			src = generateSrc(controllersInfo, getHost(servletRequest))
 		)
 
 		return out
 	}
 
-	private fun generateSrc(controllersInfo: MutableList<KClass<*>>): ArrayList<Src> {
+	private fun generateSrc(controllersInfo: MutableList<KClass<*>>, host: String): ArrayList<Src> {
 		var out = ArrayList<Src>()
 
 		controllersInfo.forEach { controllerInfo ->
@@ -125,7 +125,8 @@ class DocumentRecycle {
 								"get",
 								pathVariables,
 								pathParams,
-								hasRequestBody
+								hasRequestBody,
+								host
 							)
 						)
 					}
@@ -140,7 +141,8 @@ class DocumentRecycle {
 								"post",
 								pathVariables,
 								pathParams,
-								hasRequestBody
+								hasRequestBody,
+								host
 							)
 						)
 					}
@@ -155,7 +157,8 @@ class DocumentRecycle {
 								"put",
 								pathVariables,
 								pathParams,
-								hasRequestBody
+								hasRequestBody,
+								host
 							)
 						)
 					}
@@ -170,7 +173,8 @@ class DocumentRecycle {
 								"delete",
 								pathVariables,
 								pathParams,
-								hasRequestBody
+								hasRequestBody,
+								host
 							)
 						)
 					}
@@ -185,7 +189,8 @@ class DocumentRecycle {
 								"patch",
 								pathVariables,
 								pathParams,
-								hasRequestBody
+								hasRequestBody,
+								host
 							)
 						)
 					}
@@ -210,7 +215,8 @@ class DocumentRecycle {
 		access: String,
 		pathVariables: ArrayList<org.pechblenda.doc.entity.PathVariable>,
 		pathParams: ArrayList<org.pechblenda.doc.entity.PathVariable>,
-		hasRequestBody: Boolean
+		hasRequestBody: Boolean,
+		host: String
 	): RestElement {
 		var doc = Request()
 
@@ -231,7 +237,7 @@ class DocumentRecycle {
 			bookmark = if (doc.containsKey("bookmark")) doc["bookmark"].toString() else "",
 			permissions = arrayOf(),
 			description = if (doc.containsKey("description")) doc["description"].toString() else "",
-			html = if (doc.containsKey("html")) doc["html"] else null,
+			html = if (doc.containsKey("html")) doc["html"].toString().replace("\${host}", host) else null,
 			steps = if (doc.containsKey("steps")) doc["steps"] else null,
 			pathVariables = if (doc.containsKey("pathVariables"))
 				(doc["pathVariables"] as List<Map<String, Any>>).map { variable ->
