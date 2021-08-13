@@ -535,6 +535,95 @@
         ]
       },
       {
+        "name": "Avatar",
+        "elements": [
+          {
+            "name": "generateUserImage",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos permite generar una imagen de usuario basada en una letra y color, pueden ser dadas al azar o controladas.",
+            "exampleCodes": [
+              {
+                "title": "Genera una imagen de usuario",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra. Los colores se darán al azar basados en la gama 500 de Material Design.",
+                "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserImage('F')\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              },
+              {
+                "title": "Genera una imagen de usuario basada en una letra y eligiendo los colores que queremos",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en una letra, color de text y de fondo.",
+                "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserImage(\n    'F', \n    materialColor.color, \n    materialColor.background\n  )\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "initialLetter",
+                "type": "String",
+                "description": "Letra inicial.",
+                "default": "not null"
+              },
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color de letra que llevara la imagen de usuario.",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Color de fondo que llevara la imagen de usuario.",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "generateUserIconImage",
+            "access": "public",
+            "bookmark": "",
+            "html": "Este método nos permite generar una imagen de usuario con un icono Material Design sacando el código del icono de la página <a target=\"_blank\" href=\"https://materialdesignicons.com/\">Material Icons</a>. ATENCIÓN esta funcionalidad solo puede ser utilizada si se cuenta con una conexión a Internet, de lo contrario esta marcara un error en el código.",
+            "exampleCodes": [
+              {
+                "title": "Genera una imagen de usuario basada en un icono",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono. Los colores se darán al azar basados en la gama 500 de Material Design.",
+                "code": "fun getUserImage() {\n  val inputStreamFile = avatar.generateUserIconImage(\"󰀱\")\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              },
+              {
+                "title": "Genera una imagen de usuario basada en un icono y eligiendo los colores que queremos",
+                "description": "A continuación, se muestra cómo se puede hacer una imagen de usuario basada en un icono, color de text y de fondo.",
+                "code": "fun getUserImage() {\n  val materialColor = color.getMaterialColor(CategoryColor.MATERIAL_500)\n  val inputStreamFile = avatar.generateUserIconImage(\n    \"󰀱\", \n    materialColor.color, \n    materialColor.background\n  )\n}",
+                "out": "InputStream",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "icon",
+                "type": "String",
+                "description": "Código del icono elegido de la pagina 'https://materialdesignicons.com'",
+                "default": "not null"
+              },
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color de letra que llevara la imagen de usuario.",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Color de fondo que llevara la imagen de usuario.",
+                "default": "not null"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "name": "Color",
         "elements": [
           {
@@ -632,6 +721,51 @@
                 "name": "ALL",
                 "type": "Object",
                 "description": "Todas las gamas de colores de Material Design.",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "getMaterialColor",
+            "access": "public",
+            "bookmark": "",
+            "description": "Este método nos provee de toda la paleta de colores de Material Design, esta utilidad funciona para diferentes cosas ya sea para dar color al usuario o secciones del sistema de acuerdo a diferentes requerimientos.",
+            "html": "Para saber sobre todas las tonalidades de Material Design te invitamos a ir a la siguiente página <a target=\"_blank\" href=\"https://material.io/design/color/the-color-system.html\">Material Colors</a> donde podrás ver detalladamente y elegir el color que prefieras más.",
+            "exampleCodes": [
+              {
+                "title": "Obteniendo Color",
+                "description": "Hoy en día el dinamismo es algo que atrapa mucho en las páginas web, por eso en Urxnium decidimos que el color siempre será al azar solo hay que llamar al siguiente método y nos dará un color de la gama Material Design con el fondo de letra que se le adecua mejor.",
+                "code": "getMaterialColor(CategoryColor.MATERIAL_50)",
+                "out": "{\n  \"color\": \"#2196F3\",\n  \"background\": \"#000\"\n}",
+                "language": "javascript"
+              }
+            ],
+            "attributes": [
+              {
+                "name": "categoryColor",
+                "type": "CategoryColor",
+                "description": "Este enumerado nos ayuda a saber de qué tonalidad queremos el color",
+                "default": "not null"
+              }
+            ]
+          },
+          {
+            "name": "MaterialColor",
+            "access": "entity",
+            "bookmark": "",
+            "description": "Esta es la entidad contiene un color de la paleta de colores Material Design el cual nos da el color y el contraste de letras adecuado para  el mismo.",
+            "html": null,
+            "attributes": [
+              {
+                "name": "color",
+                "type": "String",
+                "description": "Color Material Design",
+                "default": "not null"
+              },
+              {
+                "name": "background",
+                "type": "String",
+                "description": "Contraste de color Material Design",
                 "default": "not null"
               }
             ]

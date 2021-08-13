@@ -7,6 +7,7 @@
     "bookmarks": [],
     "src": [
       ".urxdoc/request/request.json",
+      ".urxdoc/response/response.json",
       ".urxdoc/documentation/documentation.json",
       ".urxdoc/avatar/avatar.json",
       ".urxdoc/color/color.json",

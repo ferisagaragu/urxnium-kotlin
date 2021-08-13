@@ -1,0 +1,41 @@
+{
+  "name": "ok",
+  "access": "public",
+  "bookmark": "",
+  "description": "El método Ok nos ayuda a dar una contestación web 200 de una manera simple y con diferentes contestaciones.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Contestando sin datos",
+      "description": "A veces se nos pueden presentar casos en los que las paginas web solo necesitan que les digamos si todo salió bien, para eso existe solo la contestación en Ok(200).",
+      "code": "fun demoResponse() {\n  //Any code here\n  \n  return response.ok()\n}",
+      "out": "{\n  \"timestamp\": \"02-16-2021  22:41:19 p. m.\",\n  \"status\": 200\n}",
+      "language": "javascript"
+    }, {
+      "title": "Contestando con cualquier dato",
+      "description": "En ocasiones solo queremos pasar un pequeño dato o un mensaje, para eso existe la combinación ok de texto o cualquier objeto.",
+      "code": "fun demoResponse() {\n  //Any code here\n  \n  return response.ok(\"Hello space\")\n}",
+      "out": "//If data is String\n{\n  \"timestamp\": \"02-16-2021  22:41:19 p. m.\",\n  \"status\": 200,\n  \"message\": \"Hello space\"\n}\n\n//If data is an other one\n{\n  \"timestamp\": \"02-16-2021  22:41:19 p. m.\",\n  \"status\": 200,\n  \"data\": 12\n}",
+      "language": "javascript"
+    }, {
+      "title": "Contestando con mensaje y cualquier dato",
+      "description": "Si es necesario también se puede responder con datos y un mensaje.",
+      "code": "fun demoResponse() {\n  //Any code here\n  \n  return response.ok(\"Hello space apollo\", 11)\n}",
+      "out": "{\n  \"timestamp\": \"02-16-2021  22:41:19 p. m.\",\n  \"status\": 200,\n  \"message\": \"Hello space apollo\",\n  \"data\": 11\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "data",
+      "type": "Any",
+      "description": "Cualquier tipo de dato",
+      "default": "optional"
+    }, {
+      "name": "message",
+      "type": "String",
+      "description": "Mensaje de texto",
+      "default": "optional"
+    }
+  ]
+}

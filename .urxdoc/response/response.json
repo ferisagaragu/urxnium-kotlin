@@ -1,0 +1,12 @@
+{
+  "name": "Response",
+  "elements": [
+    ".urxdoc/response/response-map.functional.json",
+    ".urxdoc/response/response-list.functional.json",
+    ".urxdoc/response/ok.functional.json",
+    ".urxdoc/response/created.functional.json",
+    ".urxdoc/response/file.functional.json",
+    ".urxdoc/response/to-map.functional.json",
+    ".urxdoc/response/to-list-map.functional.json"
+  ]
+}
