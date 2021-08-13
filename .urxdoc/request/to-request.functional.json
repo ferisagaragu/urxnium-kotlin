@@ -11,13 +11,19 @@
       "code": "{\n  \"uuid\": \"983d5f02-7bcf-4e47-928c-10f6bfb02299\",\n  \"name\": \"Spider-Man\"\n}",
       "out": "fun createHero(heroJSON: String) {\n  val request = Request().toRequest(hero)\n}",
       "language": "javascript"
+    },{
+      "title": "Convierte un objeto LinkedHashMap en Request",
+      "description": "A continuación, se muestra como podemos convertir un LinkedHashMap en un objeto Request.",
+      "code": "{\n  \"uuid\": \"983d5f02-7bcf-4e47-928c-10f6bfb02299\",\n  \"name\": \"Spider-Man\"\n}",
+      "out": "fun createHero(heroMap: LinkedHashMap<String, Any>) {\n  val request = Request().toRequest(heroMap)\n}",
+      "language": "javascript"
     }
   ],
   "attributes": [
     {
       "name": "json",
-      "type": "String",
-      "description": "Texto que sabemos que es un objeto JSON valido.",
+      "type": "String | LinkedHashMap<String, Any>",
+      "description": "(Texto o LinkedHashMap<String, Any>) que sabemos que es un objeto JSON valido.",
       "default": "not null"
     },{
       "name": "linkedHashMap",

@@ -1,0 +1,24 @@
+{
+  "name": "toJson",
+  "access": "public",
+  "bookmark": "",
+  "description": "Este método nos permite convertir todo el objeto Request en un JSON de texto(String), esta funcionalidad está pensada sobre todo para testeo.",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "Convierte un objeto request en JSON",
+      "description": "Para convertir un objeto de tipo Request en JSON es muy sencillo solo tenemos que llamará el método toJSON de la siguiente manera y este nos regresara un JSON en texto.",
+      "code": "@Transactional\noverride fun requestJSONDemo(request: Request): ResponseEntity<Any> {\n  val out = request.toJSON()\n  \n  return response.ok(out)\n}",
+      "out": "//INPUT\n{\n  \"name\": \"Barry Allen\"\n}\n\n//OUTPUT\n{\n  \"name\": \"Barry Allen\"\n}",
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "",
+      "type": "",
+      "description": "",
+      "default": ""
+    }
+  ]
+}
