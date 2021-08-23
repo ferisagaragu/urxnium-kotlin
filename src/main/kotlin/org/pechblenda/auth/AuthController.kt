@@ -14,7 +14,6 @@ import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.service.Request
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
-
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
@@ -41,9 +39,6 @@ class AuthController {
 
 	@Autowired
 	private lateinit var httpExceptionResponse: HttpExceptionResponse
-
-	@Value("\${app.host:}")
-	private lateinit var hostName: String
 
 	@GetMapping("/validate-token")
 	@ApiDocumentation(path = "api/assets/auth/validate-token.json")
@@ -133,12 +128,9 @@ class AuthController {
 		}
 	}
 
-	@GetMapping("/sign-in-qr-view/{secret}")
+	@GetMapping("/sign-in-qr-view")
 	@ApiDocumentation(path = "qr/assets/auth/sign-in-qr-view.json")
-	fun signInQRView(
-		response: HttpServletResponse,
-		@PathVariable("secret") secret: String
-	): String {
+	fun signInQRView(response: HttpServletResponse): String {
 		val resource = BufferedReader(
 			InputStreamReader(this.javaClass.classLoader.getResourceAsStream("qr/index.html"), StandardCharsets.UTF_8)
 		).lines().collect(Collectors.joining("\n")).toString().replace("\n", "")
@@ -160,6 +152,18 @@ class AuthController {
 		}
 	}
 
+	@PostMapping("/activate-qr-account")
+	@ApiDocumentation(path = "qr/assets/auth/activate-qr-account.json")
+	fun activateQRAccount(
+		@RequestBody request: Request
+	): ResponseEntity<Any> {
+		return try {
+			authService.activateQRAccount(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PostMapping("/change-password")
 	@ApiDocumentation(path = "api/assets/auth/change-password.json")
 	fun changePassword(
@@ -172,6 +176,18 @@ class AuthController {
 		}
 	}
 
+	@PostMapping("/change-qr-device")
+	@ApiDocumentation(path = "qr/assets/auth/change-qr-device.json")
+	fun changeQRDevice(
+		@RequestBody request: Request
+	): ResponseEntity<Any> {
+		return try {
+			authService.changeQRDevice(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PostMapping("/recover-password")
 	@ApiDocumentation(path = "api/assets/auth/recover-password.json")
 	fun recoverPassword(
@@ -179,6 +195,19 @@ class AuthController {
 	): ResponseEntity<Any> {
 		return try {
 			authService.recoverPassword(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
+	@PostMapping("/recover-qr-account")
+	@ApiDocumentation(path = "qr/assets/auth/recover-qr-account.json")
+	fun recoverQRAccount(
+		@RequestBody request: Request,
+		servletRequest: HttpServletRequest
+	): ResponseEntity<Any> {
+		return try {
+			authService.recoverQRAccount(request, servletRequest)
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}
@@ -257,98 +286,6 @@ class AuthController {
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}
-	}
-
-	//Resources
-	@RequestMapping("/sign-in-qr-view/styles.c6aadb6bdca66db79bc4.css")
-	fun getStyles(response: HttpServletResponse): String {
-		val text: String = BufferedReader(
-			InputStreamReader(
-				this.javaClass.classLoader.getResourceAsStream("qr/styles.c6aadb6bdca66db79bc4.css"),
-				StandardCharsets.UTF_8
-			)
-		).lines().collect(Collectors.joining(""))
-
-		response.contentType = "text/plain"
-		response.characterEncoding = "UTF-8"
-		return text
-	}
-
-	@RequestMapping(value = ["/sign-in-qr-view/runtime.4ec9417e38772e2a3b1f.js"], produces = ["application/javascript"])
-	fun getRuntime(response: HttpServletResponse): String {
-		val text: String = BufferedReader(
-			InputStreamReader(
-				this.javaClass.classLoader.getResourceAsStream(
-					"qr/runtime.4ec9417e38772e2a3b1f.js"
-				),
-				StandardCharsets.UTF_8
-			)
-		).lines().collect(Collectors.joining(""))
-
-		response.contentType = "application/javascript"
-		response.characterEncoding = "UTF-8"
-		return text
-	}
-
-	@RequestMapping(value = ["/sign-in-qr-view/polyfills.c8539b94e427590b980e.js"], produces = ["application/javascript"])
-	fun getPolyfills(response: HttpServletResponse): String {
-		val text: String = BufferedReader(
-			InputStreamReader(
-				this.javaClass.classLoader.getResourceAsStream(
-					"qr/polyfills.c8539b94e427590b980e.js"
-				),
-				StandardCharsets.UTF_8
-			)
-		).lines().collect(Collectors.joining(""))
-
-		response.contentType = "application/javascript"
-		response.characterEncoding = "UTF-8"
-		return text
-	}
-
-	@RequestMapping(value = ["/sign-in-qr-view/main.7cf7c9bc6068a4f2bea2.js"], produces = ["application/javascript"])
-	fun getMain(response: HttpServletResponse): String {
-		val text: String = BufferedReader(
-			InputStreamReader(
-				this.javaClass.classLoader.getResourceAsStream(
-					"qr/main.7cf7c9bc6068a4f2bea2.js"
-				),
-				StandardCharsets.UTF_8
-			)
-		).lines().collect(Collectors.joining(""))
-
-		response.contentType = "application/javascript"
-		response.characterEncoding = "UTF-8"
-		return text
-	}
-
-	@RequestMapping(value = ["/sign-in-qr-view/848.7a8cd7473b93dabcf0ab.js"], produces = ["application/javascript"])
-	fun getCore(response: HttpServletResponse, servletRequest: HttpServletRequest): String {
-		val text: String = BufferedReader(
-			InputStreamReader(
-				this.javaClass.classLoader.getResourceAsStream(
-					"qr/848.7a8cd7473b93dabcf0ab.js"
-				),
-				StandardCharsets.UTF_8
-			)
-		).lines().collect(Collectors.joining("")).toString().replace(
-			"http://localhost:5000",
-			getHost(servletRequest)
-		)
-
-		response.contentType = "application/javascript"
-		response.characterEncoding = "UTF-8"
-		return text
-	}
-
-	private fun getHost(servletRequest: HttpServletRequest): String {
-		if (hostName.isNotBlank()) {
-			return hostName
-		}
-
-		return if (servletRequest.localAddr.contains("0:0:0"))
-			"http://localhost:${servletRequest.localPort}" else
-			"http://${servletRequest.localAddr}:${servletRequest.localPort}"
 	}
 
 }

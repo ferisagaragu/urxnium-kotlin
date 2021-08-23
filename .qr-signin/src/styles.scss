@@ -1,5 +1,94 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@mdi/font/scss/materialdesignicons';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background: #fafafa; }
 mat-spinner { margin:0 auto; }
+
+.w-100 {
+  width: 100%;
+  margin-top: 5px;
+}
+
+.button-position {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  text-align: end;
+}
+
+.info {
+  max-height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-left-color: #00BCD4;
+  padding: 3%;
+  margin-bottom: 22px;
+}
+
+.success {
+  max-height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-left-color: #4CAF50;
+  padding: 3%;
+  margin-bottom: 22px;
+}
+
+.success-not-bottom {
+  max-height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-left-color: #4CAF50;
+  padding: 3%;
+}
+
+.error {
+  max-height: 100%;
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-left-color: #ba000d;
+  padding: 3%;
+  margin-bottom: 22px;
+}
+
+.space {
+  height: 28px;
+}
+
+.card-space {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.code {
+  text-align: center;
+  font-size: 32px;
+  padding: 24px;
+}
+
+.link {
+  display: inline;
+  border: 0;
+  padding: 0;
+  margin: 0 0 10px 4px;
+  text-decoration: underline;
+  background: none;
+  color: #2196F3;
+  font-size: 1em;
+  line-height:1em;
+}
+
+.link:hover {
+  text-decoration: none;
+  color: #2196F3;
+  cursor: pointer;
+}
+
+.mini-fab {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.mini-fab>span {
+  transform: translateY(-6.51px) translateX(.30px);
+}

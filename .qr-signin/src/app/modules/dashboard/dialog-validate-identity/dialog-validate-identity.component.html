@@ -1,0 +1,41 @@
+<h3>Valida tu identidad</h3>
+
+<div class="info">
+  <em>
+    Hemos enviado el código de verificación a la cuenta
+    de correo electrónico proporcionada en el registro
+    anterior.
+  </em>
+</div>
+
+<mat-form-field class="w-100 margin-top" appearance="outline">
+  <mat-label>Código de verificación</mat-label>
+
+  <input
+    required
+    matInput
+    inputMask
+    mask="99 - 99 - 99"
+    [formControl]="verifyCode"
+  >
+
+  <mat-error *ngIf="this.verifyCode.hasError('pattern')">
+    El nombre es requerido
+  </mat-error>
+
+  <mat-error *ngIf="this.verifyCode.hasError('badCode')">
+    El código de verificación es invalido
+  </mat-error>
+</mat-form-field>
+
+<div class="button-position">
+  <button
+    mat-stroked-button
+    color="accent"
+    [disabled]="verifyCode.invalid || load"
+    (click)="onVerifyAccount()"
+  >
+    <em *ngIf="load" class="mdi mdi-spin mdi-loading"></em>
+    Verificar mi cuenta
+  </button>
+</div>

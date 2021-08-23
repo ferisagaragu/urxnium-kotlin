@@ -1,0 +1,58 @@
+<div class="space"></div>
+
+<div class="card-space">
+  <mat-card>
+    <div *ngIf="!sent">
+      <h2>Cambia el dispositivo de inicio de sesión</h2>
+
+      <div class="info">
+        Ayúdanos a recuperar tu cuenta. Para eso necesitamos
+        identificar tu identidad enviándote un correo para
+        realizar el cambio de dispositivo.
+      </div>
+
+      <mat-form-field class="w-100 margin-top" appearance="outline">
+        <mat-label>Correo electrónico</mat-label>
+
+        <input
+          matInput
+          [formControl]="email"
+          required
+        >
+
+        <mat-error *ngIf="email.hasError('required')">
+          El correo electrónico es requerido
+        </mat-error>
+
+        <mat-error *ngIf="email.hasError('email')">
+          El correo electrónico no es valido
+        </mat-error>
+
+        <mat-error *ngIf="email.hasError('invalid')">
+          El correo electrónico no esta registrado
+        </mat-error>
+      </mat-form-field>
+
+      <div class="button-position">
+        <button
+          mat-stroked-button
+          color="accent"
+          [disabled]="load"
+          (click)="onRecover()"
+        >
+          <em *ngIf="load" class="mdi mdi-spin mdi-loading"></em>
+          Recuperar mi cuenta
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="sent">
+      <div class="success-not-bottom">
+        Hemos enviado un correo electrónico a
+        <strong>{{ email.value }}</strong>, te pedimos
+        que sigas los pasos descritos en el correo
+        electrónico para cambiar tu dispositivo.
+      </div>
+    </div>
+  </mat-card>
+</div>

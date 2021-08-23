@@ -20,8 +20,11 @@ interface IAuthService {
 	fun findBasicUserInfoByUuid(userUuid: UUID): ResponseEntity<Any>
 	fun signInQRView(response: HttpServletResponse): ResponseEntity<Any>
 	fun activateAccount(request: Request): ResponseEntity<Any>
+	fun activateQRAccount(request: Request): ResponseEntity<Any>
 	fun changePassword(request: Request): ResponseEntity<Any>
+	fun changeQRDevice(request: Request): ResponseEntity<Any>
 	fun recoverPassword(request: Request): ResponseEntity<Any>
+	fun recoverQRAccount(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signUp(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signUpQR(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signIn(request: Request): ResponseEntity<Any>

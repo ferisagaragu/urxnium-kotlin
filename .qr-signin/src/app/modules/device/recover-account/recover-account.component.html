@@ -1,0 +1,25 @@
+<div class="space"></div>
+
+<mat-spinner *ngIf="load" strokeWidth="5" color="accent"></mat-spinner>
+
+<div *ngIf="!load && !error" class="card-space">
+  <mat-card>
+    <h2>Tu código de inicio de sesión es:</h2>
+
+    <div class="code">
+      {{ code }}
+    </div>
+  </mat-card>
+</div>
+
+<div *ngIf="!load && error" class="card-space">
+  <mat-card>
+    <div class="error">
+      Hubo un problema al recuperar tu cuenta.
+      Esto puede ser debido a que el proceso de
+      recuperación no se completo correctamente,
+      te pedimos sigas nuevamente los pasos para
+      recuperar tu cuenta.
+    </div>
+  </mat-card>
+</div>

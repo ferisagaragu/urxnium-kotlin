@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from '../../../core/http/user.service';
 import { DeviceUUID } from 'device-uuid';
 import { ActivatedRoute } from '@angular/router';
+import { DialogValidateIdentityComponent } from '../dialog-validate-identity/dialog-validate-identity.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view',
@@ -17,7 +19,8 @@ export class ViewComponent {
 
   constructor(
     private userService: UserService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog
   ) {
     const uuid = new DeviceUUID().get();
     this.load = true;
@@ -27,16 +30,13 @@ export class ViewComponent {
       this.load = false;
 
       if (this.user) {
-        this.route.params.subscribe(params => {
-          this.userService.signUpQR({
-            uuid,
-            secret: params.token
-          }).subscribe(resp => {
-            this.code = resp.code;
-          }, error => {
-            this.expired = true;
-          });
-        });
+        this.load = true;
+
+        if (!this.user.active) {
+          this.openVerifyIdentity();
+        } else {
+          this.getCode(uuid);
+        }
       }
     });
   }
@@ -46,8 +46,46 @@ export class ViewComponent {
     this.user = {};
   }
 
-  onExpired() {
+  onExpired(): void {
     this.expired = true;
+  }
+
+  private openVerifyIdentity(): void {
+    this.route.params.subscribe(params => {
+      this.dialog.open(
+        DialogValidateIdentityComponent,
+        {
+          maxWidth: '95%',
+          maxHeight: '95%',
+          width: '90%',
+          disableClose: true,
+          data: params.token
+        }
+      ).beforeClosed().subscribe(resp => {
+        this.load = false;
+
+        if (resp) {
+          this.onCode(resp);
+        } else {
+          this.onExpired();
+        }
+      });
+    });
+  }
+
+  private getCode(uuid: string): void {
+    this.route.params.subscribe(params => {
+      this.userService.signUpQR({
+        uuid,
+        secret: params.token
+      }).subscribe(resp => {
+        this.code = resp.code;
+        this.load = false;
+      }, error => {
+        this.expired = true;
+        this.load = false;
+      });
+    });
   }
 
 }

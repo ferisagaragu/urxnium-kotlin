@@ -8,7 +8,7 @@
     </em>
   </div>
 
-  <mat-form-field class="w-100" appearance="outline">
+  <mat-form-field class="w-100 margin-top" appearance="outline">
     <mat-label>Nombre</mat-label>
 
     <input
@@ -54,13 +54,22 @@
       required
     >
 
-    <mat-error>
-      El correo electronico es requerido
+    <mat-error *ngIf="form.get('email').hasError('required')">
+      El correo electrónico es requerido
+    </mat-error>
+
+    <mat-error *ngIf="form.get('email').hasError('duplicate')">
+      El correo electrónico ya ha sido registrado
     </mat-error>
   </mat-form-field>
 
+  <button class="link" type="button" [routerLink]="['/device/change-email']">
+    He cambiado de dispositivo
+  </button>
+
   <div class="button-position">
-    <button mat-stroked-button color="accent">
+    <button mat-stroked-button color="accent" [disabled]="form.invalid || load">
+      <em *ngIf="load" class="mdi mdi-spin mdi-loading"></em>
       Terminar mi registro
     </button>
   </div>

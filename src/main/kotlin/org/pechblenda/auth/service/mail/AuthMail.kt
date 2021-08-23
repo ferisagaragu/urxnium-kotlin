@@ -1,18 +1,25 @@
 package org.pechblenda.auth.service.mail
 
 import org.pechblenda.auth.entity.IUser
+import org.pechblenda.core.shared.Server
 import org.pechblenda.mail.GoogleMail
 import org.pechblenda.mail.TemplateActionMail
+import org.pechblenda.mail.TemplateMail
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+
+import javax.servlet.http.HttpServletRequest
 
 @Component
 class AuthMail {
 
 	@Autowired
 	private lateinit var googleMail: GoogleMail
+
+	@Autowired
+	private lateinit var server: Server
 
 	@Value("\${app.language:en}")
 	private lateinit var language: String
@@ -46,6 +53,30 @@ class AuthMail {
 
 	@Value("\${mail.auth.recover-password-action-link:}")
 	private lateinit var recoverPasswordActionLink: String
+
+	@Value("\${mail.auth.activate-qr-account-subject-qr:}")
+	private lateinit var activateQRAccountSubject: String
+
+	@Value("\${mail.auth.activate-qr-account-title:}")
+	private lateinit var activateQRAccountTitle: String
+
+	@Value("\${mail.auth.activate-qr-account-body-qr:}")
+	private lateinit var activateQRAccountBody: String
+
+	@Value("\${mail.auth.recover-qr-account-subject:}")
+	private lateinit var recoverQRAccountSubject: String
+
+	@Value("\${mail.auth.recover-qr-account-title:}")
+	private lateinit var recoverQRAccountTitle: String
+
+	@Value("\${mail.auth.recover-qr-account-body:}")
+	private lateinit var recoverQRAccountBody: String
+
+	@Value("\${mail.auth.recover-qr-account-action:}")
+	private lateinit var recoverQRAccountAction: String
+
+	@Value("\${mail.auth.recover-qr-account-action-link:}")
+	private lateinit var recoverQRAccountActionLink: String
 
 	fun sendActivateAccountMail(user: IUser) {
 		googleMail.send(
@@ -110,6 +141,67 @@ class AuthMail {
 				actionLink =  when {
 					recoverPasswordActionLink.isNotEmpty() -> "${recoverPasswordActionLink}/${user.activatePassword}"
 					else -> "http://localhost:8080/${user.activatePassword}"
+				}
+			),
+			user.email
+		)
+	}
+
+	fun sendActivateQRAccountMail(user: IUser) {
+		googleMail.send(
+			when {
+				activateQRAccountSubject.isNotEmpty() -> activateQRAccountSubject
+				(activateQRAccountSubject.isEmpty() && language == "es") -> "Verifica tu cuenta"
+				else -> "Verify your account"
+			},
+			TemplateMail(
+				title = when {
+					activateQRAccountTitle.isNotEmpty() -> activateQRAccountTitle
+					(activateQRAccountTitle.isEmpty() && language == "es") -> "Verificación de cuenta"
+					else -> "Verify Account"
+				},
+				body = when {
+					activateQRAccountBody.isNotEmpty() -> activateQRAccountBody
+					(activateQRAccountBody.isEmpty() && language == "es") -> ("Gracias por registrarte {name}, " +
+							"antes de comenzar nos gustaría verificar tu identidad." +
+							"<br><br>Tu código de verificación es: <b>${user.password}</b>").replace("{name}", user.name)
+					else -> ("Thank you for registering {name}, before we begin we would like to verify your identity." +
+							"<br><br>Your verification code is: <b>${user.password}</b>").replace("{name}", user.name)
+				}
+			),
+			user.email
+		)
+	}
+
+	fun sendRecoverQRAccountMail(user: IUser, servletRequest: HttpServletRequest) {
+		googleMail.send(
+			when {
+				recoverQRAccountSubject.isNotEmpty() -> recoverQRAccountSubject
+				(recoverQRAccountSubject.isEmpty() && language == "es") -> "Recupera tu cuenta"
+				else -> "Recover your account"
+			},
+			TemplateActionMail(
+				title = when {
+					recoverQRAccountTitle.isNotEmpty() -> recoverQRAccountTitle
+					(recoverQRAccountTitle.isEmpty() && language == "es") ->
+						"Ayudanos a identificar tu nuevo dispositivo {name}".replace("{name}", user.name)
+					else -> "Help us identify your new device {name}".replace("{name}", user.name)
+				},
+				body = when {
+					recoverQRAccountBody.isNotEmpty() -> recoverQRAccountBody
+					(recoverQRAccountBody.isEmpty() && language == "es") ->
+						"Ingresa a la siguiente dirección para recuperar tu cuenta."
+					else -> "Enter the following address to recover your account."
+				},
+				actionLabel = when {
+					recoverQRAccountAction.isNotEmpty() -> recoverQRAccountAction
+					(recoverQRAccountAction.isEmpty() && language == "es") -> "RECUPERAR MI CUENTA"
+					else -> "RECOVER MY ACCOUNT"
+				},
+				actionLink =  when {
+					recoverQRAccountActionLink.isNotEmpty() -> "${recoverQRAccountActionLink}/${user.activatePassword}"
+					else -> "${server.getHost(servletRequest)}" +
+						"/rest/auth/sign-in-qr-view/#/device/recover/${user.activatePassword}"
 				}
 			),
 			user.email

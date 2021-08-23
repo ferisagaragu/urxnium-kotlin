@@ -1,9 +1,12 @@
 package org.pechblenda.bean
 
+import org.pechblenda.auth.dynamic.AuthResourceController
 import org.pechblenda.auth.service.mail.AuthMail
 import org.pechblenda.auth.service.message.AuthMessage
+import org.pechblenda.core.shared.Server
 import org.pechblenda.doc.refactor.DocumentRecycle
 import org.pechblenda.exception.HttpExceptionResponse
+import org.pechblenda.hook.SlackAlert
 import org.pechblenda.mail.GoogleMail
 import org.pechblenda.security.GoogleAuthentication
 import org.pechblenda.security.JwtProvider
@@ -79,6 +82,11 @@ open class UrxniumBean {
 	}
 
 	@Bean
+	open fun authResourceController(): AuthResourceController {
+		return AuthResourceController()
+	}
+
+	@Bean
 	open fun jwtProvider(): JwtProvider {
 		return JwtProvider()
 	}
@@ -101,6 +109,16 @@ open class UrxniumBean {
 	@Bean
 	open fun document(): DocumentRecycle {
 		return DocumentRecycle()
+	}
+
+	@Bean
+	open fun server(): Server {
+		return Server()
+	}
+
+	@Bean
+	open fun slackAlert(): SlackAlert {
+		return SlackAlert()
 	}
 
 }

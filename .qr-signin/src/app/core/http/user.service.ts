@@ -22,4 +22,25 @@ export class UserService {
     ).pipe(map((resp: any) => resp.data));
   }
 
+  activateQRAccount(userData: any): Observable<any> {
+    return this.http.post(
+      `http://localhost:5000/rest/auth/activate-qr-account`,
+      userData
+    ).pipe(map((resp: any) => resp.data.code));
+  }
+
+  recoverQRAccount(email: string): Observable<any> {
+    return this.http.post(
+      `http://localhost:5000/rest/auth/recover-qr-account`,
+      { email }
+    );
+  }
+
+  changeQRDevice(userData: any): Observable<any> {
+    return this.http.post(
+      `http://localhost:5000/rest/auth/change-qr-device`,
+      userData
+    ).pipe(map((resp: any) => resp.data.code));
+  }
+
 }

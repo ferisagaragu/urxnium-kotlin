@@ -1,9 +1,5 @@
 package org.pechblenda.auth.service
 
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
-import com.google.zxing.client.j2se.MatrixToImageWriter
-
 import org.pechblenda.auth.entity.IUser
 import org.pechblenda.auth.repository.IAuthRepository
 import org.pechblenda.auth.service.`interface`.IAuthService
@@ -23,6 +19,7 @@ import org.pechblenda.style.Avatar
 import org.pechblenda.style.Color
 import org.pechblenda.style.CategoryColor
 import org.pechblenda.auth.enum.AccountType
+import org.pechblenda.core.shared.Server
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -31,24 +28,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.InputStreamResource
+import org.springframework.stereotype.Service
 
 import kotlin.reflect.KClass
 
 import java.net.URLEncoder
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 import java.util.UUID
 import java.util.Date
 import javax.servlet.http.HttpServletRequest
 import java.nio.charset.StandardCharsets
-import javax.imageio.ImageIO
 import javax.servlet.http.HttpServletResponse
 import kotlin.collections.LinkedHashMap
-import org.apache.commons.io.output.ByteArrayOutputStream
-import org.springframework.core.io.InputStreamResource
+import kotlin.random.Random
+import org.pechblenda.service.helper.SingleValidation
 
 @Service
 open class AuthService: IAuthService {
@@ -79,6 +74,9 @@ open class AuthService: IAuthService {
 
 	@Autowired
 	private lateinit var outlookAuthentication: OutlookAuthentication
+
+	@Autowired
+	private lateinit var server: Server
 
 	@Value("\${app.host:}")
 	private lateinit var hostName: String
@@ -174,29 +172,23 @@ open class AuthService: IAuthService {
 
 	@Transactional(readOnly = true)
 	override fun generateQRAuthentication(servletRequest: HttpServletRequest): ResponseEntity<Any> {
-		val matrix = MultiFormatWriter().encode(
-			"${getHost(servletRequest)}/rest/auth/sign-in-qr-view/${jwtProvider.generateJwtSecretToken()}",
-			BarcodeFormat.QR_CODE,
-			512,
-			512
+		return response.qr(
+			"${server.getHost(servletRequest)}/rest/auth/sign-in-qr-view/${jwtProvider.generateJwtSecretToken()}"
 		)
-		val os = ByteArrayOutputStream()
-		ImageIO.write(MatrixToImageWriter.toBufferedImage(matrix), "png", os)
-		val iss: InputStream = ByteArrayInputStream(os.toByteArray())
-
-		return response.file("image/png", "${UUID.randomUUID()}.png", iss)
 	}
 
 	@Transactional(readOnly = true)
 	override fun findBasicUserInfoByUuid(userUuid: UUID): ResponseEntity<Any> {
-		val user = authRepository.likeByUserName("%$userUuid").orElse(null) ?: return response.ok()
+		val user = authRepository.likeByUserName("%$userUuid").orElse(null)
+			?: return response.ok()
 
 		return response.toMap(user)
 			.include(
 				"name",
 				"surname",
 				"motherSurname",
-				"email"
+				"email",
+				"active"
 			).ok()
 	}
 
@@ -242,6 +234,42 @@ open class AuthService: IAuthService {
 	}
 
 	@Transactional
+	override fun activateQRAccount(request: Request): ResponseEntity<Any> {
+		val secret = request.to<String>(
+			"secret",
+			SingleValidation(
+				authMessage.getActivateQRUserSecretRequired(),
+				ValidationType.NOT_NULL,
+				ValidationType.NOT_BLANK,
+				ValidationType.EXIST
+			)
+		)
+		val verifyCode = request.to<String>(
+			"verifyCode",
+			SingleValidation(
+				authMessage.getActivateQRUserVerifyCodeRequired(),
+				ValidationType.NOT_NULL,
+				ValidationType.NOT_BLANK,
+				ValidationType.EXIST
+			)
+		)
+
+		val code = jwtProvider.validateJwtSecretToken(secret)
+		val userFind = authRepository.findByPassword(verifyCode).orElseThrow {
+			UnauthenticatedException(authMessage.getActivateQRUserVerifyCodeInvalid())
+		}
+
+		userFind.active = true
+		userFind.enabled = true
+		userFind.password = code
+
+		val out = Request()
+		out["code"] = code
+
+		return response.ok(out)
+	}
+
+	@Transactional
 	override fun changePassword(request: Request): ResponseEntity<Any> {
 		val user = request.to<IUser>(
 			userEntity,
@@ -266,6 +294,54 @@ open class AuthService: IAuthService {
 		userFind.password = passwordEncoder.encode(user.password)
 
 		return response.ok(authMessage.getPasswordChanged())
+	}
+
+	@Transactional
+	override fun changeQRDevice(request: Request): ResponseEntity<Any> {
+		val activatePassword = request.to<UUID>(
+			"activatePassword",
+			SingleValidation(
+				authMessage.getSignUpQRUuidRequired(),
+				ValidationType.NOT_NULL,
+				ValidationType.NOT_BLANK
+			)
+		)
+		val deviceUuid = request.to<UUID>(
+			"deviceUuid",
+			SingleValidation(
+				authMessage.getSignUpQRUuidRequired(),
+				ValidationType.NOT_NULL,
+				ValidationType.NOT_BLANK
+			)
+		)
+
+		val userFind = authRepository.findByActivatePassword(activatePassword).orElseThrow {
+			BadRequestException(authMessage.getUserNotFount())
+		}
+
+		if (!userFind.active) {
+			BadRequestException(authMessage.getAccountNotActivate())
+		}
+
+		if (!userFind.enabled) {
+			BadRequestException(authMessage.getAccountBlocked())
+		}
+
+		val code = "${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+				"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+				"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)}"
+
+		if (userFind.accountType == AccountType.QR.name) {
+			val name = userFind.userName.split('-')[0]
+			userFind.userName = "$name-${deviceUuid}"
+			userFind.activatePassword = null
+			userFind.password = code
+		}
+
+		val out = Request()
+		out["code"] = code
+
+		return response.ok(out)
 	}
 
 	@Transactional
@@ -303,6 +379,38 @@ open class AuthService: IAuthService {
 				userFind.email
 			)
 		)
+	}
+
+	@Transactional
+	override fun recoverQRAccount(
+		request: Request,
+		servletRequest: HttpServletRequest
+	): ResponseEntity<Any> {
+		val email = request.to<String>(
+			"email",
+			SingleValidation(
+				authMessage.getEmailRequired(),
+				ValidationType.NOT_NULL,
+				ValidationType.NOT_BLANK
+			)
+		)
+
+		val userFind = authRepository.findByUserNameOrEmail(email).orElseThrow {
+			BadRequestException(authMessage.getUserNotFount())
+		}
+
+		if (!userFind.active) {
+			BadRequestException(authMessage.getAccountNotActivate())
+		}
+
+		if (!userFind.enabled) {
+			BadRequestException(authMessage.getAccountBlocked())
+		}
+
+		userFind.activatePassword = UUID.randomUUID()
+		authMail.sendRecoverQRAccountMail(userFind, servletRequest)
+
+		return response.ok()
 	}
 
 	@Transactional
@@ -372,14 +480,14 @@ open class AuthService: IAuthService {
 		request.validate(Validations(
 			Validation(
 				"secret",
-				"Upps el secret no es valido",
+				authMessage.getActivateQRUserSecretRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
 			),
 			Validation(
 				"uuid",
-				"Upps el uuid es requerido",
+				authMessage.getSignUpQRUuidRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -390,28 +498,28 @@ open class AuthService: IAuthService {
 		val userFind = authRepository.likeByUserName("%${request["uuid"].toString()}").orElse(null)
 
 		if (authRepository.findByPassword(code).orElse(null) != null) {
-			throw BadRequestException("Upps el código de inicio de sesión ya esta registrado")
+			throw BadRequestException(authMessage.getSignUpQRCodeRegistered())
 		}
 
 		if (userFind == null) {
 			request.validate(Validations(
 				Validation(
 					"name",
-					"Upps el nombre es requerido",
+					authMessage.getNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
 				),
 				Validation(
 					"surname",
-					"Upps apellido es requerido",
+					authMessage.getSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
 				),
 				Validation(
 					"email",
-					"Upps email es requerido",
+					authMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
@@ -421,32 +529,44 @@ open class AuthService: IAuthService {
 			val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 			if (authRepository.existsByEmail(request["email"].toString())) {
-				throw BadRequestException("Upps el correo electrónico ya esta registrado")
+				throw BadRequestException(authMessage.getEmailRegistered(), "duplicate")
 			}
 
 			user.name = request["name"].toString()
 			user.surname = request["surname"].toString()
 			user.motherSurname = request["motherSurname"].toString()
-			user.userName = "${request["name"].toString().replace(" ", "")}&" +
+			user.userName = "${request["name"].toString().replace(" ", "")}-" +
 					"${UUID.fromString(request["uuid"].toString())}"
 			user.email = request["email"].toString()
-			user.password = code
-			user.active = true
-			user.enabled = true
+			user.password = "${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+					"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
+					"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)}"
+			user.active = false
+			user.enabled = false
 			user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
 					URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
 					"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
 			user.accountType = AccountType.QR.name
 
-			authRepository.save(user)
+			val userSaved = authRepository.save(user)
+			authMail.sendActivateQRAccountMail(userSaved)
+			return response.ok()
 		} else {
+			if (!userFind.active) {
+				throw BadRequestException(authMessage.getAccountNotActive())
+			}
+
+			if (!userFind.enabled) {
+				BadRequestException(authMessage.getAccountBlocked())
+			}
+
 			userFind.password = code
 		}
 
 		val out = Request()
 		out["code"] = code
 
-		return this.response.ok(out)
+		return response.ok(out)
 	}
 
 	@Transactional
@@ -607,7 +727,7 @@ open class AuthService: IAuthService {
 		request.validate(Validations(
 			Validation(
 				"code",
-				"Upps el codigo es requerido para inciar sesión",
+				authMessage.getAccessCodeRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -615,7 +735,7 @@ open class AuthService: IAuthService {
 		))
 
 		val user = authRepository.findByPassword(request["code"].toString()).orElseThrow {
-			UnauthenticatedException("Upps el codigo que ingresaste no es valido")
+			UnauthenticatedException(authMessage.getSignUpQRCodeInvalid())
 		}
 		val session: Map<String, Any>
 		val password = UUID.randomUUID()

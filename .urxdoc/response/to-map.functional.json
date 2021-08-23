@@ -1,0 +1,24 @@
+{
+  "name": "toMap",
+  "access": "public",
+  "bookmark": "",
+  "description": "",
+  "html": null,
+  "exampleCodes": [
+    {
+      "title": "",
+      "description": "",
+      "code": null,
+      "out": null,
+      "language": "javascript"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "",
+      "type": "",
+      "description": "",
+      "default": ""
+    }
+  ]
+}

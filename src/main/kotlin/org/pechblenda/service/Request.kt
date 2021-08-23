@@ -1,6 +1,8 @@
 package org.pechblenda.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import java.util.Date
+import java.util.UUID
 
 import org.pechblenda.service.helper.EntityParse
 import org.pechblenda.service.helper.ProtectFields
@@ -8,6 +10,9 @@ import org.pechblenda.service.helper.Validations
 
 import kotlin.collections.LinkedHashMap
 import kotlin.reflect.KClass
+import org.pechblenda.exception.BadRequestException
+import org.pechblenda.service.helper.SingleValidation
+import org.pechblenda.service.helper.Validation
 
 import org.slf4j.LoggerFactory
 
@@ -45,6 +50,42 @@ class Request: LinkedHashMap<String, Any?>() {
 			toSerialize,
 			kClass.java
 		) as T
+	}
+
+	fun <T> to(key: String): T {
+		return to(key, null)
+	}
+
+	fun <T> to(key: String, singleValidation: SingleValidation?): T {
+		if (singleValidation != null) {
+			Validations(
+				Validation(
+					key,
+					singleValidation
+				)
+			).validate(this)
+		}
+
+		val value = this[key]
+
+		try {
+			return value.toString().toDouble() as T
+		} catch (e: NumberFormatException) { }
+
+		try {
+			return UUID.fromString(value.toString()) as T
+		} catch (e: Exception) { }
+
+		try {
+			if (
+				value.toString().toLowerCase() == "true" ||
+				value.toString().toLowerCase() == "false"
+			) {
+				return value.toString().toBoolean() as T
+			}
+		} catch (e: Exception) { }
+
+		return value as T
 	}
 
 	fun <T> toList(

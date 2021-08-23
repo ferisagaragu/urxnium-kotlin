@@ -1,5 +1,9 @@
 package org.pechblenda.service
 
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.MultiFormatWriter
+import com.google.zxing.client.j2se.MatrixToImageWriter
+import java.io.ByteArrayInputStream
 import org.pechblenda.service.helper.ResponseList
 import org.pechblenda.service.helper.ResponseMap
 import org.pechblenda.service.refactor.ResponseRecycle
@@ -11,6 +15,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 
 import java.io.InputStream
+import java.util.UUID
+import javax.imageio.ImageIO
+import org.apache.commons.io.output.ByteArrayOutputStream
 
 class Response {
 
@@ -72,6 +79,20 @@ class Response {
 			.contentType(MediaType.parseMediaType(mediaType))
 			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
 			.body(InputStreamResource(fileData))
+	}
+
+	fun qr(data: String): ResponseEntity<Any> {
+		val matrix = MultiFormatWriter().encode(
+			data,
+			BarcodeFormat.QR_CODE,
+			512,
+			512
+		)
+		val os = ByteArrayOutputStream()
+		ImageIO.write(MatrixToImageWriter.toBufferedImage(matrix), "png", os)
+		val iss: InputStream = ByteArrayInputStream(os.toByteArray())
+
+		return file("image/png", "${UUID.randomUUID()}.png", iss)
 	}
 
 	fun toMap(any: Any, vararg callMethods: String): ResponseMap {

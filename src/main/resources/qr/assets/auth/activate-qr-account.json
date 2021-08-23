@@ -1,7 +1,7 @@
 {
-  "description": "Service to register new member from QR link page",
+  "description": "Service to activate QR account whit email",
   "authorization": false,
-  "bookmark": "mdi-numeric-3-circle",
+  "bookmark": "mdi-numeric-4-circle",
   "responseOk": {
     "code": "12 - 34 - 56"
   },
@@ -20,10 +20,6 @@
   },
   "requestBody": {
     "secret": "eyJhbGciOiJIUzUxMiJ9.eyJjb2RlIjoiNDIgLSAwNSAtIDg4Iiwic3ViIjoiand0QF8vYXBwLXJlc3QjIiwiaWF0IjoxNjI4NzMzNDU0LCJleHAiOjE2Mjg3MzUyNTR9.Gz7nnjFAj9699GCipzvPIjS0vPwxLzr_9MrJ_O6HE7WzSl4Xvbd6W7bkLq8SFZI9jw2CHTtAURh6AHokkkofNQ",
-    "uuid": "18cf4162-c0bb-4f68-98a8-8a6854924128",
-    "name": "Fake Name",
-    "surname": "Fake Surname",
-    "motherSurname": "Fake Mothersurname",
-    "email": "fakename@gmail.com"
+    "verifyCode": "00 - 00 - 00"
   }
 }
