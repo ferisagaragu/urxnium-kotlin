@@ -3,7 +3,11 @@
   "authorization": false,
   "bookmark": "mdi-numeric-3-circle",
   "responseOk": {
-    "code": "12 - 34 - 56"
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 200,
+    "data": {
+      "code": "00 - 00 - 00"
+    }
   },
   "responseUnauthorized": {
     "timestamp": "11-20-2020  16:53:53 p. m.",
