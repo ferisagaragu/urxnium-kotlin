@@ -2,15 +2,13 @@ package org.pechblenda.style
 
 import java.awt.Color
 import java.awt.Font
+import java.awt.GradientPaint
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
-
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
-
 import java.net.URL
-
 import javax.imageio.ImageIO
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,6 +64,49 @@ class Avatar {
 		)
 	}
 
+	fun generateGradientImage(
+		letter: Char,
+		primaryLeft: String,
+		primaryRight: String,
+		shadeColor: String
+	): InputStream {
+		val primaryLeftColor = Color.decode(primaryLeft)
+		val primaryRightColor = Color.decode(primaryRight)
+		val shadeColor = Color.decode(shadeColor)
+		val image = BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB)
+		val g = image.createGraphics()
+		val primary = GradientPaint(0f, 0f, primaryLeftColor, 100.toFloat(), 0f, primaryRightColor)
+		val rC = shadeColor.red
+		val gC = shadeColor.green
+		val bC = shadeColor.blue
+		val shade = GradientPaint(0f, 0f, Color(rC, gC, bC, 0), 60f, 100f, shadeColor)
+		val os = ByteArrayOutputStream()
+		val font = Font.createFont(
+			Font.PLAIN,
+			this.javaClass.classLoader.getResourceAsStream("fonts/JosefinSans.ttf")
+		).deriveFont(Font.BOLD, 80f)
+
+		g.paint = primary
+		g.fillRect(0, 0, 100, 100)
+		g.paint = shade
+		g.fillRect(0, 0, 100, 100)
+
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+		g.font = font
+		g.color = Color.WHITE
+
+		if (letter.toString() == "F") {
+			g.drawString(letter.toString(), 25, 80)
+		} else {
+			g.drawString(letter.toString(), 20, 80)
+		}
+
+		g.dispose()
+
+		ImageIO.write(image, "png", os)
+		return ByteArrayInputStream(os.toByteArray())
+	}
+
 	private fun generateIcon(
 		initialLetter: String,
 		color: String,
@@ -81,7 +122,7 @@ class Avatar {
 					.openStream()
 			).deriveFont(Font.BOLD, 80f)
 		else
-			Font.createFont(Font.PLAIN, this.javaClass.classLoader.getResourceAsStream("Roboto-Light.ttf"))
+			Font.createFont(Font.PLAIN, this.javaClass.classLoader.getResourceAsStream("fonts/Roboto-Light.ttf"))
 				.deriveFont(Font.BOLD, 80f)
 
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)

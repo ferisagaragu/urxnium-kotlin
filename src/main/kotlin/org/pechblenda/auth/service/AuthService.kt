@@ -16,10 +16,10 @@ import org.pechblenda.service.helper.Validation
 import org.pechblenda.service.helper.ValidationType
 import org.pechblenda.service.helper.Validations
 import org.pechblenda.style.Avatar
-import org.pechblenda.style.Color
-import org.pechblenda.style.CategoryColor
 import org.pechblenda.auth.enum.AccountType
 import org.pechblenda.core.shared.Server
+import org.pechblenda.core.shared.DynamicResources
+import org.pechblenda.service.helper.SingleValidation
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -29,21 +29,18 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.InputStreamResource
 import org.springframework.stereotype.Service
+import org.springframework.beans.factory.annotation.Value
 
 import kotlin.reflect.KClass
 
-import java.net.URLEncoder
 import java.util.UUID
 import java.util.Date
 import javax.servlet.http.HttpServletRequest
-import java.nio.charset.StandardCharsets
 import javax.servlet.http.HttpServletResponse
 import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
-import org.pechblenda.service.helper.SingleValidation
 
 @Service
 open class AuthService: IAuthService {
@@ -78,11 +75,11 @@ open class AuthService: IAuthService {
 	@Autowired
 	private lateinit var server: Server
 
-	@Value("\${app.host:}")
-	private lateinit var hostName: String
+	@Autowired
+	private lateinit var dynamicResources: DynamicResources
 
-	@Value("\${app.auth.front-base-url:}")
-	private lateinit var redirectUri: String
+	@Value("\${app.user-avatar:material}")
+	private lateinit var avatarType: String
 
 	private val authRepository: IAuthRepository<IUser, UUID>
 	private val userEntity: KClass<*>
@@ -173,7 +170,7 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun generateQRAuthentication(servletRequest: HttpServletRequest): ResponseEntity<Any> {
 		return response.qr(
-			"${server.getHost(servletRequest)}/rest/auth/sign-in-qr-view/${jwtProvider.generateJwtSecretToken()}"
+			"${server.getHost(servletRequest)}/rest/auth/sign-in-qr-view/#/${jwtProvider.generateJwtSecretToken()}"
 		)
 	}
 
@@ -451,7 +448,6 @@ open class AuthService: IAuthService {
 			)
 		)
 		val temporalPassword = UUID.randomUUID().toString()
-		val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 		if (authRepository.existsByUserName(user.userName)) {
 			throw BadRequestException(authMessage.getUserNameRegistered())
@@ -463,9 +459,7 @@ open class AuthService: IAuthService {
 
 		user.password = passwordEncoder.encode(temporalPassword)
 		user.enabled = true
-		user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
-			URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
-			"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
+		user.photo = dynamicResources.getUserImageUrl(servletRequest, user)
 		user.accountType = AccountType.DEFAULT.name
 
 		val userOut = authRepository.save(user)
@@ -526,7 +520,6 @@ open class AuthService: IAuthService {
 				)
 			))
 			val user = userEntity.java.getDeclaredConstructor().newInstance() as IUser
-			val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 			if (authRepository.existsByEmail(request["email"].toString())) {
 				throw BadRequestException(authMessage.getEmailRegistered(), "duplicate")
@@ -543,9 +536,7 @@ open class AuthService: IAuthService {
 					"${Random.nextInt(0, 9)}${Random.nextInt(0, 9)}"
 			user.active = false
 			user.enabled = false
-			user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
-					URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
-					"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
+			user.photo = dynamicResources.getUserImageUrl(servletRequest, user)
 			user.accountType = AccountType.QR.name
 
 			val userSaved = authRepository.save(user)
@@ -667,7 +658,6 @@ open class AuthService: IAuthService {
 		if (userSearched == null) {
 			val user = userEntity.java.getDeclaredConstructor().newInstance() as IUser
 			val lastNames = userLogged.lastName.split(" ")
-			val color = Color().getMaterialColor(CategoryColor.MATERIAL_500)
 
 			user.name = userLogged.firstName
 			user.surname = lastNames[0]
@@ -677,9 +667,7 @@ open class AuthService: IAuthService {
 			user.email = userLogged.email
 			user.active = true
 			user.enabled = true
-			user.photo = "${getHost(servletRequest)}/rest/auth/generate-profile-image/${user.name[0]}/" +
-				URLEncoder.encode(color.color, StandardCharsets.UTF_8.toString()) +
-				"/" + URLEncoder.encode(color.background, StandardCharsets.UTF_8.toString())
+			user.photo = dynamicResources.getUserImageUrl(servletRequest, user)
 			user.accountType = if (request["type"].toString() == "Google")
 				AccountType.GMAIL.name else AccountType.OUTLOOK.name
 
@@ -805,21 +793,21 @@ open class AuthService: IAuthService {
 		color: String,
 		background: String
 	): ResponseEntity<Any> {
-		return response.file(
-			"image/png",
-			"userprofile.png",
-			avatar.generateUserImage(initialLetter, color, background)
-		)
-	}
+		println(avatarType)
 
-	private fun getHost(servletRequest: HttpServletRequest): String {
-		if (hostName.isNotBlank()) {
-			return hostName
+		return if (avatarType == "material") {
+			response.file(
+				"image/png",
+				"userprofile.png",
+				avatar.generateUserImage(initialLetter, color, background)
+			)
+		} else {
+			response.file(
+				"image/png",
+				"userprofile.png",
+				avatar.generateGradientImage(initialLetter, color, color, background)
+			)
 		}
-
-		return if (servletRequest.localAddr.contains("0:0:0"))
-			"http://localhost:${servletRequest.localPort}" else
-			"http://${servletRequest.localAddr}:${servletRequest.localPort}"
 	}
 
 }

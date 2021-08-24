@@ -43,6 +43,56 @@ class Color {
 		return colorsOut[randomNumber]
 	}
 
+	fun getGradientColor(): GradientColor {
+		return when(java.util.Random().nextInt(7)) {
+			0 -> GradientColor(
+				"#53d3fd",
+				"#53d3fd",
+				"#38a0f3"
+			)
+			1 -> GradientColor(
+				"#f179ba",
+				"#f179ba",
+				"#d942c7"
+			)
+			2 -> GradientColor(
+				"#34e5af",
+				"#34e5af",
+				"#2bccba"
+			)
+			3 -> GradientColor(
+				"#c276f2",
+				"#c276f2",
+				"#9a479e"
+			)
+			4 -> GradientColor(
+				"#faaf3d",
+				"#faaf3d",
+				"#f57b37"
+			)
+			5 -> GradientColor(
+				"#fc73ad",
+				"#fc73ad",
+				"#eb5677"
+			)
+			6 -> GradientColor(
+				"#bbbbbb",
+				"#bbbbbb",
+				"#8a8a8a"
+			)
+			7 -> GradientColor(
+				"#84a2fe",
+				"#84a2fe",
+				"#837dfb"
+			)
+			else -> GradientColor(
+				"#53d3fd",
+				"#53d3fd",
+				"#38a0f3"
+			)
+		}
+	}
+
 	private fun readMaterialColors(): Map<*, *> {
 		val isr = InputStreamReader(
 			this.javaClass.classLoader.getResourceAsStream("material-colors.json"),
