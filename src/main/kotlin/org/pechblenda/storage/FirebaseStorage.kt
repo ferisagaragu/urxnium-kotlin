@@ -20,6 +20,7 @@ import org.springframework.core.io.ClassPathResource
 
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
+import org.pechblenda.storage.entity.FileInfo
 
 class FirebaseStorage {
 

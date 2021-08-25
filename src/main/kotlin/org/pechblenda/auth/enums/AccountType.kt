@@ -1,4 +1,4 @@
-package org.pechblenda.auth.enum
+package org.pechblenda.auth.enums
 
 enum class AccountType {
 	GMAIL,

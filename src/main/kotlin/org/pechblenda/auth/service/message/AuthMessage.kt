@@ -1,6 +1,6 @@
 package org.pechblenda.auth.service.message
 
-import org.pechblenda.auth.enum.AccountType
+import org.pechblenda.auth.enums.AccountType
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 

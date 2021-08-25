@@ -1,4 +1,4 @@
-package org.pechblenda.style
+package org.pechblenda.style.enums
 
 enum class CategoryColor {
 	MATERIAL_50,

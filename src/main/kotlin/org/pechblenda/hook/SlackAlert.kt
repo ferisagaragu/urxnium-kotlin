@@ -1,5 +1,6 @@
 package org.pechblenda.hook
 
+import org.pechblenda.hook.entity.SlackMessage
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod

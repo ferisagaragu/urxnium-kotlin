@@ -1,4 +1,4 @@
-package org.pechblenda.storage
+package org.pechblenda.storage.entity
 
 class FileInfo(
 	val fileName: String,

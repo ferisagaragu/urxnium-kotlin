@@ -1,4 +1,4 @@
-package org.pechblenda.style
+package org.pechblenda.style.entity
 
 class MaterialColor(
 	val color: String,

@@ -1,4 +1,4 @@
-package org.pechblenda.auth.service.`interface`
+package org.pechblenda.auth.service.interfaces
 
 import java.util.UUID
 

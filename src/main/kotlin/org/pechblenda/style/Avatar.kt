@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
 import javax.imageio.ImageIO
+import org.pechblenda.style.enums.CategoryColor
 
 import org.springframework.beans.factory.annotation.Autowired
 

@@ -1,4 +1,4 @@
-package org.pechblenda.hook
+package org.pechblenda.hook.entity
 
 class SlackMessage(
 	val userName: String,

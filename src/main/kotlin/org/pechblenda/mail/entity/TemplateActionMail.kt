@@ -1,4 +1,4 @@
-package org.pechblenda.mail
+package org.pechblenda.mail.entity
 
 class TemplateActionMail(
 	var title: String,

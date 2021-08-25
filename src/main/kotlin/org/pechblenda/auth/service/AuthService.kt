@@ -2,7 +2,7 @@ package org.pechblenda.auth.service
 
 import org.pechblenda.auth.entity.IUser
 import org.pechblenda.auth.repository.IAuthRepository
-import org.pechblenda.auth.service.`interface`.IAuthService
+import org.pechblenda.auth.service.interfaces.IAuthService
 import org.pechblenda.auth.service.mail.AuthMail
 import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.exception.BadRequestException
@@ -16,7 +16,7 @@ import org.pechblenda.service.helper.Validation
 import org.pechblenda.service.helper.ValidationType
 import org.pechblenda.service.helper.Validations
 import org.pechblenda.style.Avatar
-import org.pechblenda.auth.enum.AccountType
+import org.pechblenda.auth.enums.AccountType
 import org.pechblenda.core.shared.Server
 import org.pechblenda.core.shared.DynamicResources
 import org.pechblenda.service.helper.SingleValidation

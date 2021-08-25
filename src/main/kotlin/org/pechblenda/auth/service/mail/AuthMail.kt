@@ -3,8 +3,8 @@ package org.pechblenda.auth.service.mail
 import org.pechblenda.auth.entity.IUser
 import org.pechblenda.core.shared.Server
 import org.pechblenda.mail.GoogleMail
-import org.pechblenda.mail.TemplateActionMail
-import org.pechblenda.mail.TemplateMail
+import org.pechblenda.mail.entity.TemplateActionMail
+import org.pechblenda.mail.entity.TemplateMail
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

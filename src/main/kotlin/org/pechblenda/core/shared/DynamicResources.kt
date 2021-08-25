@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets
 import javax.servlet.http.HttpServletRequest
 
 import org.pechblenda.auth.entity.IUser
-import org.pechblenda.style.CategoryColor
+import org.pechblenda.style.enums.CategoryColor
 import org.pechblenda.style.Color
 
 import org.springframework.beans.factory.annotation.Autowired
