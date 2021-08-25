@@ -61,8 +61,8 @@ class GoogleAuthentication {
 		val request = Request.Builder()
 			.url(
 				"https://content-people.googleapis.com/v1/people/me?personFields=" +
-					"birthdays%2CcoverPhotos%2CemailAddresses%2Clocales%2Cnames%2CphoneNumbers" +
-					"%2Cphotos&key=${apiKeyDeserialized["apiKey"]}"
+				"birthdays%2CcoverPhotos%2CemailAddresses%2Clocales%2Cnames%2CphoneNumbers" +
+				"%2Cphotos&key=${apiKeyDeserialized["apiKey"]}"
 			)
 			.method("GET", null)
 			.addHeader("Authorization", "Bearer " + tokenResponse.accessToken)
