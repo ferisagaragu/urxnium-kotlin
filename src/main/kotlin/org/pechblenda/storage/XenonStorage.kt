@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils
 import org.springframework.beans.factory.annotation.Value
 
 import kotlin.collections.LinkedHashMap
+import org.pechblenda.storage.entity.FileInfo
 
 class XenonStorage {
 
