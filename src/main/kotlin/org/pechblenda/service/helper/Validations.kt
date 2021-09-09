@@ -106,6 +106,36 @@ class Validations {
 					}
 				}
 
+				if (validationTypeEach.contains("_MIN_INT")) {
+					if (
+						(serialized[validation.fieldName] as Int) <
+						convertValueInt(validationTypeEach)
+					) {
+						logger.error("Min validation was broken with key ${validation.fieldName}")
+						throwException(validation.message)
+					}
+				}
+
+				if (validationTypeEach.contains("_MAX_INT")) {
+					if (
+						(serialized[validation.fieldName] as Int) >
+						convertValueInt(validationTypeEach)
+					) {
+						logger.error("Max validation was broken with key ${validation.fieldName}")
+						throwException(validation.message)
+					}
+				}
+
+				if (validationTypeEach.contains("_EQUALS_INT")) {
+					if (
+						(serialized[validation.fieldName] as Int) !=
+						convertValueInt(validationTypeEach)
+					) {
+						logger.error("Equals number validation was broken with key ${validation.fieldName}")
+						throwException(validation.message)
+					}
+				}
+
 				if (validationTypeEach.contains("MIN_LENGTH")) {
 					if (
 						serialized[validation.fieldName].toString().length <

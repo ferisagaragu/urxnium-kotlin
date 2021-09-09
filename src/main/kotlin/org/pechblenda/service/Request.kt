@@ -1,20 +1,20 @@
 package org.pechblenda.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import java.util.Date
-import java.util.UUID
 
 import org.pechblenda.service.helper.EntityParse
 import org.pechblenda.service.helper.ProtectFields
 import org.pechblenda.service.helper.Validations
+import org.pechblenda.service.helper.SingleValidation
+import org.pechblenda.service.helper.Validation
+import org.pechblenda.util.Type
 
 import kotlin.collections.LinkedHashMap
 import kotlin.reflect.KClass
-import org.pechblenda.exception.BadRequestException
-import org.pechblenda.service.helper.SingleValidation
-import org.pechblenda.service.helper.Validation
 
 import org.slf4j.LoggerFactory
+
+import java.util.UUID
 
 class Request: LinkedHashMap<String, Any?>() {
 
@@ -72,9 +72,9 @@ class Request: LinkedHashMap<String, Any?>() {
 			return value.toString().toDouble() as T
 		} catch (e: NumberFormatException) { }
 
-		try {
+		if (Type.isUUID(value.toString())) {
 			return UUID.fromString(value.toString()) as T
-		} catch (e: Exception) { }
+		}
 
 		try {
 			if (

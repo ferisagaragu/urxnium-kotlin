@@ -3,20 +3,27 @@ package org.pechblenda.service
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.client.j2se.MatrixToImageWriter
+
+import java.io.BufferedReader
 import java.io.ByteArrayInputStream
+
 import org.pechblenda.service.helper.ResponseList
 import org.pechblenda.service.helper.ResponseMap
 import org.pechblenda.service.refactor.ResponseRecycle
+
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.HttpHeaders
-
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 
 import java.io.InputStream
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.util.UUID
+import java.util.stream.Collectors
 import javax.imageio.ImageIO
+import javax.servlet.http.HttpServletResponse
 import org.apache.commons.io.output.ByteArrayOutputStream
 
 class Response {
@@ -93,6 +100,27 @@ class Response {
 		val iss: InputStream = ByteArrayInputStream(os.toByteArray())
 
 		return file("image/png", "${UUID.randomUUID()}.png", iss)
+	}
+
+	fun html(response: HttpServletResponse, content: String): String {
+		response.contentType = "text/plain"
+		response.characterEncoding = "UTF-8"
+
+		return content
+	}
+
+	fun html(response: HttpServletResponse, inputStream: InputStream): String {
+		val text: String = BufferedReader(
+			InputStreamReader(
+				inputStream,
+				StandardCharsets.UTF_8
+			)
+		).lines().collect(Collectors.joining(""))
+
+		response.contentType = "text/plain"
+		response.characterEncoding = "UTF-8"
+
+		return text
 	}
 
 	fun toMap(any: Any, vararg callMethods: String): ResponseMap {

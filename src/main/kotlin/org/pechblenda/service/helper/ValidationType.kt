@@ -35,6 +35,21 @@ class ValidationType {
 		}
 
 		@JvmStatic
+		fun min(min: Int): String {
+			return "_MIN_INT,${min}"
+		}
+
+		@JvmStatic
+		fun max(max: Int): String {
+			return "_MIN_INT,${max}"
+		}
+
+		@JvmStatic
+		fun equalsNumber(equals: Int): String {
+			return "_EQUALS_INT,${equals}"
+		}
+
+		@JvmStatic
 		fun minLength(min: Int): String {
 			return "MIN_LENGTH,${min}"
 		}
