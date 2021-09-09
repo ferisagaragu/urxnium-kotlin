@@ -9,6 +9,7 @@ import org.pechblenda.doc.refactor.DocumentRecycle
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.hook.SlackAlert
 import org.pechblenda.mail.GoogleMail
+import org.pechblenda.schedule.GoogleCalendar
 import org.pechblenda.security.GoogleAuthentication
 import org.pechblenda.security.JwtProvider
 import org.pechblenda.security.JwtProviderSocket
@@ -125,6 +126,11 @@ open class UrxniumBean {
 	@Bean
 	open fun dynamicResources(): DynamicResources {
 		return DynamicResources()
+	}
+
+	@Bean
+	open fun googleCalendar(): GoogleCalendar {
+		return GoogleCalendar()
 	}
 
 }
