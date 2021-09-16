@@ -61,27 +61,47 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 	}
 
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, null, HttpStatus.OK)
+		return ResponseRecycle.response(null, this, null, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, HttpStatus.OK)
+		return ResponseRecycle.response(message, this, null, null, HttpStatus.OK)
+	}
+
+	fun ok(details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, null, details, HttpStatus.OK)
+	}
+
+	fun ok(message: String, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, details, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, null, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, null, null, HttpStatus.CREATED)
+	}
+
+	fun created(details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, null, details, HttpStatus.CREATED)
+	}
+
+	fun created(message: String, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, details, HttpStatus.CREATED)
 	}
 
 	fun response(httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, null, httpStatus)
+		return ResponseRecycle.response(null, this, null, null, httpStatus)
 	}
 
 	fun response(message: String, httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, httpStatus)
+		return ResponseRecycle.response(message, this, null, null, httpStatus)
+	}
+
+	fun response(message: String, details: Any?, httpStatus: HttpStatus): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, details, httpStatus)
 	}
 
 	fun json(): LinkedHashMap<String, Any?> {

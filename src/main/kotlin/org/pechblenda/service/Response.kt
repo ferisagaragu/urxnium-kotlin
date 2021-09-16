@@ -29,35 +29,51 @@ import org.apache.commons.io.output.ByteArrayOutputStream
 class Response {
 
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null,null, null, HttpStatus.OK)
+		return ResponseRecycle.response(null,null, null, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, null, null, HttpStatus.OK)
+		return ResponseRecycle.response(message, null, null, null, HttpStatus.OK)
 	}
 
 	fun ok(data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, data, null, HttpStatus.OK)
+		return ResponseRecycle.response(null, data, null, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String?, data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, data, null, HttpStatus.OK)
+		return ResponseRecycle.response(message, data, null, null, HttpStatus.OK)
+	}
+
+	fun ok(data: Any?, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, data, null, details, HttpStatus.OK)
+	}
+
+	fun ok(message: String?, data: Any?, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, data, null, details, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null,null, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(null,null, null, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, null, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, null, null, null, HttpStatus.CREATED)
 	}
 
 	fun created(data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, data, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, data, null, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String?, data: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, data, null, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, data, null, null, HttpStatus.CREATED)
+	}
+
+	fun created(data: Any?, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, data, null, details, HttpStatus.CREATED)
+	}
+
+	fun created(message: String?, data: Any?, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, data, null, details, HttpStatus.CREATED)
 	}
 
 	fun file(mediaType: MediaType, fileName: String, fileData: InputStreamResource): ResponseEntity<Any> {

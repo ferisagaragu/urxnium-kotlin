@@ -47,27 +47,47 @@ class ResponseList: ArrayList<ResponseMap>() {
 	}
 
 	fun ok(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, this.size, HttpStatus.OK)
+		return ResponseRecycle.response(null, this, this.size, null, HttpStatus.OK)
 	}
 
 	fun ok(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, this.size, HttpStatus.OK)
+		return ResponseRecycle.response(message, this, this.size, null, HttpStatus.OK)
+	}
+
+	fun ok(details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, this.size, details, HttpStatus.OK)
+	}
+
+	fun ok(message: String, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, this.size, details, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, this.size, HttpStatus.CREATED)
+		return ResponseRecycle.response(null, this, this.size, null, HttpStatus.CREATED)
 	}
 
 	fun created(message: String): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, this.size, HttpStatus.CREATED)
+		return ResponseRecycle.response(message, this, this.size, null, HttpStatus.CREATED)
+	}
+
+	fun created(details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, this.size, details, HttpStatus.CREATED)
+	}
+
+	fun created(message: String, details: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, this.size, details, HttpStatus.CREATED)
 	}
 
 	fun response(httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, this.size, httpStatus)
+		return ResponseRecycle.response(null, this, this.size, null, httpStatus)
 	}
 
 	fun response(message: String, httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, this.size, httpStatus)
+		return ResponseRecycle.response(message, this, this.size, null, httpStatus)
+	}
+
+	fun response(message: String, details: Any?, httpStatus: HttpStatus): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, this.size, details, httpStatus)
 	}
 
 	fun json(): List<LinkedHashMap<String, Any?>> {
