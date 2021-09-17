@@ -68,12 +68,12 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 		return ResponseRecycle.response(message, this, null, null, HttpStatus.OK)
 	}
 
-	fun ok(details: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, null, details, HttpStatus.OK)
+	fun ok(detail: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, null, detail, HttpStatus.OK)
 	}
 
-	fun ok(message: String, details: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, details, HttpStatus.OK)
+	fun ok(message: String, detail: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, detail, HttpStatus.OK)
 	}
 
 	fun created(): ResponseEntity<Any> {
@@ -84,12 +84,12 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 		return ResponseRecycle.response(message, this, null, null, HttpStatus.CREATED)
 	}
 
-	fun created(details: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(null, this, null, details, HttpStatus.CREATED)
+	fun created(detail: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(null, this, null, detail, HttpStatus.CREATED)
 	}
 
-	fun created(message: String, details: Any?): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, details, HttpStatus.CREATED)
+	fun created(message: String, detail: Any?): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, detail, HttpStatus.CREATED)
 	}
 
 	fun response(httpStatus: HttpStatus): ResponseEntity<Any> {
@@ -100,8 +100,8 @@ class ResponseMap: LinkedHashMap<String, Any?>() {
 		return ResponseRecycle.response(message, this, null, null, httpStatus)
 	}
 
-	fun response(message: String, details: Any?, httpStatus: HttpStatus): ResponseEntity<Any> {
-		return ResponseRecycle.response(message, this, null, details, httpStatus)
+	fun response(message: String, detail: Any?, httpStatus: HttpStatus): ResponseEntity<Any> {
+		return ResponseRecycle.response(message, this, null, detail, httpStatus)
 	}
 
 	fun json(): LinkedHashMap<String, Any?> {

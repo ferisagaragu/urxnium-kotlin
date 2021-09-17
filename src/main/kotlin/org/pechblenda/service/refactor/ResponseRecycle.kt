@@ -26,7 +26,7 @@ class ResponseRecycle {
 
 	companion object {
 		@JvmStatic
-		fun response(message: String?, data: Any?, count: Int?, details: Any?, status: HttpStatus): ResponseEntity<Any> {
+		fun response(message: String?, data: Any?, count: Int?, detail: Any?, status: HttpStatus): ResponseEntity<Any> {
 			val response: MutableMap<String, Any> = LinkedHashMap()
 			response["timestamp"] = SimpleDateFormat(
 				"MM-dd-yyyy  HH:mm:ss a"
@@ -41,8 +41,8 @@ class ResponseRecycle {
 				response["count"] = count
 			}
 
-			if (details != null) {
-				response["details"] = details
+			if (detail != null) {
+				response["detail"] = detail
 			}
 
 			if (data != null) {
