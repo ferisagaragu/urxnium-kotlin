@@ -6,6 +6,7 @@ import org.pechblenda.auth.service.message.AuthMessage
 import org.pechblenda.core.shared.DynamicResources
 import org.pechblenda.core.shared.Server
 import org.pechblenda.doc.refactor.DocumentRecycle
+import org.pechblenda.document.GoogleSheet
 import org.pechblenda.exception.HttpExceptionResponse
 import org.pechblenda.hook.SlackAlert
 import org.pechblenda.mail.GoogleMail
@@ -131,6 +132,11 @@ open class UrxniumBean {
 	@Bean
 	open fun googleCalendar(): GoogleCalendar {
 		return GoogleCalendar()
+	}
+
+	@Bean
+	open fun googleSheet(): GoogleSheet {
+		return GoogleSheet()
 	}
 
 }
