@@ -793,8 +793,6 @@ open class AuthService: IAuthService {
 		color: String,
 		background: String
 	): ResponseEntity<Any> {
-		println(avatarType)
-
 		return if (avatarType == "material") {
 			response.file(
 				"image/png",

@@ -30,7 +30,7 @@ class FirebaseStorage {
 	@Value("\${storage.firebase.service-account-key-path:}")
 	private lateinit var serviceAccountKeyPath: String
 
-	private lateinit var storage: Storage
+	private var storage: Storage? = null
 
 	private val slash: String = "(slash)"
 
@@ -50,16 +50,18 @@ class FirebaseStorage {
 	}
 
 	fun get(fileName: String): FileInfo {
+		validateInfo()
 		val file = fileName.replace(slash, "/")
-		val bucketStorage = storage[bucket]
-		val blob = bucketStorage[file]
-		return createBlobOut(blob)
+		val bucketStorage = storage?.get(bucket)
+		val blob = bucketStorage?.get(file)
+		return createBlobOut(blob!!)
 	}
 
 	fun list(): List<Any> {
+		validateInfo()
 		val out: MutableList<Any> = ArrayList()
-		val bucketStorage = storage[bucket]
-		for (blob in bucketStorage.list().iterateAll()) {
+		val bucketStorage = storage?.get(bucket)
+		for (blob in bucketStorage?.list()?.iterateAll()!!) {
 			out.add(createBlobOut(blob))
 		}
 
@@ -72,6 +74,7 @@ class FirebaseStorage {
 		extension: String,
 		base64File: String
 	): String {
+		validateInfo()
 		val fileName = UUID.randomUUID().toString() + extension
 		val blobId = BlobId.of(
 			bucket,
@@ -84,14 +87,14 @@ class FirebaseStorage {
 			.setContentType(contentType)
 			.build()
 
-		val blob = storage.create(
+		val blob = storage?.create(
 			blobInfo,
 			Base64.getDecoder().decode(
 				base64File
 			)
 		)
 
-		return blob.signUrl(
+		return blob?.signUrl(
 			100000L,
 			TimeUnit.DAYS
 		).toString()
@@ -104,6 +107,7 @@ class FirebaseStorage {
 		extension: String,
 		base64File: String
 	): String {
+		validateInfo()
 		val blobId = BlobId.of(
 			bucket,
 			directory.replace(slash, "/")
@@ -115,14 +119,14 @@ class FirebaseStorage {
 			.setContentType(contentType)
 			.build()
 
-		val blob = storage.create(
+		val blob = storage?.create(
 			blobInfo,
 			Base64.getDecoder().decode(
 				base64File
 			)
 		)
 
-		return blob.signUrl(
+		return blob?.signUrl(
 			100000L,
 			TimeUnit.DAYS
 		).toString()
@@ -135,6 +139,7 @@ class FirebaseStorage {
 		extension: String,
 		file: InputStream
 	): FileInfo {
+		validateInfo()
 		val fileName = name + extension
 		val blobId = BlobId.of(
 			bucket,
@@ -147,7 +152,7 @@ class FirebaseStorage {
 			.setContentType(mediaType)
 			.build()
 
-		val blob = storage.create(
+		val blob = storage?.create(
 			blobInfo,
 			IOUtils.toByteArray(file)
 		)
@@ -157,7 +162,7 @@ class FirebaseStorage {
 			fileName,
 			mediaType,
 			Date().toString(),
-			blob.signUrl(
+			blob?.signUrl(
 				100000L,
 				TimeUnit.DAYS
 			).toString()
@@ -170,6 +175,7 @@ class FirebaseStorage {
 		extension: String,
 		file: ByteArray
 	): String {
+		validateInfo()
 		val fileName = UUID.randomUUID().toString() + extension
 		val blobId = BlobId.of(
 			bucket,
@@ -182,12 +188,12 @@ class FirebaseStorage {
 			.setContentType(contentType)
 			.build()
 
-		val blob = storage.create(
+		val blob = storage?.create(
 			blobInfo,
 			file
 		)
 
-		return blob.signUrl(
+		return blob?.signUrl(
 			100000L,
 			TimeUnit.DAYS
 		).toString()
@@ -199,6 +205,7 @@ class FirebaseStorage {
 		extension: String,
 		base64File: String
 	): FileInfo {
+		validateInfo()
 		val blobId = BlobId.of(
 			bucket,
 			fileName.replace(slash, "/") +
@@ -209,17 +216,18 @@ class FirebaseStorage {
 			.setContentType(contentType)
 			.build()
 
-		val blob = storage.create(
+		val blob = storage?.create(
 			blobInfo,
 			Base64.getDecoder().decode(
 				base64File
 			)
 		)
 
-		return createBlobOut(blob)
+		return createBlobOut(blob!!)
 	}
 
 	fun delete(fileName: String): Map<String, Any> {
+		validateInfo()
 		val out: MutableMap<String, Any> = LinkedHashMap()
 		val file = fileName.replace(slash, "/")
 		val blobId = BlobId.of(
@@ -228,7 +236,7 @@ class FirebaseStorage {
 		)
 
 		out["fileName"] = file
-		out["deleteStatus"] = storage.delete(blobId)
+		out["deleteStatus"] = storage?.delete(blobId)!!
 		return out
 	}
 
@@ -243,6 +251,15 @@ class FirebaseStorage {
 				TimeUnit.DAYS
 			).toString()
 		)
+	}
+
+	private fun validateInfo() {
+		if (storage == null) {
+			throw Exception(
+				"The storage.firebase.service-account-key-path " +
+				"It isn't include to the application.properties"
+			)
+		}
 	}
 
 }
