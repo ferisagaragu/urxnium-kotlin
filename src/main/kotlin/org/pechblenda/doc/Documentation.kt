@@ -1,5 +1,6 @@
 package org.pechblenda.doc
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.pechblenda.doc.entity.ApiInfo
 import org.pechblenda.doc.refactor.DocumentRecycle
 
@@ -17,6 +18,7 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 import java.util.stream.Collectors
+import javax.annotation.PostConstruct
 import javax.servlet.http.HttpServletRequest
 
 import javax.servlet.http.HttpServletResponse
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletResponse
 import org.pechblenda.service.Response
 import org.springframework.beans.factory.annotation.Autowired
 import kotlin.reflect.KClass
+import org.pechblenda.doc.entity.Credential
+import org.springframework.beans.factory.annotation.Value
 
 @CrossOrigin(methods = [
 	RequestMethod.GET,
@@ -39,8 +43,35 @@ class Documentation {
 	@Autowired
 	private lateinit var resp: Response
 
-	private var apiInfo: ApiInfo
+	@Value("\${app.doc.title:Title not set}")
+	private lateinit var title: String
+
+	@Value("\${app.doc.description:Description not set}")
+	private lateinit var description: String
+
+	@Value("\${app.doc.icon-url:}")
+	private lateinit var iconUrl: String
+
+	@Value("\${app.doc.version:0.0.0}")
+	private lateinit var version: String
+
+	@Value("\${app.doc.credential.end-point:}")
+	private lateinit var endPoint: String
+
+	@Value("\${app.doc.credential.token-mapping:}")
+	private lateinit var tokenMapping: String
+
+	@Value("\${app.doc.credentials:[]}")
+	private lateinit var credential: String
+
+	private lateinit var apiInfo: ApiInfo
 	private var controllersInfo = mutableListOf<KClass<*>>()
+
+	constructor(
+		vararg controllerInfo: KClass<*>
+	) {
+		controllerInfo.forEach { controllerInfo -> controllersInfo.add(controllerInfo) }
+	}
 
 	constructor(
 		apiInfo: ApiInfo,
@@ -48,6 +79,19 @@ class Documentation {
 	) {
 		this.apiInfo = apiInfo
 		controllerInfo.forEach { controllerInfo -> controllersInfo.add(controllerInfo) }
+	}
+
+	@PostConstruct
+	fun postConstruct() {
+		val credential = convertCredentials()
+
+		this.apiInfo = ApiInfo(
+			title = title,
+			description = description,
+			iconUrl = iconUrl,
+			version = version,
+			credentials = credential
+		)
 	}
 
 	@RequestMapping
@@ -356,6 +400,27 @@ class Documentation {
 			),
 			HttpStatus.OK
 		)
+	}
+
+	private fun convertCredentials(): List<Credential> {
+		val mapper = ObjectMapper()
+		val credentials = mapper.readValue(credential, List::class.java)
+		val out = mutableListOf<Credential>()
+
+		credentials.forEach { credential ->
+			val data = credential as Map<String, Any>
+
+			out.add(
+				Credential(
+					name = "${data["name"]}",
+					endPoint = endPoint,
+					bodyRequest = data,
+					tokenMapping = tokenMapping
+				)
+			)
+		}
+
+		return out
 	}
 
 }
