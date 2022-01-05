@@ -7,7 +7,7 @@ class RestElement(
 	val mapping: String,
 	val access: String,
 	val bookmark: String,
-	val permissions: Array<Any>,
+	val permissions: Any?,
 	val description: String,
 	val html: Any?,
 	val steps: Any?,

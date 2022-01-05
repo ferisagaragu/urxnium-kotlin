@@ -235,7 +235,7 @@ class DocumentRecycle {
 			mapping = mapping,
 			access = access,
 			bookmark = if (doc.containsKey("bookmark")) doc["bookmark"].toString() else "",
-			permissions = arrayOf(),
+			permissions = if (doc.containsKey("permissions")) doc["permissions"] else null,
 			description = if (doc.containsKey("description")) doc["description"].toString() else "",
 			html = if (doc.containsKey("html")) doc["html"].toString().replace("\${host}", host) else null,
 			steps = if (doc.containsKey("steps")) doc["steps"] else null,
