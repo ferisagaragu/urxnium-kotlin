@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Component
 
 import kotlin.reflect.KClass
+import org.pechblenda.doc.entity.Step
 
 @Component
 class DocumentRecycle {
@@ -228,6 +229,9 @@ class DocumentRecycle {
 			}
 		}
 
+		println(doc.toJSON())
+		println(doc["fromData"])
+
 		return RestElement(
 			name = "${method.name}",
 			authorization = if (doc.containsKey("authorization")) doc["authorization"] as Boolean else false,
@@ -238,7 +242,13 @@ class DocumentRecycle {
 			permissions = if (doc.containsKey("permissions")) doc["permissions"] else null,
 			description = if (doc.containsKey("description")) doc["description"].toString() else "",
 			html = if (doc.containsKey("html")) doc["html"].toString().replace("\${host}", host) else null,
-			steps = if (doc.containsKey("steps")) doc["steps"] else null,
+			steps = if (doc.containsKey("steps"))
+				(doc["steps"] as List<Map<String, Any>>).map { step ->
+					Step(
+						access = if (step.containsKey("access")) step["access"] as String else "",
+						mapping = if (step.containsKey("mapping")) (step["mapping"] as String).replace("{host}", host) else ""
+					)
+				} else null,
 			pathVariables = if (doc.containsKey("pathVariables"))
 				(doc["pathVariables"] as List<Map<String, Any>>).map { variable ->
 					org.pechblenda.doc.entity.PathVariable(
@@ -259,6 +269,16 @@ class DocumentRecycle {
 					)
 				}
 			else if (pathParams.size == 0) null else pathParams,
+			formData = if (doc.containsKey("formData"))
+				(doc["formData"] as List<Map<String, Any>>).map { variable ->
+					org.pechblenda.doc.entity.PathVariable(
+						name = if (variable.containsKey("name")) variable["name"] as String else "",
+						value = if (variable.containsKey("value")) variable["value"] as String else "",
+						type = if (variable.containsKey("type")) variable["type"] as String else "",
+						required = if (variable.containsKey("required")) variable["required"] as Boolean else true
+					)
+				}
+			else null,
 			responseOk = if (doc.containsKey("responseOk"))
 				if (doc["responseOk"] is String) doc["responseOk"] as String else
 					doc["responseOk"] as MutableMap<String, Any> else null,

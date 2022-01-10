@@ -13,6 +13,7 @@ class RestElement(
 	val steps: Any?,
 	val pathVariables: List<PathVariable>?,
 	val pathParams: List<PathVariable>?,
+	val formData: List<PathVariable>?,
 	val responseOk: Any?,
 	val responseCreated: Any?,
 	val responseUnauthorized: Any?,
