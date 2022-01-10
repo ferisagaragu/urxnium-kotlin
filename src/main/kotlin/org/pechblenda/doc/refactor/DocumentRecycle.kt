@@ -229,9 +229,6 @@ class DocumentRecycle {
 			}
 		}
 
-		println(doc.toJSON())
-		println(doc["fromData"])
-
 		return RestElement(
 			name = "${method.name}",
 			authorization = if (doc.containsKey("authorization")) doc["authorization"] as Boolean else false,
@@ -273,7 +270,7 @@ class DocumentRecycle {
 				(doc["formData"] as List<Map<String, Any>>).map { variable ->
 					org.pechblenda.doc.entity.PathVariable(
 						name = if (variable.containsKey("name")) variable["name"] as String else "",
-						value = if (variable.containsKey("value")) variable["value"] as String else "",
+						value = if (variable.containsKey("value")) variable["value"] as Any else "",
 						type = if (variable.containsKey("type")) variable["type"] as String else "",
 						required = if (variable.containsKey("required")) variable["required"] as Boolean else true
 					)
