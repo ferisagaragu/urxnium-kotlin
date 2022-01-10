@@ -1,0 +1,27 @@
+{
+  "description": "Service to verify if a token has not yet expired",
+  "authorization": true,
+  "bookmark": "mdi-numeric-5-circle",
+  "responseOk": {
+    "timestamp": "03-24-2021  19:05:53 p. m.",
+    "status": 200,
+    "data": {
+      "token": "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6W10sInN1YiI6IkZlcm5hbmRvSXNhw61hcy0zNTE5YmIwZS00MzkwLTQ5ODgtOTlkMy0zN2I4MDk4MWRmNmYiLCJpYXQiOjE2MTY2MzMxNTEsImV4cCI6MTYxNjY1MTE1MX0.2o9eaLJs2Xc2wwAfwQXp0Xz9Icojwigmumf02QtSRGgoAN3fwQ6m0kfczlcdMxUrh_JduFf3ZFhIuYWAYTokpQ",
+      "expiration": 16797343,
+      "expirationDate": "Wed Mar 24 23:45:51 CST 2021"
+    }
+  },
+  "responseBadRequest": {
+    "timestamp": "11-19-2020  22:53:11 p. m.",
+    "status": 400,
+    "error": "BAD_REQUEST",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  }
+}

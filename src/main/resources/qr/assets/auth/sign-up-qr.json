@@ -1,0 +1,33 @@
+{
+  "description": "Service to register new member from QR link page",
+  "authorization": false,
+  "bookmark": "mdi-numeric-3-circle",
+  "responseOk": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 200,
+    "data": {
+      "code": "00 - 00 - 00"
+    }
+  },
+  "responseUnauthorized": {
+    "timestamp": "11-20-2020  16:53:53 p. m.",
+    "status": 401,
+    "error": "UNAUTHORIZED",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "requestBody": {
+    "secret": "eyJhbGciOiJIUzUxMiJ9.eyJjb2RlIjoiNDIgLSAwNSAtIDg4Iiwic3ViIjoiand0QF8vYXBwLXJlc3QjIiwiaWF0IjoxNjI4NzMzNDU0LCJleHAiOjE2Mjg3MzUyNTR9.Gz7nnjFAj9699GCipzvPIjS0vPwxLzr_9MrJ_O6HE7WzSl4Xvbd6W7bkLq8SFZI9jw2CHTtAURh6AHokkkofNQ",
+    "uuid": "18cf4162-c0bb-4f68-98a8-8a6854924128",
+    "name": "Fake Name",
+    "surname": "Fake Surname",
+    "motherSurname": "Fake Mothersurname",
+    "email": "fakename@gmail.com"
+  }
+}

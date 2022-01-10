@@ -1,0 +1,28 @@
+{
+  "description": "Service to activate a user account",
+  "authorization": false,
+  "bookmark": "mdi-numeric-3-circle",
+  "html": null,
+  "responseOk": {
+    "timestamp": "11-20-2020  15:10:57 p. m.",
+    "status": 200,
+    "message": "Your account has been activated successfully"
+  },
+  "responseBadRequest": {
+    "timestamp": "11-20-2020  15:11:29 p. m.",
+    "status": 400,
+    "error": "BAD_REQUEST",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "requestBody": {
+    "password": "Fernny27",
+    "uuid": "9bb5bd86-a01c-4eab-a7eb-a9d17f5f18fa"
+  }
+}
