@@ -25,7 +25,6 @@ class JwtAuthTokenFilter(
 		private val logger = LoggerFactory.getLogger(JwtAuthTokenFilter::class.java)
 	}
 
-
 	@Throws(ServletException::class, IOException::class)
 	override fun doFilterInternal(
 		request: HttpServletRequest,
@@ -52,7 +51,6 @@ class JwtAuthTokenFilter(
 
 		filterChain.doFilter(request, response)
 	}
-
 
 	private fun getJwt(request: HttpServletRequest): String? {
 		val authHeader = request.getHeader("Authorization")
