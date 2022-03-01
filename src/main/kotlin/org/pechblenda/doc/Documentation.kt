@@ -66,6 +66,7 @@ class Documentation {
 
 	private lateinit var apiInfo: ApiInfo
 	private var controllersInfo = mutableListOf<KClass<*>>()
+	private var entitiesInfo: MutableList<KClass<*>>? = null
 
 	constructor(
 		vararg controllerInfo: KClass<*>
@@ -78,6 +79,24 @@ class Documentation {
 		vararg controllerInfo: KClass<*>
 	) {
 		this.apiInfo = apiInfo
+		controllerInfo.forEach { controllerInfo -> controllersInfo.add(controllerInfo) }
+	}
+
+	constructor(
+		entitiesInfo: MutableList<KClass<*>>,
+		vararg controllerInfo: KClass<*>
+	) {
+		this.entitiesInfo = entitiesInfo
+		controllerInfo.forEach { controllerInfo -> controllersInfo.add(controllerInfo) }
+	}
+
+	constructor(
+		apiInfo: ApiInfo,
+		entitiesInfo: MutableList<KClass<*>>,
+		vararg controllerInfo: KClass<*>
+	) {
+		this.apiInfo = apiInfo
+		this.entitiesInfo = entitiesInfo
 		controllerInfo.forEach { controllerInfo -> controllersInfo.add(controllerInfo) }
 	}
 
@@ -259,12 +278,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/11.57afce78780529ea77ad.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/11.92a89252a222a3619196.js"], produces = ["application/javascript"])
 	fun getCode(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/11.57afce78780529ea77ad.js"
+					"api/11.92a89252a222a3619196.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -275,12 +294,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/10.0770939b2284ac1c1651.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/10.a26f129e74ba40a9e733.js"], produces = ["application/javascript"])
 	fun getCodeOne(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/10.0770939b2284ac1c1651.js"
+					"api/10.a26f129e74ba40a9e733.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -291,12 +310,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/9.515d17f27fd350df413e.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/9.8e11a3e07bf97f23ea8f.js"], produces = ["application/javascript"])
 	fun getCodeTwo(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/9.515d17f27fd350df413e.js"
+					"api/9.8e11a3e07bf97f23ea8f.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -307,12 +326,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/8.ee0bba644cff1316e349.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/8.3b92c3decb3dce1e720a.js"], produces = ["application/javascript"])
 	fun getCodeTree(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/8.ee0bba644cff1316e349.js"
+					"api/8.3b92c3decb3dce1e720a.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -323,12 +342,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/7.6014635581fcf23cbdf8.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/7.c9b82351bdff0e9781b8.js"], produces = ["application/javascript"])
 	fun getCodeFour(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/7.6014635581fcf23cbdf8.js"
+					"api/7.c9b82351bdff0e9781b8.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -339,12 +358,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/6.4b2438d9493c7c98df7f.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/6.d223ac7dbcc17a41657d.js"], produces = ["application/javascript"])
 	fun getCodeFive(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/6.4b2438d9493c7c98df7f.js"
+					"api/6.d223ac7dbcc17a41657d.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -355,12 +374,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/5.99733c2c7a4b2a0516e8.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/5.6c78e3b7f9e848b49bee.js"], produces = ["application/javascript"])
 	fun getCodeSix(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/5.99733c2c7a4b2a0516e8.js"
+					"api/5.6c78e3b7f9e848b49bee.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -371,12 +390,12 @@ class Documentation {
 		return text
 	}
 
-	@RequestMapping(value = ["/4.d90944a58a1c8f846253.js"], produces = ["application/javascript"])
+	@RequestMapping(value = ["/4.1622fa5b6eb0606aae45.js"], produces = ["application/javascript"])
 	fun getCodeSeven(response: HttpServletResponse): String {
 		val text: String = BufferedReader(
 			InputStreamReader(
 				this.javaClass.classLoader.getResourceAsStream(
-					"api/4.d90944a58a1c8f846253.js"
+					"api/4.1622fa5b6eb0606aae45.js"
 				),
 				StandardCharsets.UTF_8
 			)
@@ -394,6 +413,7 @@ class Documentation {
 		return ResponseEntity(
 			documentRecycle.generateDoc(
 				apiInfo,
+				entitiesInfo,
 				controllersInfo,
 				servletRequest
 			),

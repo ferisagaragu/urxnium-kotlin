@@ -28,7 +28,11 @@ import javax.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Component
 
 import kotlin.reflect.KClass
+import org.pechblenda.doc.entity.Attribute
+import org.pechblenda.doc.entity.Entity
 import org.pechblenda.doc.entity.Step
+import org.pechblenda.style.Color
+import org.pechblenda.style.enums.CategoryColor
 
 @Component
 class DocumentRecycle {
@@ -40,6 +44,7 @@ class DocumentRecycle {
 
 	fun generateDoc(
 		apiInfo: ApiInfo,
+		entitiesInfo: MutableList<KClass<*>>?,
 		controllersInfo: MutableList<KClass<*>>,
 		servletRequest: HttpServletRequest
 	): LinkedHashMap<String, Any> {
@@ -54,10 +59,36 @@ class DocumentRecycle {
 			baseUrlProd = getHost(servletRequest),
 			bookmarks = arrayOf(),
 			credentials = apiInfo.credentials,
+			entities = generateEntities(entitiesInfo),
 			src = generateSrc(controllersInfo, getHost(servletRequest))
 		)
 
 		return out
+	}
+
+	private fun generateEntities(entitiesInfo: MutableList<KClass<*>>?): MutableList<Entity>? {
+		if (entitiesInfo != null) {
+			val out = mutableListOf<Entity>()
+
+			entitiesInfo?.forEach { entityInfo ->
+				val entity = Entity(
+					entityInfo.simpleName!!,
+					Color().getMaterialColor(CategoryColor.MATERIAL_500).background,
+					entityInfo.java.declaredFields.map { declaredField ->
+						Attribute(
+							declaredField.name!!,
+							declaredField.type.simpleName
+						)
+					}
+				)
+
+				out.add(entity)
+			}
+
+			return out
+		}
+
+		return null
 	}
 
 	private fun generateSrc(controllersInfo: MutableList<KClass<*>>, host: String): ArrayList<Src> {

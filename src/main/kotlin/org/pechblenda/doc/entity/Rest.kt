@@ -9,5 +9,6 @@ class Rest(
 	val baseUrlProd: String,
 	val bookmarks: Array<String>,
 	val credentials: List<Credential>?,
+	val entities: List<Entity>?,
 	val src: ArrayList<Src>
 )
