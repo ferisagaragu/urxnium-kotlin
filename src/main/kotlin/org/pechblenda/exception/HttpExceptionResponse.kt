@@ -35,6 +35,18 @@ class HttpExceptionResponse {
 			logger.info("No develop message send")
 		}
 
+		try {
+			val developMessage = e.javaClass.getMethod(
+				"getFieldNameError"
+			).invoke(e)
+
+			if (developMessage != null) {
+				response["fieldNameError"] = developMessage
+			}
+		} catch (ex: Exception) {
+			logger.info("No develop message send")
+		}
+
 		logger.error(e.message)
 		return ResponseEntity(
 			response,

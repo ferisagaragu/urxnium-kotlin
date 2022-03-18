@@ -581,7 +581,7 @@ open class AuthService: IAuthService {
 		)
 		val userOut = authRepository.findByUserNameOrEmail(
 			user.userName
-		).orElseThrow { throw BadRequestException(authMessage.getUserNotFount()) }
+		).orElseThrow { throw BadRequestException(authMessage.getUserNotFount(), "userName") }
 
 		if (!userOut.active) {
 			throw BadRequestException(authMessage.getAccountNotActivate())
@@ -607,7 +607,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(authMessage.getPasswordIncorrect())
+			throw UnauthenticatedException(authMessage.getPasswordIncorrect(), "password")
 		}
 
 		val out = response.toMap(

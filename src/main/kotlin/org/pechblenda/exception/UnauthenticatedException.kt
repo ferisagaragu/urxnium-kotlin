@@ -12,8 +12,13 @@ class UnauthenticatedException(
 	reason
 ) {
 	var developMessage: String = ""
+	var fieldNameError: String = ""
 	constructor(reason: String) : this(HttpStatus.UNAUTHORIZED, reason)
-	constructor(reason: String, developMessage: String): this(HttpStatus.UNAUTHORIZED, reason) {
+	constructor(reason: String, fieldNameError: String): this(HttpStatus.UNAUTHORIZED, reason) {
+		this.fieldNameError = fieldNameError
+	}
+	constructor(reason: String, developMessage: String, fieldNameError: String): this(HttpStatus.UNAUTHORIZED, reason) {
 		this.developMessage = developMessage
+		this.fieldNameError = fieldNameError
 	}
 }
