@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets
 
 import org.pechblenda.style.entity.GradientColor
 import org.pechblenda.style.entity.MaterialColor
+import org.pechblenda.style.entity.NeonColor
 import org.pechblenda.style.enums.CategoryColor
 
 class Color {
@@ -48,7 +49,7 @@ class Color {
 	}
 
 	fun getGradientColor(): GradientColor {
-		return when(java.util.Random().nextInt(7)) {
+		return when(java.util.Random().nextInt(8)) {
 			0 -> GradientColor(
 				"#53d3fd",
 				"#53d3fd",
@@ -93,6 +94,107 @@ class Color {
 				"#53d3fd",
 				"#53d3fd",
 				"#38a0f3"
+			)
+		}
+	}
+
+	fun getGradientNeonColor(): NeonColor {
+		return when(java.util.Random().nextInt(23)) {
+			0 -> NeonColor(
+				"#FFFF00",
+				"yellow"
+			)
+			1 -> NeonColor(
+				"#FFFF33",
+				"yellow"
+			)
+			2 -> NeonColor(
+				"#F2EA02",
+				"yellow"
+			)
+			3 -> NeonColor(
+				"#E6FB04",
+				"yellow"
+			)
+			4 -> NeonColor(
+				"#FF0000",
+				"red"
+			)
+			5 -> NeonColor(
+				"#FD1C03",
+				"red"
+			)
+			6 -> NeonColor(
+				"#FF3300",
+				"red"
+			)
+			7 -> NeonColor(
+				"#FF6600",
+				"red"
+			)
+			8 -> NeonColor(
+				"#00FF00",
+				"green"
+			)
+			9 -> NeonColor(
+				"#00FF33",
+				"green"
+			)
+			10 -> NeonColor(
+				"#00FF66",
+				"green"
+			)
+			11 -> NeonColor(
+				"#33FF00",
+				"green"
+			)
+			12 -> NeonColor(
+				"#00FFFF",
+				"blue"
+			)
+			13 -> NeonColor(
+				"#099FFF",
+				"blue"
+			)
+			14 -> NeonColor(
+				"#0062FF",
+				"blue"
+			)
+			15 -> NeonColor(
+				"#0033FF",
+				"blue"
+			)
+			16 -> NeonColor(
+				"#FF00FF",
+				"pink"
+			)
+			17 -> NeonColor(
+				"#FF00CC",
+				"pink"
+			)
+			18 -> NeonColor(
+				"#FF0099",
+				"pink"
+			)
+			19 -> NeonColor(
+				"#CC00FF",
+				"pink"
+			)
+			20 -> NeonColor(
+				"#9D00FF",
+				"purple"
+			)
+			21 -> NeonColor(
+				"#6E0DD0",
+				"purple"
+			)
+			22 -> NeonColor(
+				"#9900FF",
+				"purple"
+			)
+			else -> NeonColor(
+				"#00FF66",
+				"green"
 			)
 		}
 	}

@@ -115,6 +115,9 @@ class AuthMessage {
 	@Value("\${message.auth.sign-up-qr-code-invalid:}")
 	private lateinit var signUpQRCodeInvalid: String
 
+	@Value("\${message.auth.unauthenticated:}")
+	private lateinit var unauthenticated: String
+
 	fun getUserNotFount(): String {
 		return when {
 			userNotFount.isNotEmpty() -> userNotFount
@@ -438,6 +441,15 @@ class AuthMessage {
 			signUpQRCodeInvalid.isEmpty() && language == "es" ->
 				"${if (formalLanguage != "true") "Oops el" else "El"} código que ingresaste no es valido"
 			else -> "${if (formalLanguage != "true") "Oops the" else "The"} code you entered is not valid"
+		}
+	}
+
+	fun getUnauthenticated(): String {
+		return when {
+			unauthenticated.isNotEmpty() -> unauthenticated
+			unauthenticated.isEmpty() && language == "es" ->
+				"${if (formalLanguage != "true") "Oops no" else "No"} estas autorizado para realizar esta acción"
+			else -> "${if (formalLanguage != "true") "Oops you" else "You"} are not authorize to do this action"
 		}
 	}
 

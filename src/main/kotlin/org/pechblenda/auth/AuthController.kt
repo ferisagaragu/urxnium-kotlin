@@ -5,6 +5,7 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import java.util.UUID
 import java.util.stream.Collectors
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -79,7 +80,7 @@ class AuthController {
 	@GetMapping("/generate-profile-image/{initialLetter}/{color}/{background}")
 	@ApiDocumentation(path = "api/assets/auth/generate-profile-image.json")
 	fun generateProfileImage(
-		@PathVariable("initialLetter") initialLetter: Char,
+		@PathVariable("initialLetter") initialLetter: String,
 		@PathVariable("color") color: String,
 		@PathVariable("background") background: String
 	): ResponseEntity<Any> {

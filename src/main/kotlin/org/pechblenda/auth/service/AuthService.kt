@@ -33,14 +33,15 @@ import org.springframework.core.io.InputStreamResource
 import org.springframework.stereotype.Service
 import org.springframework.beans.factory.annotation.Value
 
-import kotlin.reflect.KClass
-
 import java.util.UUID
 import java.util.Date
+
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+
 import kotlin.collections.LinkedHashMap
 import kotlin.random.Random
+import kotlin.reflect.KClass
 
 @Service
 open class AuthService: IAuthService {
@@ -789,7 +790,7 @@ open class AuthService: IAuthService {
 
 	@Transactional(readOnly = true)
 	override fun generateProfileImage(
-		initialLetter: Char,
+		initialLetter: String,
 		color: String,
 		background: String
 	): ResponseEntity<Any> {
@@ -797,13 +798,19 @@ open class AuthService: IAuthService {
 			response.file(
 				"image/png",
 				"userprofile.png",
-				avatar.generateUserImage(initialLetter, color, background)
+				avatar.generateUserImage(initialLetter[0], color, background)
 			)
-		} else {
+		} else if (avatarType == "gradient") {
 			response.file(
 				"image/png",
 				"userprofile.png",
-				avatar.generateGradientImage(initialLetter, color, color, background)
+				avatar.generateGradientImage(initialLetter[0], color, color, background)
+			)
+		} else {
+			response.file(
+				"image/svg+xml",
+				"userprofile.svg",
+				avatar.generateConsoleImage(initialLetter, color, background).byteInputStream()
 			)
 		}
 	}

@@ -13,7 +13,7 @@ interface IAuthService {
 	fun validateToken(authorization: String): ResponseEntity<Any>
 	fun canActivate(userUid: UUID): ResponseEntity<Any>
 	fun canChangePassword(activatePassword: UUID): ResponseEntity<Any>
-	fun generateProfileImage(initialLetter: Char, color: String, background: String): ResponseEntity<Any>
+	fun generateProfileImage(initialLetter: String, color: String, background: String): ResponseEntity<Any>
 	fun generateGoogleAuthenticationUrl(): ResponseEntity<Any>
 	fun generateOutlookAuthenticationUrl(): ResponseEntity<Any>
 	fun generateQRAuthentication(servletRequest: HttpServletRequest): ResponseEntity<Any>

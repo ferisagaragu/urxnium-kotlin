@@ -9,7 +9,9 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
+
 import javax.imageio.ImageIO
+
 import org.pechblenda.style.enums.CategoryColor
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -106,6 +108,29 @@ class Avatar {
 
 		ImageIO.write(image, "png", os)
 		return ByteArrayInputStream(os.toByteArray())
+	}
+
+	fun generateConsoleImage(
+		letter: String,
+		primaryUp: String,
+		primaryDown: String
+	): String {
+		return "<svg viewBox=\"0 0 32 32\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
+				"    <defs>\n" +
+				"        <linearGradient id=\"gradient-0\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\">\n" +
+				"            <stop stop-color=\"$primaryUp\" offset=\"0\"></stop>\n" +
+				"            <stop stop-color=\"$primaryDown\" offset=\"1\"></stop>\n" +
+				"        </linearGradient>\n" +
+				"    </defs>\n" +
+				"\n" +
+				"    <g>\n" +
+				"        <rect fill=\"url(#gradient-0)\" x=\"0\" y=\"0\" width=\"32\" height=\"32\" rx=\"3\" ry=\"3\"></rect>\n" +
+				"        <text x=\"3\" y=\"17\" font-family=\"Arial, Helvetica, sans-serif\" font-size=\"13px\" letter-spacing=\"1\" fill=\"#FFFFFF\">\n" +
+				"            <tspan>$letter</tspan>\n" +
+				"            <tspan x=\"4\" y=\"22\">_</tspan>\n" +
+				"        </text>\n" +
+				"    </g>\n" +
+				"</svg>"
 	}
 
 	private fun generateIcon(
