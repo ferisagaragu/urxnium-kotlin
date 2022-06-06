@@ -80,7 +80,7 @@ class GoogleSheet {
 
 		try {
 			out = (data["values"] as MutableList<List<Cell>>).map {
-				value -> Cell(value[0])
+				value -> Cell(value)
 			}
 		} catch (e: Exception) { }
 
