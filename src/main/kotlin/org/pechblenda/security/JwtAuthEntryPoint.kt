@@ -31,7 +31,6 @@ class JwtAuthEntryPoint: AuthenticationEntryPoint {
 		authException: AuthenticationException
 	) {
 		logger.error("Unauthorized error: {}", authException.message)
-		println(language)
 		response.contentType = MediaType.APPLICATION_JSON_VALUE
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)
 
