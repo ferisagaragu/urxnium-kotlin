@@ -8,5 +8,4 @@ class ProtectFields {
 		protectField.forEach { field -> this.protectField.add(field.name) }
 	}
 
-
 }

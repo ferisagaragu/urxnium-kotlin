@@ -21,12 +21,14 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 import kotlin.collections.LinkedHashMap
+import org.pechblenda.service.helper.Inject
+import org.pechblenda.service.helper.Injects
 
 class ResponseRecycle {
 
 	companion object {
 		@JvmStatic
-		fun response(message: String?, data: Any?, count: Int?, detail: Any?, status: HttpStatus): ResponseEntity<Any> {
+		fun response(message: String?, data: Any?, count: Int?, payload: Any?, status: HttpStatus): ResponseEntity<Any> {
 			val response: MutableMap<String, Any> = LinkedHashMap()
 			response["timestamp"] = SimpleDateFormat(
 				"MM-dd-yyyy  HH:mm:ss a"
@@ -41,8 +43,8 @@ class ResponseRecycle {
 				response["count"] = count
 			}
 
-			if (detail != null) {
-				response["detail"] = detail
+			if (payload != null) {
+				response["payload"] = payload
 			}
 
 			if (data != null) {
@@ -152,6 +154,23 @@ class ResponseRecycle {
 			}
 
 			return functionValue
+		}
+
+		@JvmStatic
+		fun injectText(out: ResponseMap, injects: Injects): ResponseMap {
+			if (!injects.injects.isEmpty()) {
+				injects.injects.forEach { inject ->
+					out.keys.forEach { key ->
+						if (inject.fieldName == key) {
+							out[key] = out[key]
+								.toString()
+								.replace(inject.identifier, inject.finalContent)
+						}
+					}
+				}
+			}
+
+			return out
 		}
 
 		@JvmStatic
