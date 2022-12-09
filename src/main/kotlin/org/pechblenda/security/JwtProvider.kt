@@ -163,6 +163,13 @@ class JwtProvider {
 			.subject
 	}
 
+	fun getAuthoritiesJwtToken(token: String): List<String> {
+		return Jwts.parser()
+			.setSigningKey(jwtSecret)
+			.parseClaimsJws(token)
+			.body["authorities"] as List<String>
+	}
+
 	fun validateJwtToken(authToken: String): Boolean {
 		try {
 			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken)
