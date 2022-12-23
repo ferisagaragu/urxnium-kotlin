@@ -49,8 +49,10 @@ class JwtAuthTokenFilterMicroservice(
 						return out
 					}
 
-					override fun getDetails(): String {
-						return jwt
+					override fun getDetails(): MutableMap<String, String> {
+						val out = mutableMapOf<String, String>()
+						out["jwtToken"] = jwt
+						return out
 					}
 
 					override fun getPrincipal(): String {

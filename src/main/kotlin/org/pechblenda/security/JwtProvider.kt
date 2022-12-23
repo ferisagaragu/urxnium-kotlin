@@ -96,9 +96,7 @@ class JwtProvider {
 		return tokenAndExpiration["token"].toString()
 	}
 
-	fun generateJwtTokenRefresh(
-		authentication: Authentication
-	): Map<String, Any> {
+	fun generateJwtTokenRefresh(authentication: Authentication): Map<String, Any> {
 		val userPrinciple = authentication.principal as UserDetails
 		val expiration = Date(Date().time + 31556900000)
 		val token = generateJwtToken(authentication)

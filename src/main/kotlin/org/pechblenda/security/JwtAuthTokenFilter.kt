@@ -4,7 +4,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.util.StringUtils
 
@@ -33,7 +32,10 @@ class JwtAuthTokenFilter(
 					userDetails?.authorities
 				)
 
-				authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
+				val out = mutableMapOf<String, String>()
+				out["jwtToken"] = jwt
+
+				authentication.details = out
 				SecurityContextHolder.getContext().authentication = authentication
 			}
 		} catch (e: Exception) {

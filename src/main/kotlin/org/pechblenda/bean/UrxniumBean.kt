@@ -2,7 +2,7 @@ package org.pechblenda.bean
 
 import org.pechblenda.auth.dynamic.AuthResourceController
 import org.pechblenda.auth.service.mail.AuthMail
-import org.pechblenda.auth.service.message.AuthMessage
+import org.pechblenda.auth.service.message.AuthInternalMessage
 import org.pechblenda.core.shared.DynamicResources
 import org.pechblenda.core.shared.Server
 import org.pechblenda.doc.refactor.DocumentRecycle
@@ -70,8 +70,8 @@ open class UrxniumBean {
 	}
 
 	@Bean
-	open fun authMessage(): AuthMessage {
-		return AuthMessage()
+	open fun authInternalMessage(): AuthInternalMessage {
+		return AuthInternalMessage()
 	}
 
 	@Bean

@@ -4,7 +4,7 @@ import org.pechblenda.auth.entity.IUser
 import org.pechblenda.auth.repository.IAuthRepository
 import org.pechblenda.auth.service.interfaces.IAuthService
 import org.pechblenda.auth.service.mail.AuthMail
-import org.pechblenda.auth.service.message.AuthMessage
+import org.pechblenda.auth.service.message.AuthInternalMessage
 import org.pechblenda.exception.BadRequestException
 import org.pechblenda.exception.UnauthenticatedException
 import org.pechblenda.security.GoogleAuthentication
@@ -65,7 +65,7 @@ open class AuthService: IAuthService {
 	private lateinit var authMail: AuthMail
 
 	@Autowired
-	private lateinit var authMessage: AuthMessage
+	private lateinit var authInternalMessage: AuthInternalMessage
 
 	@Autowired
 	private lateinit var googleAuthentication: GoogleAuthentication
@@ -95,15 +95,15 @@ open class AuthService: IAuthService {
 		val user = authRepository.findByUserName(
 			SecurityContextHolder.getContext().authentication.name
 		).orElseThrow {
-			throw BadRequestException(authMessage.getUserNotFount())
+			throw BadRequestException(authInternalMessage.getUserNotFount())
 		}
 
 		if (!user.active) {
-			throw BadRequestException(authMessage.getAccountNotActive())
+			throw BadRequestException(authInternalMessage.getAccountNotActive())
 		}
 
 		if (!user.enabled) {
-			throw BadRequestException(authMessage.getAccountBlocked())
+			throw BadRequestException(authInternalMessage.getAccountBlocked())
 		}
 
 		val out = response.toMap(user)
@@ -129,11 +129,11 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun canActivate(userUid: UUID): ResponseEntity<Any> {
 		val user = authRepository.findById(userUid).orElseThrow {
-			throw BadRequestException(authMessage.getActivateUserNotFount())
+			throw BadRequestException(authInternalMessage.getActivateUserNotFount())
 		}
 
 		if (user.active) {
-			throw BadRequestException(authMessage.getActivateUserInvalid())
+			throw BadRequestException(authInternalMessage.getActivateUserInvalid())
 		}
 
 		val out = Request()
@@ -145,7 +145,7 @@ open class AuthService: IAuthService {
 	@Transactional(readOnly = true)
 	override fun canChangePassword(activatePassword: UUID): ResponseEntity<Any> {
 		if (!authRepository.existsByActivatePassword(activatePassword)) {
-			throw BadRequestException(authMessage.getRecoverCodeInvalid())
+			throw BadRequestException(authInternalMessage.getRecoverCodeInvalid())
 		}
 
 		val out = Request()
@@ -210,7 +210,7 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"password",
-					authMessage.getPasswordRequired(),
+					authInternalMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -218,17 +218,17 @@ open class AuthService: IAuthService {
 		)
 
 		val findUser = authRepository.findById(user.uuid).orElseThrow {
-			throw BadRequestException(authMessage.getUserNotFount())
+			throw BadRequestException(authInternalMessage.getUserNotFount())
 		}
 
 		if (findUser.active) {
-			throw BadRequestException(authMessage.getAccountBeActivated())
+			throw BadRequestException(authInternalMessage.getAccountBeActivated())
 		}
 
 		findUser.password = passwordEncoder.encode(user.password)
 		findUser.active = true
 
-		return response.ok(authMessage.getAccountActivated())
+		return response.ok(authInternalMessage.getAccountActivated())
 	}
 
 	@Transactional
@@ -236,7 +236,7 @@ open class AuthService: IAuthService {
 		val secret = request.to<String>(
 			"secret",
 			SingleValidation(
-				authMessage.getActivateQRUserSecretRequired(),
+				authInternalMessage.getActivateQRUserSecretRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -245,7 +245,7 @@ open class AuthService: IAuthService {
 		val verifyCode = request.to<String>(
 			"verifyCode",
 			SingleValidation(
-				authMessage.getActivateQRUserVerifyCodeRequired(),
+				authInternalMessage.getActivateQRUserVerifyCodeRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -254,7 +254,7 @@ open class AuthService: IAuthService {
 
 		val code = jwtProvider.validateJwtSecretToken(secret)
 		val userFind = authRepository.findByPassword(verifyCode).orElseThrow {
-			UnauthenticatedException(authMessage.getActivateQRUserVerifyCodeInvalid())
+			UnauthenticatedException(authInternalMessage.getActivateQRUserVerifyCodeInvalid())
 		}
 
 		userFind.active = true
@@ -274,24 +274,24 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"password",
-					authMessage.getPasswordRequired(),
+					authInternalMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
 			)
 		)
 		val userFind = authRepository.findByActivatePassword(user.activatePassword!!).orElseThrow {
-			throw BadRequestException(authMessage.getAccountNotMatch())
+			throw BadRequestException(authInternalMessage.getAccountNotMatch())
 		}
 
 		if (!userFind.active) {
-			throw BadRequestException(authMessage.getAccountNotActivate())
+			throw BadRequestException(authInternalMessage.getAccountNotActivate())
 		}
 
 		userFind.activatePassword = null
 		userFind.password = passwordEncoder.encode(user.password)
 
-		return response.ok(authMessage.getPasswordChanged())
+		return response.ok(authInternalMessage.getPasswordChanged())
 	}
 
 	@Transactional
@@ -299,7 +299,7 @@ open class AuthService: IAuthService {
 		val activatePassword = request.to<UUID>(
 			"activatePassword",
 			SingleValidation(
-				authMessage.getSignUpQRUuidRequired(),
+				authInternalMessage.getSignUpQRUuidRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK
 			)
@@ -307,22 +307,22 @@ open class AuthService: IAuthService {
 		val deviceUuid = request.to<UUID>(
 			"deviceUuid",
 			SingleValidation(
-				authMessage.getSignUpQRUuidRequired(),
+				authInternalMessage.getSignUpQRUuidRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK
 			)
 		)
 
 		val userFind = authRepository.findByActivatePassword(activatePassword).orElseThrow {
-			BadRequestException(authMessage.getUserNotFount())
+			BadRequestException(authInternalMessage.getUserNotFount())
 		}
 
 		if (!userFind.active) {
-			BadRequestException(authMessage.getAccountNotActivate())
+			BadRequestException(authInternalMessage.getAccountNotActivate())
 		}
 
 		if (!userFind.enabled) {
-			BadRequestException(authMessage.getAccountBlocked())
+			BadRequestException(authInternalMessage.getAccountBlocked())
 		}
 
 		val code = "${Random.nextInt(0, 9)}${Random.nextInt(0, 9)} - " +
@@ -349,22 +349,22 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"email",
-					authMessage.getEmailRequired(),
+					authInternalMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
 			)
 		)
 		val userFind = authRepository.findByUserNameOrEmail(user.email).orElseThrow {
-			BadRequestException(authMessage.getAccountNotMatch())
+			BadRequestException(authInternalMessage.getAccountNotMatch())
 		}
 
 		if (!userFind.active) {
-			throw BadRequestException(authMessage.getAccountNotActivate())
+			throw BadRequestException(authInternalMessage.getAccountNotActivate())
 		}
 
 		if (userFind.accountType != AccountType.DEFAULT.name) {
-			throw BadRequestException(authMessage.getAccountTypeNotRecover(userFind.accountType))
+			throw BadRequestException(authInternalMessage.getAccountTypeNotRecover(userFind.accountType))
 		}
 
 		userFind.activatePassword = UUID.randomUUID()
@@ -372,7 +372,7 @@ open class AuthService: IAuthService {
 		authMail.sendRecoverPasswordMail(userFind)
 
 		return response.ok(
-			authMessage.getRecoverInstruction().replace(
+			authInternalMessage.getRecoverInstruction().replace(
 				"{email}",
 				userFind.email
 			)
@@ -387,22 +387,22 @@ open class AuthService: IAuthService {
 		val email = request.to<String>(
 			"email",
 			SingleValidation(
-				authMessage.getEmailRequired(),
+				authInternalMessage.getEmailRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK
 			)
 		)
 
 		val userFind = authRepository.findByUserNameOrEmail(email).orElseThrow {
-			BadRequestException(authMessage.getUserNotFount())
+			BadRequestException(authInternalMessage.getUserNotFount())
 		}
 
 		if (!userFind.active) {
-			BadRequestException(authMessage.getAccountNotActivate())
+			BadRequestException(authInternalMessage.getAccountNotActivate())
 		}
 
 		if (!userFind.enabled) {
-			BadRequestException(authMessage.getAccountBlocked())
+			BadRequestException(authInternalMessage.getAccountBlocked())
 		}
 
 		userFind.activatePassword = UUID.randomUUID()
@@ -418,31 +418,31 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"name",
-					authMessage.getNameRequired(),
+					authInternalMessage.getNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"surname",
-					authMessage.getSurnameRequired(),
+					authInternalMessage.getSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"motherSurname",
-					authMessage.getMotherSurnameRequired(),
+					authInternalMessage.getMotherSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"userName",
-					authMessage.getUserNameRequired(),
+					authInternalMessage.getUserNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"email",
-					authMessage.getEmailRequired(),
+					authInternalMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -451,11 +451,11 @@ open class AuthService: IAuthService {
 		val temporalPassword = UUID.randomUUID().toString()
 
 		if (authRepository.existsByUserName(user.userName)) {
-			throw BadRequestException(authMessage.getUserNameRegistered())
+			throw BadRequestException(authInternalMessage.getUserNameRegistered())
 		}
 
 		if (authRepository.existsByEmail(user.email)) {
-			throw BadRequestException(authMessage.getEmailRegistered())
+			throw BadRequestException(authInternalMessage.getEmailRegistered())
 		}
 
 		user.password = passwordEncoder.encode(temporalPassword)
@@ -467,7 +467,7 @@ open class AuthService: IAuthService {
 
 		authMail.sendActivateAccountMail(userOut)
 
-		return response.created(authMessage.getAccountCreated())
+		return response.created(authInternalMessage.getAccountCreated())
 	}
 
 	@Transactional
@@ -475,14 +475,14 @@ open class AuthService: IAuthService {
 		request.validate(Validations(
 			Validation(
 				"secret",
-				authMessage.getActivateQRUserSecretRequired(),
+				authInternalMessage.getActivateQRUserSecretRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
 			),
 			Validation(
 				"uuid",
-				authMessage.getSignUpQRUuidRequired(),
+				authInternalMessage.getSignUpQRUuidRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -493,28 +493,28 @@ open class AuthService: IAuthService {
 		val userFind = authRepository.likeByUserName("%${request["uuid"].toString()}").orElse(null)
 
 		if (authRepository.findByPassword(code).orElse(null) != null) {
-			throw BadRequestException(authMessage.getSignUpQRCodeRegistered())
+			throw BadRequestException(authInternalMessage.getSignUpQRCodeRegistered())
 		}
 
 		if (userFind == null) {
 			request.validate(Validations(
 				Validation(
 					"name",
-					authMessage.getNameRequired(),
+					authInternalMessage.getNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
 				),
 				Validation(
 					"surname",
-					authMessage.getSurnameRequired(),
+					authInternalMessage.getSurnameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
 				),
 				Validation(
 					"email",
-					authMessage.getEmailRequired(),
+					authInternalMessage.getEmailRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.EXIST
@@ -523,7 +523,7 @@ open class AuthService: IAuthService {
 			val user = userEntity.java.getDeclaredConstructor().newInstance() as IUser
 
 			if (authRepository.existsByEmail(request["email"].toString())) {
-				throw BadRequestException(authMessage.getEmailRegistered(), "duplicate")
+				throw BadRequestException(authInternalMessage.getEmailRegistered(), "duplicate")
 			}
 
 			user.name = request["name"].toString()
@@ -545,11 +545,11 @@ open class AuthService: IAuthService {
 			return response.ok()
 		} else {
 			if (!userFind.active) {
-				throw BadRequestException(authMessage.getAccountNotActive())
+				throw BadRequestException(authInternalMessage.getAccountNotActive())
 			}
 
 			if (!userFind.enabled) {
-				BadRequestException(authMessage.getAccountBlocked())
+				BadRequestException(authInternalMessage.getAccountBlocked())
 			}
 
 			userFind.password = code
@@ -562,19 +562,86 @@ open class AuthService: IAuthService {
 	}
 
 	@Transactional
+	override fun signUpFingerPrint(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any> {
+		val user = request.to<IUser>(
+			userEntity,
+			Validations(
+				Validation(
+					"name",
+					authInternalMessage.getNameRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"surname",
+					authInternalMessage.getSurnameRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"motherSurname",
+					authInternalMessage.getMotherSurnameRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"userName",
+					authInternalMessage.getUserNameRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"email",
+					authInternalMessage.getEmailRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				),
+				Validation(
+					"fingerprint",
+					"La huella digital es requerida",
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				)
+			)
+		)
+		val temporalPassword = user.fingerprint.toString()
+
+		if (authRepository.existsByUserName(user.userName)) {
+			throw BadRequestException(authInternalMessage.getUserNameRegistered())
+		}
+
+		if (authRepository.existsByEmail(user.email)) {
+			throw BadRequestException(authInternalMessage.getEmailRegistered())
+		}
+
+		if (authRepository.existsByFingerprint(user.fingerprint!!)) {
+			throw BadRequestException("La huella digital ya esta registrada")
+		}
+
+		user.password = passwordEncoder.encode(temporalPassword)
+		user.enabled = true
+		user.photo = dynamicResources.getUserImageUrl(servletRequest, user)
+		user.accountType = AccountType.FINGERPRINT.name
+		user.active = true
+		authRepository.save(user)
+
+		return response.created(authInternalMessage.getAccountCreated())
+	}
+
+	@Transactional
 	override fun signIn(request: Request): ResponseEntity<Any> {
 		val user = request.to<IUser>(
 			userEntity,
 			Validations(
 				Validation(
 					"userName",
-					authMessage.getUserNameRequired(),
+					authInternalMessage.getUserNameRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"password",
-					authMessage.getPasswordRequired(),
+					authInternalMessage.getPasswordRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				)
@@ -582,18 +649,18 @@ open class AuthService: IAuthService {
 		)
 		val userOut = authRepository.findByUserNameOrEmail(
 			user.userName
-		).orElseThrow { throw BadRequestException(authMessage.getUserNotFount(), "userName") }
+		).orElseThrow { throw BadRequestException(authInternalMessage.getUserNotFount(), "userName") }
 
 		if (!userOut.active) {
-			throw BadRequestException(authMessage.getAccountNotActivate())
+			throw BadRequestException(authInternalMessage.getAccountNotActivate())
 		}
 
 		if (!userOut.enabled) {
-			throw BadRequestException(authMessage.getAccountBlocked())
+			throw BadRequestException(authInternalMessage.getAccountBlocked())
 		}
 
 		if (userOut.accountType != AccountType.DEFAULT.name) {
-			throw UnauthenticatedException(authMessage.getAccountTypeNotValid(userOut.accountType))
+			throw UnauthenticatedException(authInternalMessage.getAccountTypeNotValid(userOut.accountType))
 		}
 
 		val session: Map<String, Any>
@@ -608,7 +675,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(authMessage.getPasswordIncorrect(), "password")
+			throw UnauthenticatedException(authInternalMessage.getPasswordIncorrect(), "password")
 		}
 
 		val out = response.toMap(
@@ -636,13 +703,13 @@ open class AuthService: IAuthService {
 			Validations(
 				Validation(
 					"code",
-					authMessage.getAccessCodeRequired(),
+					authInternalMessage.getAccessCodeRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK
 				),
 				Validation(
 					"type",
-					authMessage.getTypeCodeRequired(),
+					authInternalMessage.getTypeCodeRequired(),
 					ValidationType.NOT_NULL,
 					ValidationType.NOT_BLANK,
 					ValidationType.includes("Google", "Outlook")
@@ -675,7 +742,7 @@ open class AuthService: IAuthService {
 			userSearched = authRepository.save(user)
 		} else {
 			if (userSearched.accountType == AccountType.DEFAULT.name) {
-				throw UnauthenticatedException(authMessage.getAccountRegistered())
+				throw UnauthenticatedException(authInternalMessage.getAccountRegistered())
 			}
 
 			userSearched.password = passwordEncoder.encode(password)
@@ -692,7 +759,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(authMessage.getPasswordIncorrect())
+			throw UnauthenticatedException(authInternalMessage.getPasswordIncorrect())
 		}
 
 		val out = response.toMap(userSearched)
@@ -716,7 +783,7 @@ open class AuthService: IAuthService {
 		request.validate(Validations(
 			Validation(
 				"code",
-				authMessage.getAccessCodeRequired(),
+				authInternalMessage.getAccessCodeRequired(),
 				ValidationType.NOT_NULL,
 				ValidationType.NOT_BLANK,
 				ValidationType.EXIST
@@ -724,7 +791,7 @@ open class AuthService: IAuthService {
 		))
 
 		val user = authRepository.findByPassword(request["code"].toString()).orElseThrow {
-			UnauthenticatedException(authMessage.getSignUpQRCodeInvalid())
+			UnauthenticatedException(authInternalMessage.getSignUpQRCodeInvalid())
 		}
 		val session: Map<String, Any>
 		val password = UUID.randomUUID()
@@ -741,7 +808,7 @@ open class AuthService: IAuthService {
 
 			session = jwtProvider.generateJwtTokenRefresh(authentication)
 		} catch (e: Exception) {
-			throw UnauthenticatedException(authMessage.getPasswordIncorrect())
+			throw UnauthenticatedException(authInternalMessage.getPasswordIncorrect())
 		}
 
 		val out = response.toMap(user)
@@ -760,25 +827,87 @@ open class AuthService: IAuthService {
 			.ok()
 	}
 
+	@Transactional
+	override fun signInFingerPrint(request: Request): ResponseEntity<Any> {
+		val user = request.to<IUser>(
+			userEntity,
+			Validations(
+				Validation(
+					"fingerprint",
+					authInternalMessage.getUserNameRequired(),
+					ValidationType.NOT_NULL,
+					ValidationType.NOT_BLANK
+				)
+			)
+		)
+		val userOut = authRepository.findByFingerprint(
+			user.fingerprint!!
+		).orElseThrow { throw BadRequestException(authInternalMessage.getUserNotFount(), "fingerprint") }
+
+		if (!userOut.active) {
+			throw BadRequestException(authInternalMessage.getAccountNotActivate())
+		}
+
+		if (!userOut.enabled) {
+			throw BadRequestException(authInternalMessage.getAccountBlocked())
+		}
+
+		if (userOut.accountType != AccountType.FINGERPRINT.name) {
+			throw UnauthenticatedException(authInternalMessage.getAccountTypeNotValid(userOut.accountType))
+		}
+
+		val session: Map<String, Any>
+
+		try {
+			val authentication: Authentication = authenticationManager.authenticate(
+				UsernamePasswordAuthenticationToken(
+					userOut.userName,
+					user.fingerprint.toString()
+				)
+			)
+
+			session = jwtProvider.generateJwtTokenRefresh(authentication)
+		} catch (e: Exception) {
+			throw UnauthenticatedException(authInternalMessage.getPasswordIncorrect(), "password")
+		}
+
+		val out = response.toMap(
+			userOut
+		)
+
+		out["session"] = session
+
+		return out
+			.exclude(
+				"password",
+				"enabled",
+				"active",
+				"activatePassword",
+				"refreshToken"
+			)
+			.firstId()
+			.ok()
+	}
+
 	@Transactional(readOnly = true)
 	override fun refreshToken(request: Request): ResponseEntity<Any> {
 		if (!request.containsKey("refreshToken")) {
-			throw BadRequestException(authMessage.getRefreshTokenRequired())
+			throw BadRequestException(authInternalMessage.getRefreshTokenRequired())
 		}
 
 		request["refreshToken"].toString().ifEmpty {
-			throw BadRequestException(authMessage.getRefreshTokenRequired())
+			throw BadRequestException(authInternalMessage.getRefreshTokenRequired())
 		}
 
 		val user = authRepository.findByUserName(
 			jwtProvider.getUserNameFromJwtToken(request["refreshToken"].toString())
 				.replace("_refresh", "")
 		).orElseThrow {
-			UnauthenticatedException(authMessage.getUserNotFount())
+			UnauthenticatedException(authInternalMessage.getUserNotFount())
 		}
 
 		if (!user.enabled || !user.active) {
-			throw UnauthenticatedException(authMessage.getAccountBlocked())
+			throw UnauthenticatedException(authInternalMessage.getAccountBlocked())
 		}
 
 		return response.ok(

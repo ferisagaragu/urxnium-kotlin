@@ -16,4 +16,6 @@ interface IAuthRepository<T, ID>: CrudRepository<T, ID> {
 	fun existsByActivatePassword(activatePassword: UUID): Boolean
 	fun findByUserNameOrEmail(userName: String): Optional<IUser>
 	fun likeByUserName(userName: String): Optional<IUser>
+	fun findByFingerprint(fingerprint: UUID): Optional<IUser>
+	fun existsByFingerprint(fingerprint: UUID): Boolean
 }

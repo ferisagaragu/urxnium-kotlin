@@ -1,0 +1,31 @@
+{
+  "description": "Service to register a new user with fingerprint",
+  "authorization": false,
+  "bookmark": "mdi-numeric-1-circle",
+  "responseCreated": {
+    "timestamp": "11-20-2020  15:58:11 p. m.",
+    "status": 201,
+    "message": "Your account has been created successfully, we will send you an email with instructions on how to activate it"
+  },
+  "responseBadRequest": {
+    "timestamp": "11-20-2020  15:58:30 p. m.",
+    "status": 400,
+    "error": "BAD_REQUEST",
+    "message": "your bad request message",
+    "developMessage": ""
+  },
+  "responseInternalServerError": {
+    "timestamp": "2020-01-03T17:37:02.348+0000",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "your error message"
+  },
+  "requestBody": {
+    "name": "Fake name",
+    "surname": "SurnameName",
+    "motherSurname": "FakeMotherSurname",
+    "userName": "FakeUserName",
+    "email": "ferisagaragu@outlook.com",
+    "fingerprint": "bdada637-606a-4641-b592-25e360f4e35a"
+  }
+}

@@ -27,8 +27,10 @@ interface IAuthService {
 	fun recoverQRAccount(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signUp(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signUpQR(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
+	fun signUpFingerPrint(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signIn(request: Request): ResponseEntity<Any>
 	fun signInFormCode(request: Request, servletRequest: HttpServletRequest): ResponseEntity<Any>
 	fun signInFormQR(request: Request): ResponseEntity<Any>
+	fun signInFingerPrint(request: Request): ResponseEntity<Any>
 	fun refreshToken(request: Request): ResponseEntity<Any>
 }

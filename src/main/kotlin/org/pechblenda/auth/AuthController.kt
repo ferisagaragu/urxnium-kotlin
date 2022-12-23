@@ -240,6 +240,19 @@ class AuthController {
 		}
 	}
 
+	@PostMapping("/sign-up-fingerprint")
+	@ApiDocumentation(path = "api/assets/auth/sign-up-fingerprint.json")
+	fun signUpFingerPrint(
+		@RequestBody request: Request,
+		servletRequest: HttpServletRequest
+	): ResponseEntity<Any> {
+		return try {
+			authService.signUpFingerPrint(request, servletRequest)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
 	@PostMapping("/sign-in")
 	@ApiDocumentation(path = "api/assets/auth/sign-in.json")
 	fun signIn(
@@ -272,6 +285,18 @@ class AuthController {
 	): ResponseEntity<Any> {
 		return try {
 			authService.signInFormQR(request)
+		} catch (e: ResponseStatusException) {
+			httpExceptionResponse.error(e)
+		}
+	}
+
+	@PostMapping("/sign-in-fingerprint")
+	@ApiDocumentation(path = "api/assets/auth/sign-in-fingerprint.json")
+	fun signInFingerPrint(
+		@RequestBody request: Request
+	): ResponseEntity<Any> {
+		return try {
+			authService.signInFingerPrint(request)
 		} catch (e: ResponseStatusException) {
 			httpExceptionResponse.error(e)
 		}

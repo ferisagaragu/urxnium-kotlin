@@ -4,5 +4,6 @@ enum class AccountType {
 	GMAIL,
 	OUTLOOK,
 	QR,
+	FINGERPRINT,
 	DEFAULT
 }

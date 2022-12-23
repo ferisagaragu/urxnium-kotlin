@@ -9,7 +9,7 @@ class InternalResponse(
 
 	fun <T> to(kClass: KClass<*>): T {
 		val json = ObjectMapper().writeValueAsString(data)
-		return ObjectMapper().readValue(json, kClass.java) as T
+		return Request().toRequest(json).to(kClass) as T
 	}
 
 }

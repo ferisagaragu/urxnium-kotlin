@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 @Component
-class AuthMessage {
+class AuthInternalMessage {
 
 	@Value("\${app.language:en}")
 	private lateinit var language: String
@@ -298,8 +298,8 @@ class AuthMessage {
 	fun getEmailRegistered(): String {
 		return when {
 			emailRegistered.isNotEmpty() -> emailRegistered
-			emailRegistered.isEmpty() && language == "es" -> "El correo electrónico ya esta registrado registrado"
-			else -> "The email is already registered registered"
+			emailRegistered.isEmpty() && language == "es" -> "El correo electrónico ya esta registrado"
+			else -> "The email is already registered"
 		}
 	}
 
