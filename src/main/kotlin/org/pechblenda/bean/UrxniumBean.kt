@@ -84,10 +84,10 @@ open class UrxniumBean {
 		return OutlookAuthentication()
 	}
 
-	@Bean
+	/*@Bean <- use this if you need qr log in
 	open fun authResourceController(): AuthResourceController {
 		return AuthResourceController()
-	}
+	}*/
 
 	@Bean
 	open fun jwtProvider(): JwtProvider {

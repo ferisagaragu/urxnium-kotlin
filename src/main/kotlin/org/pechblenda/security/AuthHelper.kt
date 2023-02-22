@@ -7,6 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails
 class AuthHelper {
 
 	fun generateAuthentication(userName: String, authorities: List<GrantedAuthority>): Authentication {
+		return generateAuthentication(userName, authorities, "")
+	}
+
+	fun generateAuthentication(userName: String, authorities: List<GrantedAuthority>, details: Any): Authentication {
 		return object: Authentication {
 
 			var authenticate = true
@@ -19,8 +23,8 @@ class AuthHelper {
 				return authorities
 			}
 
-			override fun getDetails(): String {
-				return ""
+			override fun getDetails(): Any {
+				return details
 			}
 
 			override fun isAuthenticated(): Boolean {

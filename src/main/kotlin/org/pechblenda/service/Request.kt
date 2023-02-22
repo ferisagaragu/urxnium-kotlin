@@ -169,6 +169,10 @@ class Request: LinkedHashMap<String, Any?>() {
 		validations.validate(this)
 	}
 
+	fun validate(vararg validations: Validation) {
+		Validations(*validations).validate(this)
+	}
+
 	fun toJSON(): String {
 		val mapper = ObjectMapper()
 		return mapper.writeValueAsString(this)

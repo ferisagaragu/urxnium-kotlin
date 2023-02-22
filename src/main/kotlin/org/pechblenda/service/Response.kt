@@ -106,6 +106,13 @@ class Response {
 			.body(InputStreamResource(fileData))
 	}
 
+	fun file(mediaType: String, fileName: String, fileData: ByteArrayInputStream): ResponseEntity<Any> {
+		return ResponseEntity.ok()
+			.contentType(MediaType.parseMediaType(mediaType))
+			.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=${fileName}")
+			.body(InputStreamResource(fileData))
+	}
+
 	fun qr(data: String): ResponseEntity<Any> {
 		val matrix = MultiFormatWriter().encode(
 			data,

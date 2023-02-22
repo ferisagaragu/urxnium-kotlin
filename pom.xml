@@ -185,9 +185,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7.js8</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.0.6</version>
         </dependency>
         <!--JASPER DEPENDENCIES-->
 

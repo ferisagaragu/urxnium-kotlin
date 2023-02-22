@@ -2,6 +2,8 @@ package org.pechblenda.service.helper
 
 import org.pechblenda.exception.BadRequestException
 import org.pechblenda.exception.BadRequestGraphQLException
+import org.pechblenda.exception.NotFoundException
+import org.pechblenda.exception.UnauthenticatedException
 import org.pechblenda.service.enum.ServiceType
 
 import org.slf4j.LoggerFactory
@@ -31,21 +33,21 @@ class Validations {
 				if (validationTypeEach == ValidationType.NOT_NULL) {
 					if (serialized[validation.fieldName] == null) {
 						logger.error("Non-null validation broke with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
 				if (validationTypeEach == ValidationType.NOT_BLANK) {
 					if (serialized[validation.fieldName].toString().isBlank()) {
 						logger.error("Not-blank validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
 				if (validationTypeEach == ValidationType.EXIST) {
 					if (!serialized.containsKey(validation.fieldName)) {
 						logger.error("Exist validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -54,7 +56,7 @@ class Validations {
 
 					if (type != "java.lang.String") {
 						logger.error("Text validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -63,7 +65,7 @@ class Validations {
 						serialized[validation.fieldName].toString().toDouble()
 					} catch (e: Exception) {
 						logger.error("Number validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -73,7 +75,7 @@ class Validations {
 						serialized[validation.fieldName].toString().toLowerCase() == "false")
 					) {
 						logger.error("Boolean validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -82,7 +84,7 @@ class Validations {
 						serialized[validation.fieldName] as List<Any>
 					} catch (e: Exception) {
 						logger.error("Array validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -92,7 +94,7 @@ class Validations {
 						convertValueDouble(validationTypeEach)
 					) {
 						logger.error("Min validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -102,7 +104,7 @@ class Validations {
 						convertValueDouble(validationTypeEach)
 					) {
 						logger.error("Max validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -112,7 +114,7 @@ class Validations {
 						convertValueInt(validationTypeEach)
 					) {
 						logger.error("Min validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -122,7 +124,7 @@ class Validations {
 						convertValueInt(validationTypeEach)
 					) {
 						logger.error("Max validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -132,7 +134,7 @@ class Validations {
 						convertValueInt(validationTypeEach)
 					) {
 						logger.error("Equals number validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -142,7 +144,7 @@ class Validations {
 						convertValueInt(validationTypeEach)
 					) {
 						logger.error("Min length validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -152,7 +154,7 @@ class Validations {
 						convertValueInt(validationTypeEach)
 					) {
 						logger.error("Max length validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -163,7 +165,7 @@ class Validations {
 						)
 					) {
 						logger.error("Pattern validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
 				}
 
@@ -178,8 +180,15 @@ class Validations {
 
 					if (hasError) {
 						logger.error("Includes validation was broken with key ${validation.fieldName}")
-						throwException(validation.message)
+						throwException(validation.message, 400)
 					}
+				}
+			}
+
+			if (serialized[validation.fieldName] != null && validation.customValidation != null) {
+				if (validation.customValidation!!.validate(serialized[validation.fieldName]!!)) {
+					logger.error("Custom validation was broken with key ${validation.fieldName}")
+					throwException(validation.message, validation.customValidation!!.getStatusCode())
 				}
 			}
 		}
@@ -207,9 +216,11 @@ class Validations {
 		return validation.split("PATTERN,")[1].toRegex()
 	}
 
-	private fun throwException(message: String) {
+	private fun throwException(message: String, code: Int) {
 		if (ServiceType.REST === serviceType) {
-			throw BadRequestException(message)
+			if (code == 400) throw BadRequestException(message)
+			if (code == 401) throw UnauthenticatedException(message)
+			if (code == 404) throw NotFoundException(message)
 		} else {
 			throw BadRequestGraphQLException(message)
 		}

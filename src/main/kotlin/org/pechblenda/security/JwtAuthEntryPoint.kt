@@ -48,7 +48,7 @@ class JwtAuthEntryPoint: AuthenticationEntryPoint {
 		return when {
 			unauthorizedResource.isNotEmpty() -> unauthorizedResource
 			language == "es" ->
-				"${if (formalLanguage != "true") "Upss no" else "No"}  estas autorizado para acceder a este recurso"
+				"${if (formalLanguage != "true") "Upss no" else "No"} estas autorizado para acceder a este recurso"
 			else -> "${if (formalLanguage != "true") "Upss you" else "You"} are not authorized to access this resource"
 		}
 	}
